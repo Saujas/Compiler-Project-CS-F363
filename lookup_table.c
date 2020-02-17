@@ -1,4 +1,15 @@
-#include"lookup_table.h"
+#include "lookup_table.h"
+
+char * patterns[KEYWORD_NUMBERS] = {"integer","real","boolean","of", "array","start",
+                "end","declare","module","driver","program", "get_value",
+                "print","use","with","parameters","true", "false","takes","input","returns",
+                "AND","OR","for", "in", "switch","case","break","default","while"
+};
+
+tokens keywords[KEYWORD_NUMBERS] = {INTEGER, REAL, BOOLEAN, OF, ARRAY, START, END, DECLARE, MODULE, DRIVER, PROGRAM, GET_VALUE,
+            PRINT, USE, WITH, PARAMETERS, TRUE, FALSE, TAKES, INPUT, RETURNS, AND, OR, FOR, IN, SWITCH, 
+            CASE, BREAK, DEFAULT, WHILE
+};
 
 lookup_table initialize_lookup_table(int no_of_slots) {
     lookup_table table;
@@ -9,7 +20,6 @@ lookup_table initialize_lookup_table(int no_of_slots) {
     for(i = 0; i<no_of_slots; i++) {
         table.slots[i] = NULL;
     }
-    
     populate_table(table);
 
     return table;
@@ -39,10 +49,9 @@ List search(char* id, lookup_table table) {
     return NULL;
 }
 
-int add_item(enum tokens token_name, char* lexeme, lookup_table table) {
+int add_item(tokens token_name, char* lexeme, lookup_table table) {
     int h = hash(lexeme, table.no_of_slots);
-
-    List l = (List) malloc(sizeof(Node));
+    List l = (List) malloc(sizeof(Entry));
     l->token = token_name;
     strcpy(l->lexeme, lexeme);
     l->next = NULL;
@@ -59,16 +68,15 @@ int add_item(enum tokens token_name, char* lexeme, lookup_table table) {
 
         item->next = l;
     }
-
     return 1;
 }
 
 int populate_table(lookup_table table) {
     int i;
-    for(i=0; i<TOKEN_NUMBERS; i++) {
+    for(i=0; i<KEYWORD_NUMBERS; i++) {
         add_item(keywords[i], patterns[i], table);
     }
-
+    // print_table(table);
     return 1;
 }
 
@@ -78,7 +86,7 @@ int print_table(lookup_table table) {
     for(i=0; i<table.no_of_slots; i++) {
         item = table.slots[i];
         while(item != NULL) {
-            printf("Token: %s, Lexeme: %s\n", token_string_map[item->token], item->lexeme);
+            printf("Token: %d, Lexeme: %s\n", item->token, item->lexeme);
             item = item->next;
         }
     }
