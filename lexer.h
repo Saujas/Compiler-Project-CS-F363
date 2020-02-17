@@ -1,20 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 #include <float.h>
-
-#define TOKEN_NUMBERS 30
-#define MAX_TOKEN_SIZE 30
-
-char * patterns[TOKEN_NUMBERS] = {"integer","real","boolean","of", "array","start",
-                "end","declare","module","driver","program", "get_value",
-                "print","use","with","parameters","true", "false","takes","input","returns",
-                "AND","OR","for", "in", "switch","case","break","default","while"};
-
-char * tokens[TOKEN_NUMBERS] = {"INTEGER","REAL","BOOLEAN","OF","ARRAY","START",
-                        "END","DECLARE","MODULE","DRIVER","PROGRAM","GET_VALUE", "PRINT",
-                        "USE","WITH","PARAMETERS","TRUE","FALSE","TAKES","INPUT","RETURNS",
-                        "AND","OR","FOR","IN", "SWITCH", "CASE","BREAK","DEFAULT","WHILE"};
+#include "lexer_def.h"
 
 union value {
     int num;
@@ -24,7 +10,8 @@ union value {
 typedef union value Value;
 
 struct node {
-    char token[MAX_TOKEN_SIZE];
+    // char token[MAX_TOKEN_SIZE];
+    enum tokens token;
     char lexeme[MAX_TOKEN_SIZE];
     unsigned int line_no;
     Value val;

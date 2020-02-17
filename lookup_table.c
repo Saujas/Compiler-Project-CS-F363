@@ -39,11 +39,11 @@ List search(char* id, lookup_table table) {
     return NULL;
 }
 
-int add_item(char* token_name, char* lexeme, lookup_table table) {
+int add_item(enum tokens token_name, char* lexeme, lookup_table table) {
     int h = hash(lexeme, table.no_of_slots);
 
     List l = (List) malloc(sizeof(Node));
-    strcpy(l->token_name, token_name);
+    l->token = token_name;
     strcpy(l->lexeme, lexeme);
     l->next = NULL;
 
@@ -66,7 +66,7 @@ int add_item(char* token_name, char* lexeme, lookup_table table) {
 int populate_table(lookup_table table) {
     int i;
     for(i=0; i<TOKEN_NUMBERS; i++) {
-        add_item(tokens[i], patterns[i], table);
+        add_item(keywords[i], patterns[i], table);
     }
 
     return 1;
@@ -78,7 +78,7 @@ int print_table(lookup_table table) {
     for(i=0; i<table.no_of_slots; i++) {
         item = table.slots[i];
         while(item != NULL) {
-            printf("Token: %s, Lexeme: %s\n", item->token_name, item->lexeme);
+            printf("Token: %s, Lexeme: %s\n", token_string_map[item->token], item->lexeme);
             item = item->next;
         }
     }
