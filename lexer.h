@@ -15,11 +15,19 @@ char * tokens[TOKEN_NUMBERS] = {"INTEGER","REAL","BOOLEAN","OF","ARRAY","START",
                         "USE","WITH","PARAMETERS","TRUE","FALSE","TAKES","INPUT","RETURNS",
                         "AND","OR","FOR","IN", "SWITCH", "CASE","BREAK","DEFAULT","WHILE"};
 
+struct value {
+    int num;
+    float rnum;
+};
+
+typedef struct value Value;
 
 struct node {
     char token[MAX_TOKEN_SIZE];
     char lexeme[MAX_TOKEN_SIZE];
     unsigned int line_no;
+    Value val;
+    int tag; // {0, 1, 2} 0 - other, 1 - int, 2 - float
 };
 
 typedef struct node Node;
