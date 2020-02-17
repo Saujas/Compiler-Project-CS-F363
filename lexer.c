@@ -2,15 +2,18 @@
 
 #define MAX_BUFFER_LENGTH 200
 #define MAX_ID_LENGTH 20
+#define MAX_RNUM_LENGTH 3 + DBL_MANT_DIG - DBL_MIN_EXP
 
 char buffer[MAX_BUFFER_LENGTH];
 char id[MAX_ID_LENGTH];
-char number[]
+char number[MAX_RNUM_LENGTH];
+
 int state = 0;
 
 static int line_number = 1;
 static int pointer = 0;
 static int id_length = 0;
+static int number_index = 0;
 
 FILE* open_file(char* filename) {
     FILE* fp = fopen(filename, "r");
@@ -24,7 +27,8 @@ FILE* open_file(char* filename) {
 }
 
 int string_flush(char *str) {
-    for(int i = 0; i<sizeof(str); i++) {
+    int i;
+    for(i = 0; i<sizeof(str); i++) {
         str[i] = '\0';
     }
 
@@ -46,7 +50,14 @@ int buffer_read(FILE* fp) {
     return char_read;
 }
 
-Node get_token(char* fp) {
+Node* create_node() {
+    Node* n = (Node*) malloc(sizeof(Node));
+    n->tag = 0;
+    return n;
+
+}
+
+Node* get_token(char* fp) {
 
     char token[MAX_TOKEN_SIZE];
     char value[MAX_TOKEN_SIZE];
@@ -153,6 +164,9 @@ Node get_token(char* fp) {
                     break;
                 }
                 else if (ch>='0' && ch<='9') {
+                    string_flush(number);
+                    number_index = 0;
+                    number[number_index] = ch;
                     state = 32;
                     pointer++;
                     break;
@@ -166,30 +180,30 @@ Node get_token(char* fp) {
                     break;
                 }
             case 1:
-                Node n;
-                strcpy(n.token, "PLUS");
-                strcpy(n.lexeme, "+");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "PLUS");
+                strcpy(n->lexeme, "+");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 2:
-                Node n;
-                strcpy(n.token, "MINUS");
-                strcpy(n.lexeme, "-");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "MINUS");
+                strcpy(n->lexeme, "-");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
             
             case 3:
-                Node n;
-                strcpy(n.token, "DIV");
-                strcpy(n.lexeme, "/");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "DIV");
+                strcpy(n->lexeme, "/");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
@@ -207,10 +221,10 @@ Node get_token(char* fp) {
                 }
 
             case 5:
-                Node n;
-                strcpy(n.token, "MUL");
-                strcpy(n.lexeme, "*");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "MUL");
+                strcpy(n->lexeme, "*");
+                n->line_no = line_number;
                 state = 0;
                 return n;
                 break;
@@ -299,10 +313,10 @@ Node get_token(char* fp) {
                 }
 
             case 12:
-                Node n;
-                strcpy(n.token, "EQ");
-                strcpy(n.lexeme, "==");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "EQ");
+                strcpy(n->lexeme, "==");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
@@ -319,20 +333,20 @@ Node get_token(char* fp) {
                 }
 
             case 14:
-                Node n;
-                strcpy(n.token, "ASSIGNOP");
-                strcpy(n.lexeme, ":=");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "ASSIGNOP");
+                strcpy(n->lexeme, ":=");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 15:
-                Node n;
-                strcpy(n.token, "COLON");
-                strcpy(n.lexeme, ":");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "COLON");
+                strcpy(n->lexeme, ":");
+                n->line_no = line_number;
                 state = 0;
                 return n;
                 break;
@@ -348,10 +362,10 @@ Node get_token(char* fp) {
                 }
 
             case 17:
-                Node n;
-                strcpy(n.token, "NE");
-                strcpy(n.lexeme, "!=");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "NE");
+                strcpy(n->lexeme, "!=");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
@@ -368,70 +382,70 @@ Node get_token(char* fp) {
                 }
 
             case 19:
-                Node n;
-                strcpy(n.token, "RANGEOP");
-                strcpy(n.lexeme, "..");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "RANGEOP");
+                strcpy(n->lexeme, "..");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 20:
-                Node n;
-                strcpy(n.token, "SEMICOL");
-                strcpy(n.lexeme, ";");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "SEMICOL");
+                strcpy(n->lexeme, ";");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
             
             case 21:
-                Node n;
-                strcpy(n.token, "COMMA");
-                strcpy(n.lexeme, ",");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "COMMA");
+                strcpy(n->lexeme, ",");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 22:
-                Node n;
-                strcpy(n.token, "SQBO");
-                strcpy(n.lexeme, "[");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "SQBO");
+                strcpy(n->lexeme, "[");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 23:
-                Node n;
-                strcpy(n.token, "SQBC");
-                strcpy(n.lexeme, "]");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "SQBC");
+                strcpy(n->lexeme, "]");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 24:
-                Node n;
-                strcpy(n.token, "BO");
-                strcpy(n.lexeme, "(");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "BO");
+                strcpy(n->lexeme, "(");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 25:
-                Node n;
-                strcpy(n.token, "BC");
-                strcpy(n.lexeme, ")");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "BC");
+                strcpy(n->lexeme, ")");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
@@ -473,10 +487,10 @@ Node get_token(char* fp) {
             case 29:
                 if(id_length<=MAX_ID_LENGTH) {
                     id_length = 0;
-                    Node n;
-                    strcpy(n.token, "get_keyword_or_id");
-                    strcpy(n.lexeme, "id_or_keyword_value");
-                    n.line_no = line_number;
+                    Node* n = create_node();
+                    strcpy(n->token, "get_keyword_or_id");
+                    strcpy(n->lexeme, "id_or_keyword_value");
+                    n->line_no = line_number;
                     state = 0;
                     return n;
                     break;
@@ -507,29 +521,170 @@ Node get_token(char* fp) {
             case 32:
                 if((ch>='0')&&(ch<='9')) {
                     state = 32;
+                    number_index++;
+                    number[number_index] = ch;
                     pointer++;
+                    break;
+                }
+                else if(ch=='.') {
+                    state = 34;
+                    number_index++;
+                    number[number_index] = ch;
+                    pointer++;
+                    break;
+                }
+                else {
+                    state = 33;
                     break;
                 }
 
             case 33:
+                Node* n  = create_node();
+                strcpy(n->token, "NUM");
+                strcpy(n->lexeme, number);
+                n->line_no = line_number;
+                n->tag = 1;
+                Value v;
+                v.num = atoi(number);
+                n->val = v;
+                state = 0;
+                break;                
 
             case 34:
+                if((ch>='0')&&(ch<='9')) {
+                    state = 36;
+                    number_index++;
+                    number[number_index] = ch;
+                    pointer++;
+                    break;
+                }
+                else {
+                    state = 35;
+                    break;
+                }
 
             case 35:
+                number[number_index] = '\0';
+                Node* n  = create_node();
+                strcpy(n->token, "NUM");
+                strcpy(n->lexeme, number);
+                n->line_no = line_number;
+                n->tag = 1;
+                Value v;
+                v.num = atoi(number);
+                n->val = v;
+                state = 0;
+                pointer--;
+                break;                            
 
             case 36:
+                if((ch>='0')&&(ch<='9')) {
+                    state = 36;
+                    number_index++;
+                    number[number_index] = ch;
+                    pointer++;
+                    break;
+                }
+                else if((ch=='E')||(ch=='e')) {
+                    state = 37;
+                    number_index++;
+                    number[number_index] = ch;
+                    pointer++;
+                    break;
+                }
+                else {
+                    state = 42;
+                    break;
+                }
 
             case 37:
+                if((ch>='0')&&(ch<='9')) {
+                    state = 41;
+                    pointer++;
+                    number_index++;
+                    number[number_index] = ch;
+                    break;
+                }
+                else if((ch=='+')||(ch=='-')) {
+                    state = 39;
+                    pointer++;
+                    number_index++;
+                    number[number_index] = ch;
+                    break;
+                }
+                else {
+                    state = 38;
+                    break;
+                }
 
-            case 38:
+            case 38: 
+                number[number_index] = '\0';
+                Node* n  = create_node();
+                strcpy(n->token, "RNUM");
+                strcpy(n->lexeme, number);
+                n->line_no = line_number;
+                n->tag = 2;
+                Value v;
+                v.rnum = atof(number);
+                n->val = v;
+                state = 0;
+                pointer--;
+                break;
 
             case 39:
+                if((ch>='0')&&(ch<='9')) {
+                    state = 41;
+                    pointer++;
+                    number_index++;
+                    number[number_index] = ch;
+                    break;
+                }
+                else {
+                    state = 40;
+                    break;
+                }
 
             case 40:
+                number[number_index] = '\0';
+                number_index--;
+                number[number_index] = '\0';
+                Node* n  = create_node();
+                strcpy(n->token, "RNUM");
+                strcpy(n->lexeme, number);
+                n->line_no = line_number;
+                n->tag = 2;
+                Value v;
+                v.rnum = atof(number);
+                n->val = v;
+                state = 0;
+                pointer--;
+                pointer--;
+                break;
 
             case 41:
+                if((ch>='0')&&(ch<='9')) {
+                    state = 41;
+                    pointer++;
+                    number_index++;
+                    number[number_index] = ch;
+                    break;
+                }
+                else {
+                    state = 42;
+                    break;
+                }
 
             case 42:
+                Node* n  = create_node();
+                strcpy(n->token, "RNUM");
+                strcpy(n->lexeme, number);
+                n->line_no = line_number;
+                n->tag = 2;
+                Value v;
+                v.rnum = atof(number);
+                n->val = v;
+                state = 0;
+                break;
             
             case 43: 
                 if(ch=='>') {
@@ -547,19 +702,19 @@ Node get_token(char* fp) {
                 }
 
             case 44:
-                Node n;
-                strcpy(n.token, "GT");
-                strcpy(n.lexeme, ">");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "GT");
+                strcpy(n->lexeme, ">");
+                n->line_no = line_number;
                 state = 0;
                 return n;
                 break;
 
             case 45:
-                Node n;
-                strcpy(n.token, "GE");
-                strcpy(n.lexeme, ">=");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "GE");
+                strcpy(n->lexeme, ">=");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
@@ -591,10 +746,10 @@ Node get_token(char* fp) {
                 }
 
             case 48:
-                Node n;
-                strcpy(n.token, "LT");
-                strcpy(n.lexeme, "<");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "LT");
+                strcpy(n->lexeme, "<");
+                n->line_no = line_number;
                 state = 0;
                 return n;
                 break;
@@ -610,53 +765,62 @@ Node get_token(char* fp) {
                 }
 
             case 50:
-                Node n;
-                strcpy(n.token, "LE");
-                strcpy(n.lexeme, "<=");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "LE");
+                strcpy(n->lexeme, "<=");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 51:
+                Node* n = create_node();
+                strcpy(n->token, "ERROR");
+                strcpy(n->lexeme, "Token not found");
+                printf("Lexical error on line number: %d\n ", line_number);
+                n->line_no = line_number;
+                state = 0;
+                pointer++;
+                break;
 
             case 52:
+                return NULL;
 
             case 53:
-                Node n;
-                strcpy(n.token, "ENDDRIVERDEF");
-                strcpy(n.lexeme, ">>>");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "ENDDRIVERDEF");
+                strcpy(n->lexeme, ">>>");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 54:
-                Node n;
-                strcpy(n.token, "ENDDEF");
-                strcpy(n.lexeme, ">>");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "ENDDEF");
+                strcpy(n->lexeme, ">>");
+                n->line_no = line_number;
                 state = 0;
                 return n;
                 break;
 
             case 55:
-                Node n;
-                strcpy(n.token, "DRIVERDEF");
-                strcpy(n.lexeme, "<<<");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "DRIVERDEF");
+                strcpy(n->lexeme, "<<<");
+                n->line_no = line_number;
                 state = 0;
                 pointer++;
                 return n;
                 break;
 
             case 56:
-                Node n;
-                strcpy(n.token, "DEF");
-                strcpy(n.lexeme, "<<");
-                n.line_no = line_number;
+                Node* n = create_node();
+                strcpy(n->token, "DEF");
+                strcpy(n->lexeme, "<<");
+                n->line_no = line_number;
                 state = 0;
                 return n;
                 break;
@@ -675,7 +839,29 @@ int lexical_analyzer(char* filename) {
         exit(0);
     }
 
-    get_token(fp); //put in while until EOF
+    Node* n;
+
+    while(1) {
+        n = get_token(fp);
+        if(n==NULL)
+            break;
+        if(n->tag==0) {
+            printf("Token: %s\t", n->token);
+            printf("Lexeme: %s\t", n->lexeme);
+            printf("Line number: %d\t\n", n->line_no);
+        }
+        else if(n->tag==1){
+            printf("Token: %s\t", n->token);
+            printf("Value: %d\t", n->val.num);
+            printf("Line number: %d\t\n", n->line_no);
+        }
+        else {
+            printf("Token: %s\t", n->token);
+            printf("Value: %f\t", n->val.rnum);
+            printf("Line number: %d\t\n", n->line_no);
+        }
+    }
+    return 0;
 }
 
 

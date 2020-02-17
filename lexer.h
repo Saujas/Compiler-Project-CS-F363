@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>
 
 #define TOKEN_NUMBERS 30
 #define MAX_TOKEN_SIZE 30
@@ -15,12 +16,12 @@ char * tokens[TOKEN_NUMBERS] = {"INTEGER","REAL","BOOLEAN","OF","ARRAY","START",
                         "USE","WITH","PARAMETERS","TRUE","FALSE","TAKES","INPUT","RETURNS",
                         "AND","OR","FOR","IN", "SWITCH", "CASE","BREAK","DEFAULT","WHILE"};
 
-struct value {
+union value {
     int num;
     float rnum;
 };
 
-typedef struct value Value;
+typedef union value Value;
 
 struct node {
     char token[MAX_TOKEN_SIZE];
@@ -37,5 +38,6 @@ int flushBuffer(char* buf_head);
 FILE* open_file(char* filename);
 int string_flush();
 int buffer_read(FILE* fp);
-Node get_token(char* fp);
+Node* create_node();
+Node* get_token(char* fp);
 int lexical_analyzer(char* filename);
