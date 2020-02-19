@@ -117,6 +117,7 @@ int read_grammar(char* filename) {
 
         printf("\n");
     }
+    fclose(fp);
 }
 
 symbol convert_to_symbol(char* str) {

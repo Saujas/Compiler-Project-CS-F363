@@ -921,7 +921,7 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
             c_size++;
         }
     }
-
+    fclose(fp);
     *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_size);
     return c_size;
 }
