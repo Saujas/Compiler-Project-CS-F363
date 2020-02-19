@@ -36,6 +36,13 @@ typedef struct {
 
 first_set all_first_sets[NON_TERMINAL_SIZE];
 
+typedef struct {
+    tokens* follow_set_token;
+    int count;
+} follow_set;
+
+follow_set all_follow_sets[NON_TERMINAL_SIZE];
+
 int parse_token_stream(char* filename);
 int read_grammar(char* filename);
 int addRule(rules** grammar, symbol* rule, symbol nt, int count_of_symbols);
@@ -43,3 +50,5 @@ int main_parser(char* filename);
 symbol convert_to_symbol(char* str);
 first_set compute_first_set(int nt);
 int find_first_sets();
+follow_set compute_follow_set(int nt);
+int find_follow_sets();

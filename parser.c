@@ -7,7 +7,7 @@ char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "A
             "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
             "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
             "ENDDEF", "ENDDRIVERDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
-            "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E"
+            "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
 };
 
 char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
@@ -48,6 +48,7 @@ int parse_token_stream(char* filename) {
 
     read_grammar(GRAMMAR_FILE);
     find_first_sets();
+    find_follow_sets();
     
     return 1;
 }
@@ -260,17 +261,179 @@ int find_first_sets() {
         all_first_sets[i] = compute_first_set(i);
     }
 
-    for(i=0; i<NON_TERMINAL_SIZE; i++) {
-        int j;
-        printf("%s --> ", non_terminals_string_map[i]);
-        for(j=0; j<all_first_sets[i].count; j++) {
-            printf("%s, ", token_string_map[all_first_sets[i].first_set_token[j]]);
-        }
-        printf("\n");
-    }
+    // for(i=0; i<NON_TERMINAL_SIZE; i++) {
+    //     int j;
+    //     printf("%s --> ", non_terminals_string_map[i]);
+    //     for(j=0; j<all_first_sets[i].count; j++) {
+    //         printf("%s, ", token_string_map[all_first_sets[i].first_set_token[j]]);
+    //     }
+    //     printf("\n");
+    // }
     // printf("%d, %s\n", grammar[new11]->count_of_symbols, non_terminals_string_map[grammar[new11]->rule[1].sym.non_terminal]);
 
     return 1;
+}
+
+follow_set compute_follow_set(int nt) {
+    if(all_follow_sets[nt].follow_set_token != NULL) {
+        return all_follow_sets[nt];
+    }
+
+    follow_set current_set = all_follow_sets[nt];
+
+    int i;
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
+        
+        rules* temp_inner = grammar[i];
+        while(temp_inner) {
+            symbol* res = temp_inner->rule;
+            
+            int j;
+            for(j=0; j<temp_inner->count_of_symbols; j++) {
+
+                if(res[j].tag == 1 && res[j].sym.non_terminal==nt) {
+
+                    if(j != (temp_inner->count_of_symbols-1)) {
+
+                        if(res[j+1].tag == 0) {
+
+                            if(current_set.follow_set_token == NULL) {
+                                current_set.follow_set_token = (tokens *) malloc(sizeof(tokens));
+                                current_set.count = 1;
+                            }
+                            else {
+                                current_set.count += 1;
+                                current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens)*current_set.count);
+                            }
+                            current_set.follow_set_token[current_set.count-1] = res[j+1].sym.terminal;                        
+                        }
+                        else {
+                            int flag = 0;
+                            for(; (j+1)<(temp_inner->count_of_symbols); j++) {
+
+                                if(res[j+1].tag==1) {
+                                    // printf("%s %s %s\n", non_terminals_string_map[nt], non_terminals_string_map[i],non_terminals_string_map[res[j+1].sym.non_terminal]);
+                                    first_set new_fs = all_first_sets[res[j+1].sym.non_terminal];
+                                    if(current_set.follow_set_token == NULL) {
+                                        current_set.follow_set_token = (tokens *) malloc(sizeof(tokens) * new_fs.count);
+                                        current_set.count = new_fs.count;
+                                    }
+                                    else {
+                                        current_set.count += new_fs.count;
+                                        current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
+                                    }
+                                    int k1, k2;
+                                    flag = 0;
+                                    // printf("current: %d new_fs: %d\n", current_set.count, new_fs.count);
+                                    for(k1 = (current_set.count-new_fs.count), k2=k1; k1 < (current_set.count); k1++) {
+                                        
+                                        tokens ctok = new_fs.first_set_token[k1-(current_set.count-new_fs.count)];
+                                        // printf("TOKEN: %s\n", token_string_map[ctok]);
+                                        if(ctok==E) {
+                                            flag = 1;
+                                            continue;
+                                        }                       
+                                        current_set.follow_set_token[k2] = ctok;
+                                        k2++;
+                                    }
+                                    
+                                    if(flag==1) {
+                                        current_set.count -= 1;
+                                        current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
+                                    }
+                                    else {
+                                        break;
+                                    }
+                                }
+                                else {
+                                    if(current_set.follow_set_token == NULL) {
+                                        current_set.follow_set_token = (tokens *) malloc(sizeof(tokens));
+                                        current_set.count = 1;
+                                    }
+                                    else {
+                                        current_set.count += 1;
+                                        current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens)*current_set.count);
+                                    }
+                                    current_set.follow_set_token[current_set.count-1] = res[j+1].sym.terminal;
+                                    break;
+                                }
+                                
+                            }
+
+                            if(j==(temp_inner->count_of_symbols-1) && res[j].tag==1 && flag) {
+                                // printf("HELLO : %s %s %s\n", non_terminals_string_map[nt], non_terminals_string_map[i],non_terminals_string_map[res[j+1].sym.non_terminal]);
+                                follow_set new_fs1 = compute_follow_set(i);
+                                if(current_set.follow_set_token == NULL) {
+                                    current_set.follow_set_token = (tokens *) malloc(sizeof(tokens) * new_fs1.count);
+                                    current_set.count = new_fs1.count;
+                                }
+                                else {
+                                    current_set.count += new_fs1.count;
+                                    current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
+                                }
+
+                                // printf("current: %d new_fs1: %d\n", current_set.count, new_fs1.count);
+                                int k;
+                                for(k = (current_set.count-new_fs1.count); k < (current_set.count); k++) {
+                                    tokens ctok = new_fs1.follow_set_token[k - (current_set.count - new_fs1.count)];
+                                    // printf("k=%d, %s current:%d new:%d\n", k, token_string_map[ctok], current_set.count, new_fs1.count);
+                                    current_set.follow_set_token[k] = ctok;
+                                }
+                            }
+                        }
+                    }
+                    else if(i==nt) {
+                        // printf("%s %s %s %d %d\n", non_terminals_string_map[nt], non_terminals_string_map[i],non_terminals_string_map[res[j+1].sym.non_terminal], j, temp_inner->count_of_symbols);
+                        continue;
+                    }
+                    else {
+                        follow_set new_fs = compute_follow_set(i);
+                        if(current_set.follow_set_token == NULL) {
+                            current_set.follow_set_token = (tokens *) malloc(sizeof(tokens) * new_fs.count);
+                            current_set.count = new_fs.count;
+                        }
+                        else {
+                            current_set.count += new_fs.count;
+                            current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
+                        }
+
+                        int k;
+                        for(k = (current_set.count-new_fs.count); k < (current_set.count); k++) {
+                            
+                            tokens ctok = new_fs.follow_set_token[k-(current_set.count-new_fs.count)];
+                            current_set.follow_set_token[k] = ctok;
+                        }
+                    }
+                }
+            }
+            temp_inner = temp_inner->next;
+        }
+    }
+    return current_set;
+}
+
+
+int find_follow_sets() {
+    follow_set first;
+    first.follow_set_token = (tokens*)malloc(sizeof(tokens));
+    first.count = 1;
+    first.follow_set_token[0] = $;
+    all_follow_sets[0] = first;
+    int i;
+    for(i=1; i<17; i++) {
+        printf("%d\n", i);
+        all_follow_sets[i] = compute_follow_set(i);
+        
+    }
+    // printf("Done\n");
+    for(i=0; i<17; i++) {
+        int j;
+        printf("%s --> ", non_terminals_string_map[i]);
+        for(j=0; j<all_follow_sets[i].count; j++) {
+            printf("%s, ", token_string_map[all_follow_sets[i].follow_set_token[j]]);
+        }
+        printf("\n");
+    }
 }
 
 
