@@ -11,7 +11,7 @@ typedef enum{
     term, new7, factor, PlusMinus, MulDiv, relationalOP, logicalOP, boolKey, boolExpr, new8, relationalExpr,
     declareStmt, iterativeStmt, whileCondition, new10, new9, newY, conditionalStatement, caseStmt, numericCases, 
     numericCase, new11, Default
-}non_terminals;
+} non_terminals;
 
 typedef union {
     non_terminals non_terminal;
@@ -29,8 +29,17 @@ typedef struct grammar_rule {
     struct grammar_rule* next; 
 } rules;
 
+typedef struct {
+    tokens* first_set_token;
+    int count;
+} first_set;
+
+first_set all_first_sets[NON_TERMINAL_SIZE];
+
 int parse_token_stream(char* filename);
 int read_grammar(char* filename);
 int addRule(rules** grammar, symbol* rule, symbol nt, int count_of_symbols);
 int main_parser(char* filename);
 symbol convert_to_symbol(char* str);
+first_set compute_first_set(int nt);
+int find_first_sets();

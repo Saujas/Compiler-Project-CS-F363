@@ -47,6 +47,8 @@ int parse_token_stream(char* filename) {
     }
 
     read_grammar(GRAMMAR_FILE);
+    find_first_sets();
+    
     return 1;
 }
 
@@ -99,23 +101,22 @@ int read_grammar(char* filename) {
         
         rules* temp = grammar[i];
         while(temp) {
-            printf("%s --> ", non_terminals_string_map[i]);
+            // printf("%s --> ", non_terminals_string_map[i]);
             symbol* symbols = temp->rule;
             int j;
             for(j=0; j<(temp->count_of_symbols); j++) {
                 symbol res = symbols[j];
-                if(res.tag == 0) {
-                    printf("%s ", token_string_map[res.sym.terminal]);
-                }
-                else {
-                    printf("%s ", non_terminals_string_map[res.sym.non_terminal]);
-                }
+                // if(res.tag == 0) {
+                //     printf("%s ", token_string_map[res.sym.terminal]);
+                // }
+                // else {
+                //     printf("%s ", non_terminals_string_map[res.sym.non_terminal]);
+                // }
             }
-            printf("\n");
+            // printf("\n");
             temp = temp->next;
         }
-
-        printf("\n");
+        // printf("\n");
     }
     fclose(fp);
 }
@@ -165,6 +166,109 @@ int addRule(rules** grammar, symbol* rule, symbol nt, int count) {
 
         temp->next = new_rule;
     }
+
+    return 1;
+}
+
+
+first_set compute_first_set(int nt) {
+    if(all_first_sets[nt].first_set_token != NULL) {
+        return all_first_sets[nt];
+    }
+
+    rules* temp = grammar[nt];
+    first_set current_set = all_first_sets[nt];
+
+    while(temp) {
+    
+        symbol* res = temp->rule;
+
+        if((res[0].tag==0)) {
+
+            if(current_set.first_set_token == NULL) {
+                current_set.first_set_token = (tokens *) malloc(sizeof(tokens));
+                current_set.count = 1;
+            }
+            else {
+                current_set.count += 1;
+                current_set.first_set_token = (tokens *) realloc(current_set.first_set_token, sizeof(tokens)*current_set.count);
+            }
+
+            current_set.first_set_token[current_set.count-1] = res[0].sym.terminal;
+        }
+        
+        else {
+
+            int j;
+            for(j=0; j<(temp->count_of_symbols); j++) {
+
+                if(res[j].tag == 1) {
+                    first_set new_fs = compute_first_set(res[j].sym.non_terminal);
+
+                    if(current_set.first_set_token == NULL) {
+                        current_set.first_set_token = (tokens *) malloc(sizeof(tokens) * new_fs.count);
+                        current_set.count = new_fs.count;
+                    }
+                    else {
+                        current_set.count += new_fs.count;
+                        current_set.first_set_token = (tokens *) realloc(current_set.first_set_token, sizeof(tokens) * current_set.count);
+                    }
+
+                    int k, flag=0;
+                    for(k = (current_set.count-new_fs.count); k < (current_set.count); k++) {
+                        
+                        tokens ctok = new_fs.first_set_token[k-(current_set.count-new_fs.count)];
+
+                        if(ctok == E && j!=(temp->count_of_symbols-1)) {
+                            current_set.count -= 1;
+                            flag = 1;
+                        }
+                        else { 
+                            current_set.first_set_token[k] = ctok;
+                        }
+                    }
+                    
+                    if(!flag)
+                        break;
+                }
+                else {
+                    if(current_set.first_set_token == NULL) {
+                        current_set.first_set_token = (tokens *) malloc(sizeof(tokens));
+                        current_set.count = 1;
+                    }
+                    else {
+                        current_set.count += 1;
+                        current_set.first_set_token = (tokens *) realloc(current_set.first_set_token, sizeof(tokens)*current_set.count);
+                    }
+
+                    current_set.first_set_token[current_set.count-1] = res[j].sym.terminal;
+                    break;
+                }
+                
+            }
+        }
+
+        temp = temp->next;
+    }
+
+    return current_set;
+}
+
+int find_first_sets() {
+    int i;
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
+        all_first_sets[i] = compute_first_set(i);
+    }
+
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
+        int j;
+        printf("%s --> ", non_terminals_string_map[i]);
+        for(j=0; j<all_first_sets[i].count; j++) {
+            printf("%s, ", token_string_map[all_first_sets[i].first_set_token[j]]);
+        }
+        printf("\n");
+    }
+    // printf("%d, %s\n", grammar[new11]->count_of_symbols, non_terminals_string_map[grammar[new11]->rule[1].sym.non_terminal]);
 
     return 1;
 }
