@@ -1,0 +1,118 @@
+program moduleDeclarations otherModules driverModule otherModules
+moduleDeclarations moduleDeclaration moduleDeclarations
+moduleDeclarations E
+moduleDeclaration DECLARE MODULE ID SEMICOL
+otherModules module otherModules
+otherModules E
+driverModule DRIVERDEF DRIVER PROGRAM DRIVERENDDEF moduleDef
+module DEF MODULE ID ENDDEF TAKES INPUT SQBO input_plist SQBC SEMICOL ret moduleDef
+ret RETURNS SQBO output_plist SQBC SEMICOL
+ret E
+input_plist ID COLON dataType new1
+new1 COMMA ID COLON dataType new1
+new1 E
+output_plist ID COLON type new2
+new2 COMMA ID COLON type new2
+new2 E
+dataType INTEGER
+dataType REAL
+dataType BOOLEAN
+dataType ARRAY SQBO range SQBC OF type
+dataType2 INTEGER
+dataType2 REAL
+dataType2 BOOLEAN
+dataType2 ARRAY SQBO range2 SQBC OF type
+type INTEGER
+type REAL
+type BOOLEAN
+range NUM RANGEOP NUM
+range2 Index RANGEOP Index
+moduleDef START statements END
+statements statement new3
+new3 statements
+new3 E
+statement ioStmt
+statement simpleStmt
+statement declareStmt
+statement conditionalStatement
+statement iterativeStmt
+ioStmt GET_VALUE BO ID BC SEMIMCOL
+ioStmt PRINT BO var2 BC SEMICOL
+var ID whichID
+var NUM
+var RNUM
+var2 var
+var2 TRUE
+var2 FALSE
+whichID SQBO Index SQBC
+whichID E
+simpleStmt assignmentStmt
+simpleStmt moduleReuseStmt
+assignmentStmt ID whichStmt
+whichStmt lvalueIDstmt
+whichStmt lvalueArrStmt
+lvalueIDstmt ASSIGNOP expression SEMICOL
+lvalueArrStmt SQBO Index SQBC ASSIGNOP expression SEMICOL
+Index NUM
+Index ID
+moduleReuseStmt optional USE MODULE WITH PARAMETERS idList SEMICOL
+optional SQBO idList SQBC ASSIGNOP
+optional E
+idList ID newX
+newX COMMA ID newX
+newX E
+expression PlusMinus new4
+expression AorBExpr
+new4 NUM
+new4 RNUM
+new4 ID
+new4 BO arithmeticExpr BC
+AorBExpr arithmeticExpr relationalExpr
+AorBExpr boolKey boolExpr
+arithmeticExpr term new6
+new6 PlusMinus term new6
+new6 E
+term factor new7
+new7 MulDiv factor new7
+new7 E
+factor BO AorBExpr BC
+factor var
+PlusMinus PLUS
+PlusMinus MINUS
+MulDiv MUL
+MulDiv DIV
+relationalOP LT
+relationalOP LE
+relationalOP GT
+relationalOP GE
+relationalOP EQ
+relationalOP NE
+logicalOP AND
+logicalOP OR
+boolKey TRUE
+boolKey FALSE
+boolExpr logicalOP new8 boolExpr
+boolExpr E
+new8 arithmeticExpr relationalOP arithmeticExpr
+new8 boolKey
+relationalExpr relationalOP arithmeticExpr boolExpr
+relationalExpr E
+declareStmt DECLARE idList COLON dataType2 SEMICOL
+iterativeStmt FOR BO ID IN range BC START statements END
+iterativeStmt WHILE BO whileCondition BC START statements END
+whileCondition arithmeticExpr new10
+whileCondition boolKey new9
+new10 relationalOP arithmeticExpr boolExpr
+new9 logicalOP new8 newY
+newY new9
+newY E
+conditionalStatement SWITCH BO ID BC START CASE caseStmt
+caseStmt TRUE COLON statements BREAK SEMICOL CASE FALSE COLON statements BREAK SEMICOL END
+caseStmt FALSE COLON statements BREAK SEMICOL CASE TRUE COLON statements BREAK SEMICOL END
+caseStmt numericCases
+numericCases numericCase new11
+numericCase NUM COLON statements BREAK SEMICOL
+new11 CASE numericCases
+new11 Default END
+Default DEFAULT COLON statements BREAK SEMICOL
+Default E

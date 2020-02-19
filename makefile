@@ -1,5 +1,8 @@
-exe: driver.o lexer.o lookup_table.o
-	gcc -o exe driver.o lexer.o lookup_table.o
+exe: driver.o parser.o lexer.o lookup_table.o
+	gcc -o exe driver.o parser.o lexer.o lookup_table.o
+
+parser.o: parser.h lexer.h lexer_def.h lookup_table.h
+	gcc -c -g parser.c
 
 lexer.o: lexer.h lexer_def.h lookup_table.h
 	gcc -c -g lexer.c

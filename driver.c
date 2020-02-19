@@ -1,6 +1,6 @@
-#include "lexer.h"
+#include "parser.h"
 
 int main(int argc, char* argv[]) {
-    lexical_analyzer(argv[1]);
+    parse_token_stream(argv[1]);
     return 0;
 }

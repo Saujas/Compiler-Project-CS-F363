@@ -15,14 +15,14 @@ static int pointer = 0;
 static int id_length = 0;
 static int number_index = 0;
 
-char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
-            "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
-            "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
-            "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
-            "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
-            "ENDDEF", "ENDDRIVERDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
-            "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR"
-};
+// char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
+//             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
+//             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
+//             "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
+//             "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
+//             "ENDDEF", "ENDDRIVERDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
+//             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR"
+// };
 
 FILE* open_file(char* filename) {
     FILE* fp = fopen(filename, "r");
@@ -817,7 +817,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 n = create_node();
                 n->token = ERROR;
                 strcpy(n->lexeme, "Token not found");
-                printf("Lexical error on line number: %d\n ", line_number);
+                // printf("Lexical error on line number: %d\n ", line_number);
                 n->line_no = line_number;
                 state = 0;
                 pointer++;
@@ -870,7 +870,7 @@ Node* get_token(FILE* fp, lookup_table table) {
     
 }
 
-int lexical_analyzer(char* filename) {
+int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table) {
 
     FILE* fp = open_file(filename);
 
@@ -879,32 +879,49 @@ int lexical_analyzer(char* filename) {
         exit(0);
     }
 
-    
-    lookup_table table = initialize_lookup_table(SLOT_SIZE);
+    *table = (lookup_table *)malloc(sizeof(lookup_table));
+    **table = initialize_lookup_table(SLOT_SIZE);
+
+    *token_stream = (Node **) malloc(sizeof(Node *) * INITIAL_TOKENS_IN_INPUT);
+    int c_size = 0, c_max = INITIAL_TOKENS_IN_INPUT;
 
     Node* n;
 
     while(1) {
-        n = get_token(fp, table);
-        
+        n = get_token(fp, **table);
         if(n==NULL)
             break;
 
-        if(n->tag==0) {
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Lexeme: %s\t", n->lexeme);
-            printf("Line number: %d\t\n", n->line_no);
-        }
-        else if(n->tag==1){
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Value: %d\t", n->val.num);
-            printf("Line number: %d\t\n", n->line_no);
+        // if(n->tag==0) {
+        //     printf("Token: %s\t", token_string_map[n->token]);
+        //     printf("Lexeme: %s\t", n->lexeme);
+        //     printf("Line number: %d\t\n", n->line_no);
+        // }
+        // else if(n->tag==1){
+        //     printf("Token: %s\t", token_string_map[n->token]);
+        //     printf("Value: %d\t", n->val.num);
+        //     printf("Line number: %d\t\n", n->line_no);
+        // }
+        // else {
+        //     printf("Token: %s\t", token_string_map[n->token]);
+        //     printf("Value: %f\t", n->val.rnum);
+        //     printf("Line number: %d\t\n", n->line_no);
+        // }
+
+        if(n==NULL || n->token == ERROR) {
+            continue;
         }
         else {
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Value: %f\t", n->val.rnum);
-            printf("Line number: %d\t\n", n->line_no);
+            if(c_size == c_max) {
+                *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_max * 2);
+                c_max *= 2;
+            }
+
+            (*token_stream)[c_size] = n;
+            c_size++;
         }
     }
-    return 0;
+
+    *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_size);
+    return c_size;
 }

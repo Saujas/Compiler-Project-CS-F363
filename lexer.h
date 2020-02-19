@@ -26,4 +26,4 @@ int string_flush(char *str);
 int buffer_read(FILE* fp);
 Node* create_node();
 Node* get_token(FILE* fp, lookup_table table);
-int lexical_analyzer(char* filename);
+int lexical_analyzer(char* filename, Node*** n, lookup_table** table);
