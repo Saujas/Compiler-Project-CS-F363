@@ -1,5 +1,11 @@
 #include "parser.h"
+#include "lexer.h"
+
 rules* grammar[NON_TERMINAL_SIZE];
+rules parse_table[NON_TERMINAL_SIZE][TOKEN_NUMBERS];
+first_set all_first_sets[NON_TERMINAL_SIZE];
+follow_set all_follow_sets[NON_TERMINAL_SIZE];
+stack* Stack;
 
 char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
@@ -49,10 +55,22 @@ int parse_token_stream(char* filename) {
     read_grammar(GRAMMAR_FILE);
     find_first_sets();
     find_follow_sets();
-    
+    compute_parse_table();
+    Stack = initialize_stack();
+    printf("%s\n", non_terminals_string_map[peek(Stack).sym.non_terminal]);
     return 1;
 }
 
+
+stack* initialize_stack() {
+    stack* st = create_stack();
+    symbol s1;
+    s1.sym.non_terminal = program;
+    s1.tag = 1;
+
+    push(&st, s1);
+    return st;
+}
 
 int read_grammar(char* filename) {
     FILE* fp = fopen(filename, "r");
@@ -169,6 +187,118 @@ int addRule(rules** grammar, symbol* rule, symbol nt, int count) {
     }
 
     return 1;
+}
+
+int compute_parse_table() {
+
+    int i, j;
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
+        for(j=0; j<TOKEN_NUMBERS; j++) {
+            parse_table[i][j].rule=NULL;
+            parse_table[i][j].next=NULL;
+            parse_table[i][j].count_of_symbols=-1;
+        }
+    }
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
+        rules *temp = grammar[i];
+        while(temp) {
+
+            first_set fs = find_first_set_rule(temp->rule, temp->count_of_symbols);
+            int k;
+            int flag = 0;
+            for(k=0; k<fs.count; k++) {
+                if(fs.first_set_token[k]==E) {
+                    flag = 1;
+                    continue;
+                }
+                parse_table[i][fs.first_set_token[k]].rule = temp->rule;
+                parse_table[i][fs.first_set_token[k]].count_of_symbols = temp->count_of_symbols;
+            }
+            if(flag) {
+                follow_set fs = all_follow_sets[i];
+                int l;
+                for(l=0; l<fs.count; l++) {
+                    parse_table[i][fs.follow_set_token[l]].rule = temp->rule;
+                    parse_table[i][fs.follow_set_token[l]].count_of_symbols = temp->count_of_symbols;
+                }
+            }
+            // printf("%s --> ", non_terminals_string_map[i]);
+            // for(j = 0; j<fs.count; j++) {
+            //     printf("%s ", token_string_map[fs.first_set_token[j]]);
+            // }
+            // printf("\n");
+            temp = temp->next;
+        }
+    }
+
+    // print_parse_table();
+
+    return 1;
+}
+
+int print_parse_table() {
+    int i, j;
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
+        printf("%s: \n", non_terminals_string_map[i]);
+        for(j=0; j<TOKEN_NUMBERS; j++) {
+            rules r = parse_table[i][j];
+            if(r.count_of_symbols == -1) {
+                // printf("%s: Error\n", token_string_map[j]);
+            }
+            else {
+                int k;
+                printf("\t%s: %s --> ", token_string_map[j], non_terminals_string_map[i]);
+                for(k=0; k<r.count_of_symbols; k++) {
+                    symbol sym = r.rule[k];
+                    if(sym.tag == 1)
+                        printf("%s ", non_terminals_string_map[sym.sym.non_terminal]);
+                    else
+                        printf("%s ", token_string_map[sym.sym.terminal]);
+                }
+                printf("\n");
+            }
+        }
+    }
+
+    return 1;
+}
+
+first_set find_first_set_rule(symbol* rule, int count) {
+    // printf("\n\n****\n\n");
+    first_set fs_rule;
+    fs_rule.first_set_token = NULL;
+    fs_rule.count = 0;
+    int i, flag = 0;
+    for(i=0; i<count; i++) {
+
+        symbol s = rule[i];
+
+        if(s.tag == 0) {
+            if(fs_rule.first_set_token == NULL) {
+                fs_rule.count = 1;
+                fs_rule.first_set_token = (tokens*) malloc(sizeof(tokens) * fs_rule.count);
+            }
+            else {
+                fs_rule.count += 1;
+                fs_rule.first_set_token = (tokens *) realloc(fs_rule.first_set_token, sizeof(tokens) * fs_rule.count);
+            }
+
+            fs_rule.first_set_token[fs_rule.count-1] = s.sym.terminal;
+            break;
+        }
+        else {
+            first_set nt1 = all_first_sets[rule[i].sym.non_terminal];
+            int add_e = 0;
+            if( i==(count-1))
+                add_e = 1;
+            flag = merge_first_first(&fs_rule, nt1, add_e);
+            if(!flag) {
+                break;
+            }
+        }
+    }
+
+    return fs_rule;
 }
 
 
@@ -378,9 +508,11 @@ int check_if_duplicate_first(first_set current_set, tokens t) {
 
 int merge_first_first(first_set* current_set, first_set new_set, int add_e) {
     int empty_exists = 0, i;
+
+    // printf("%d\n", new_set.count);
+
     if(new_set.first_set_token == NULL)
         return empty_exists;
-
     else {
         for(i=0; i<new_set.count; i++) {
             tokens new_token = new_set.first_set_token[i];
@@ -480,14 +612,14 @@ int find_follow_sets() {
         }
     }
     // printf("Done\n");
-    for(i=0; i<NON_TERMINAL_SIZE; i++) {
-        int j;
-        printf("%s --> ", non_terminals_string_map[i]);
-        for(j=0; j<all_follow_sets[i].count; j++) {
-            printf("%s, ", token_string_map[all_follow_sets[i].follow_set_token[j]]);
-        }
-        printf("\n");
-    }
+    // for(i=0; i<NON_TERMINAL_SIZE; i++) {
+    //     int j;
+    //     printf("%s --> ", non_terminals_string_map[i]);
+    //     for(j=0; j<all_follow_sets[i].count; j++) {
+    //         printf("%s, ", token_string_map[all_follow_sets[i].follow_set_token[j]]);
+    //     }
+    //     printf("\n");
+    // }
 }
 
 
