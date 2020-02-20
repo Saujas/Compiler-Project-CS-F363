@@ -184,7 +184,7 @@ first_set compute_first_set(int nt) {
     
         symbol* res = temp->rule;
 
-        if((res[0].tag==0)) {
+        if((res[0].tag==0) && !check_if_duplicate_first(current_set, res[0].sym.terminal)) {
 
             if(current_set.first_set_token == NULL) {
                 current_set.first_set_token = (tokens *) malloc(sizeof(tokens));
@@ -198,54 +198,35 @@ first_set compute_first_set(int nt) {
             current_set.first_set_token[current_set.count-1] = res[0].sym.terminal;
         }
         
-        else {
+        else if(res[0].tag == 1) {
 
-            int j;
+            int j, flag=0;
             for(j=0; j<(temp->count_of_symbols); j++) {
 
                 if(res[j].tag == 1) {
                     first_set new_fs = compute_first_set(res[j].sym.non_terminal);
 
-                    if(current_set.first_set_token == NULL) {
-                        current_set.first_set_token = (tokens *) malloc(sizeof(tokens) * new_fs.count);
-                        current_set.count = new_fs.count;
-                    }
-                    else {
-                        current_set.count += new_fs.count;
-                        current_set.first_set_token = (tokens *) realloc(current_set.first_set_token, sizeof(tokens) * current_set.count);
-                    }
-
-                    int k, flag=0;
-                    for(k = (current_set.count-new_fs.count); k < (current_set.count); k++) {
-                        
-                        tokens ctok = new_fs.first_set_token[k-(current_set.count-new_fs.count)];
-
-                        if(ctok == E && j!=(temp->count_of_symbols-1)) {
-                            current_set.count -= 1;
-                            flag = 1;
-                        }
-                        else { 
-                            current_set.first_set_token[k] = ctok;
-                        }
-                    }
+                    int add_e = (j == temp->count_of_symbols - 1);
+                    flag = merge_first_first(&current_set, new_fs, add_e);
                     
                     if(!flag)
                         break;
                 }
                 else {
-                    if(current_set.first_set_token == NULL) {
-                        current_set.first_set_token = (tokens *) malloc(sizeof(tokens));
-                        current_set.count = 1;
-                    }
-                    else {
-                        current_set.count += 1;
-                        current_set.first_set_token = (tokens *) realloc(current_set.first_set_token, sizeof(tokens)*current_set.count);
-                    }
+                    if(!check_if_duplicate_first(current_set, res[j].sym.terminal)) {
+                        if(current_set.first_set_token == NULL) {
+                            current_set.first_set_token = (tokens *) malloc(sizeof(tokens));
+                            current_set.count = 1;
+                        }
+                        else {
+                            current_set.count += 1;
+                            current_set.first_set_token = (tokens *) realloc(current_set.first_set_token, sizeof(tokens)*current_set.count);
+                        }
 
-                    current_set.first_set_token[current_set.count-1] = res[j].sym.terminal;
-                    break;
-                }
-                
+                        current_set.first_set_token[current_set.count-1] = res[j].sym.terminal;
+                        break;
+                    }
+                }    
             }
         }
 
@@ -274,10 +255,7 @@ int find_first_sets() {
     return 1;
 }
 
-follow_set compute_follow_set(int nt) {
-    if(all_follow_sets[nt].follow_set_token != NULL) {
-        return all_follow_sets[nt];
-    }
+follow_set compute_follow_set(int nt, int* changed) {
 
     follow_set current_set = all_follow_sets[nt];
 
@@ -292,11 +270,11 @@ follow_set compute_follow_set(int nt) {
             for(j=0; j<temp_inner->count_of_symbols; j++) {
 
                 if(res[j].tag == 1 && res[j].sym.non_terminal==nt) {
-
+                    
+                    // printf("%s %s %d\n", non_terminals_string_map[nt], token_string_map[res[j+1].sym.terminal], check_if_exists(current_set, res[j+1].sym.terminal));
                     if(j != (temp_inner->count_of_symbols-1)) {
 
-                        if(res[j+1].tag == 0) {
-
+                        if((res[j+1].tag == 0) && !check_if_exists(current_set, res[j+1].sym.terminal)) {
                             if(current_set.follow_set_token == NULL) {
                                 current_set.follow_set_token = (tokens *) malloc(sizeof(tokens));
                                 current_set.count = 1;
@@ -305,104 +283,66 @@ follow_set compute_follow_set(int nt) {
                                 current_set.count += 1;
                                 current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens)*current_set.count);
                             }
-                            current_set.follow_set_token[current_set.count-1] = res[j+1].sym.terminal;                        
+                            current_set.follow_set_token[current_set.count-1] = res[j+1].sym.terminal;
+                            *changed = 1;
+                                                
                         }
-                        else {
+                        else if(res[j+1].tag==1) {
                             int flag = 0;
                             for(; (j+1)<(temp_inner->count_of_symbols); j++) {
 
                                 if(res[j+1].tag==1) {
                                     // printf("%s %s %s\n", non_terminals_string_map[nt], non_terminals_string_map[i],non_terminals_string_map[res[j+1].sym.non_terminal]);
                                     first_set new_fs = all_first_sets[res[j+1].sym.non_terminal];
-                                    if(current_set.follow_set_token == NULL) {
-                                        current_set.follow_set_token = (tokens *) malloc(sizeof(tokens) * new_fs.count);
-                                        current_set.count = new_fs.count;
-                                    }
-                                    else {
-                                        current_set.count += new_fs.count;
-                                        current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
-                                    }
-                                    int k1, k2;
+                                    
                                     flag = 0;
                                     // printf("current: %d new_fs: %d\n", current_set.count, new_fs.count);
-                                    for(k1 = (current_set.count-new_fs.count), k2=k1; k1 < (current_set.count); k1++) {
-                                        
-                                        tokens ctok = new_fs.first_set_token[k1-(current_set.count-new_fs.count)];
-                                        // printf("TOKEN: %s\n", token_string_map[ctok]);
-                                        if(ctok==E) {
+                                    *changed = max(*changed, merge_follow_first(&current_set, new_fs));
+
+                                    int k3;
+                                    for(k3=0; k3<new_fs.count; k3++) {
+                                        tokens ctok = new_fs.first_set_token[k3];
+                                        if(ctok == E) {
                                             flag = 1;
-                                            continue;
-                                        }                       
-                                        current_set.follow_set_token[k2] = ctok;
-                                        k2++;
+                                        }
                                     }
                                     
-                                    if(flag==1) {
-                                        current_set.count -= 1;
-                                        current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
-                                    }
-                                    else {
+                                    if(!flag) {
                                         break;
                                     }
                                 }
+
                                 else {
-                                    if(current_set.follow_set_token == NULL) {
-                                        current_set.follow_set_token = (tokens *) malloc(sizeof(tokens));
-                                        current_set.count = 1;
+                                    if(!check_if_exists(current_set, res[j+1].sym.terminal)) {
+                                        if(current_set.follow_set_token == NULL) {
+                                            current_set.follow_set_token = (tokens *) malloc(sizeof(tokens));
+                                            current_set.count = 1;
+                                        }
+                                        else {
+                                            current_set.count += 1;
+                                            current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens)*current_set.count);
+                                        }
+                                        current_set.follow_set_token[current_set.count-1] = res[j+1].sym.terminal;
+                                        *changed = 1;
+                                        break;
                                     }
-                                    else {
-                                        current_set.count += 1;
-                                        current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens)*current_set.count);
-                                    }
-                                    current_set.follow_set_token[current_set.count-1] = res[j+1].sym.terminal;
-                                    break;
                                 }
                                 
                             }
 
                             if(j==(temp_inner->count_of_symbols-1) && res[j].tag==1 && flag) {
-                                // printf("HELLO : %s %s %s\n", non_terminals_string_map[nt], non_terminals_string_map[i],non_terminals_string_map[res[j+1].sym.non_terminal]);
-                                follow_set new_fs1 = compute_follow_set(i);
-                                if(current_set.follow_set_token == NULL) {
-                                    current_set.follow_set_token = (tokens *) malloc(sizeof(tokens) * new_fs1.count);
-                                    current_set.count = new_fs1.count;
-                                }
-                                else {
-                                    current_set.count += new_fs1.count;
-                                    current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
-                                }
-
-                                // printf("current: %d new_fs1: %d\n", current_set.count, new_fs1.count);
-                                int k;
-                                for(k = (current_set.count-new_fs1.count); k < (current_set.count); k++) {
-                                    tokens ctok = new_fs1.follow_set_token[k - (current_set.count - new_fs1.count)];
-                                    // printf("k=%d, %s current:%d new:%d\n", k, token_string_map[ctok], current_set.count, new_fs1.count);
-                                    current_set.follow_set_token[k] = ctok;
-                                }
+                                follow_set new_fs = all_follow_sets[i];
+                                *changed = max(*changed, merge_follow_follow(&current_set, new_fs));
                             }
                         }
                     }
                     else if(i==nt) {
-                        // printf("%s %s %s %d %d\n", non_terminals_string_map[nt], non_terminals_string_map[i],non_terminals_string_map[res[j+1].sym.non_terminal], j, temp_inner->count_of_symbols);
                         continue;
                     }
                     else {
-                        follow_set new_fs = compute_follow_set(i);
-                        if(current_set.follow_set_token == NULL) {
-                            current_set.follow_set_token = (tokens *) malloc(sizeof(tokens) * new_fs.count);
-                            current_set.count = new_fs.count;
-                        }
-                        else {
-                            current_set.count += new_fs.count;
-                            current_set.follow_set_token = (tokens *) realloc(current_set.follow_set_token, sizeof(tokens) * current_set.count);
-                        }
 
-                        int k;
-                        for(k = (current_set.count-new_fs.count); k < (current_set.count); k++) {
-                            
-                            tokens ctok = new_fs.follow_set_token[k-(current_set.count-new_fs.count)];
-                            current_set.follow_set_token[k] = ctok;
-                        }
+                        follow_set new_fs = all_follow_sets[i];
+                        *changed = max(*changed, merge_follow_follow(&current_set, new_fs));
                     }
                 }
             }
@@ -412,6 +352,116 @@ follow_set compute_follow_set(int nt) {
     return current_set;
 }
 
+int check_if_exists(follow_set current_set, tokens t) {
+    int i, exists=0;
+    for(i=0; i<current_set.count; i++) {
+        if(t == current_set.follow_set_token[i]) {
+            exists=1;
+            break;
+        }
+    }
+
+    return exists;
+}
+
+int check_if_duplicate_first(first_set current_set, tokens t) {
+    int i, exists=0;
+    for(i=0; i<current_set.count; i++) {
+        if(t == current_set.first_set_token[i]) {
+            exists=1;
+            break;
+        }
+    }
+
+    return exists;
+}
+
+int merge_first_first(first_set* current_set, first_set new_set, int add_e) {
+    int empty_exists = 0, i;
+    if(new_set.first_set_token == NULL)
+        return empty_exists;
+
+    else {
+        for(i=0; i<new_set.count; i++) {
+            tokens new_token = new_set.first_set_token[i];
+            if((new_token == E) && !add_e) {
+                empty_exists = 1;
+                continue;
+            }
+
+            if(!check_if_duplicate_first(*current_set, new_token)) {
+                if(current_set->first_set_token == NULL) {
+                    current_set->first_set_token = (tokens *)malloc(sizeof(tokens));
+                    current_set->count = 1;
+                }
+                else {
+                    current_set->count += 1;
+                    current_set->first_set_token = (tokens*) realloc(current_set->first_set_token, sizeof(tokens) * current_set->count);
+                }
+                current_set->first_set_token[current_set->count-1] = new_token;
+            }
+        }
+    }
+    return empty_exists;
+}
+
+int merge_follow_first(follow_set* current_set, first_set new_set) {
+    int changed = 0, i;
+    if(new_set.first_set_token == NULL)
+        return changed;
+
+    else {
+        for(i=0; i<new_set.count; i++) {
+            tokens new_token = new_set.first_set_token[i];
+            if(new_token == E)
+                continue;
+
+            if(!check_if_exists(*current_set, new_token)) {
+                if(current_set->follow_set_token == NULL) {
+                    current_set->follow_set_token = (tokens *)malloc(sizeof(tokens));
+                    current_set->count = 1;
+                }
+                else {
+                    current_set->count += 1;
+                    current_set->follow_set_token = (tokens*) realloc(current_set->follow_set_token, sizeof(tokens) * current_set->count);
+                }
+                current_set->follow_set_token[current_set->count-1] = new_token;
+                changed = 1;
+            }
+        }
+    }
+    return changed;
+}
+
+int merge_follow_follow(follow_set* current_set, follow_set new_set) {
+    int changed = 0, i;
+    if(new_set.follow_set_token == NULL)
+        return changed;
+
+    else {
+        for(i=0; i<new_set.count; i++) {
+            tokens new_token = new_set.follow_set_token[i];
+
+            if(!check_if_exists(*current_set, new_token)) {
+                if(current_set->follow_set_token == NULL) {
+                    current_set->follow_set_token = (tokens *)malloc(sizeof(tokens));
+                    current_set->count = 1;
+                }
+                else {
+                    current_set->count += 1;
+                    current_set->follow_set_token = (tokens*) realloc(current_set->follow_set_token, sizeof(tokens) * current_set->count);
+                }
+                current_set->follow_set_token[current_set->count-1] = new_token;
+                changed = 1;
+            }
+        }
+    }
+    return changed;
+}
+
+int max(int a, int b) {
+    return (a >= b ? a: b);
+}
 
 int find_follow_sets() {
     follow_set first;
@@ -419,14 +469,18 @@ int find_follow_sets() {
     first.count = 1;
     first.follow_set_token[0] = $;
     all_follow_sets[0] = first;
-    int i;
-    for(i=1; i<17; i++) {
-        printf("%d\n", i);
-        all_follow_sets[i] = compute_follow_set(i);
-        
+    int i, changed = 0;
+    while(1) {
+        changed = 0;
+        for(i=1; i<NON_TERMINAL_SIZE; i++) {
+            all_follow_sets[i] = compute_follow_set(i, &changed);
+        }
+        if(!changed) {
+            break;
+        }
     }
     // printf("Done\n");
-    for(i=0; i<17; i++) {
+    for(i=0; i<NON_TERMINAL_SIZE; i++) {
         int j;
         printf("%s --> ", non_terminals_string_map[i]);
         for(j=0; j<all_follow_sets[i].count; j++) {
