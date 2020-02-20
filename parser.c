@@ -12,7 +12,7 @@ char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "A
             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
             "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
             "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
-            "ENDDEF", "ENDDRIVERDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
+            "ENDDEF", "DRIVERENDDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
 };
 
@@ -24,7 +24,7 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
     "declareStmt", "iterativeStmt", "whileCondition", "new10", "new9", "newY", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
-int parse_token_stream(char* filename) {
+int parser(char* filename) {
     
     Node ** token_stream;
     lookup_table *table;
@@ -34,22 +34,12 @@ int parse_token_stream(char* filename) {
     int i;
     for(i=0; i<tokens_parsed; i++) {
         Node * n = token_stream[i];
-
-        // if(n->tag==0) {
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Lexeme: %s\t", n->lexeme);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
-        // else if(n->tag==1){
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Value: %d\t", n->val.num);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
-        // else {
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Value: %f\t", n->val.rnum);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
+        if(n->tag==0) {
+            printf("%d: ", i);
+            printf("Token: %s\t", token_string_map[n->token]);
+            printf("Lexeme: %s\t", n->lexeme);
+            printf("Line number: %d\t\n", n->line_no);
+        }
     }
 
     read_grammar(GRAMMAR_FILE);
@@ -57,8 +47,60 @@ int parse_token_stream(char* filename) {
     find_follow_sets();
     compute_parse_table();
     Stack = initialize_stack();
-    printf("%s\n", non_terminals_string_map[peek(Stack).sym.non_terminal]);
+
+    int parsed = parse_tokens(token_stream, tokens_parsed);
+    printf("Parsed: %d\n", parsed);
+
     return 1;
+}
+
+int parse_tokens(Node** token_stream, int tokens_parsed) {
+    int ct = 0;
+    /* ERROR HANDLING
+        1. If terminals do not match
+        2. If corresponding to a non terminal, there is an error entry in the parse table
+        3. If stack becomes empty before end of input
+        4. If input becomes empty before end of stack, need to check if rest of the stack symbols derive E
+        5. enda was getting parsed (debug)
+    */
+    while(!is_empty(Stack)) {
+
+        symbol current_top = pop(&Stack);
+        tokens c_token;
+        Node* n;
+        if(ct == tokens_parsed) {
+            c_token = $;
+        }
+        else {
+            n = token_stream[ct];
+            c_token = n->token;
+        }
+
+        if( current_top.tag == 1) {
+            // printf("%s\n", non_terminals_string_map[current_top.sym.non_terminal]);
+            rules r = parse_table[current_top.sym.non_terminal][c_token];
+            for(int j=r.count_of_symbols-1; j>=0; j--) {
+                // printf("%s\n", non_terminals_string_map[r.rule[j].sym.non_terminal]);
+                symbol c_sym = r.rule[j];
+                if((c_sym.tag == 0) && (c_sym.sym.terminal == E)) {
+                    continue;
+                }
+                else {
+                    push(&Stack, c_sym);
+                }
+            }
+        }
+
+        else {
+            if( current_top.sym.terminal == n->token) {
+                printf("%s\n", token_string_map[current_top.sym.terminal]);
+                ct++;
+            }
+        }
+    }
+    
+    int parsed = (is_empty(Stack)) && (ct == tokens_parsed);
+    return parsed;
 }
 
 
@@ -91,6 +133,7 @@ int read_grammar(char* filename) {
     char** rule;
 
     while( fscanf(fp, "%[^\n]\n", buf) != EOF ) {
+        // printf("%s\n", buf);
         token = strtok(buf, delim);
         nt = (char *) malloc(sizeof(char) * strlen(token));
         strcpy(nt, token);
@@ -106,11 +149,18 @@ int read_grammar(char* filename) {
             count++;
             rule = (char**) realloc(rule, sizeof(char *) * (count+1));
         }
-        
+
         symbol lhs = convert_to_symbol(nt);
+
         symbol rhs[count];
         for(i=0; i<count; i++) {
             rhs[i] = convert_to_symbol(rule[i]);
+            if(rhs[i].tag == 0) {
+                // printf("%s:%s ", rule[i], token_string_map[rhs[i].sym.terminal]);
+            }
+            else {
+                // printf("%s:%s ", rule[i], non_terminals_string_map[rhs[i].sym.non_terminal]);
+            }
         }
 
         addRule(grammar, rhs, lhs, count);

@@ -36,7 +36,7 @@ statement simpleStmt
 statement declareStmt
 statement conditionalStatement
 statement iterativeStmt
-ioStmt GET_VALUE BO ID BC SEMIMCOL
+ioStmt GET_VALUE BO ID BC SEMICOL
 ioStmt PRINT BO var2 BC SEMICOL
 var ID whichID
 var NUM

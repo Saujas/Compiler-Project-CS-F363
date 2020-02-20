@@ -5,7 +5,8 @@
 #define GRAMMAR_FILE "grammar.txt"
 #define MAX_RULE_LENGTH 500
 
-int parse_token_stream(char* filename);
+int parser(char* filename);
+int parse_tokens(Node** token_stream, int tokens_parsed);
 int read_grammar(char* filename);
 int addRule(rules** grammar, symbol* rule, symbol nt, int count_of_symbols);
 int main_parser(char* filename);

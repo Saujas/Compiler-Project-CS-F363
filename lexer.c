@@ -20,7 +20,7 @@ static int number_index = 0;
 //             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
 //             "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
 //             "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
-//             "ENDDEF", "ENDDRIVERDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
+//             "ENDDEF", "DRIVERENDDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
 //             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR"
 // };
 
@@ -829,7 +829,7 @@ Node* get_token(FILE* fp, lookup_table table) {
 
             case 53:
                 n = create_node();
-                n->token = ENDDRIVERDEF;
+                n->token = DRIVERENDDEF;
                 strcpy(n->lexeme, ">>>");
                 n->line_no = line_number;
                 state = 0;
