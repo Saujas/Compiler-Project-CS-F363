@@ -187,6 +187,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 else if (ch>='0' && ch<='9') {
                     string_flush(number);
                     number_index = 0;
+                    error[strlen(error)] = ch;
                     number[number_index] = ch;
                     state = 32;
                     pointer++;
@@ -348,10 +349,12 @@ Node* get_token(FILE* fp, lookup_table table) {
             case 11:
                 if(ch=='=') {
                     state = 12;
+                    string_flush(error);
                     break;
                 }
                 else {
                     state = 51;
+                    pointer--;
                     break;
                 }
 
@@ -397,10 +400,12 @@ Node* get_token(FILE* fp, lookup_table table) {
             case 16:
                 if(ch=='=') {
                     state = 17;
+                    string_flush(error);
                     break;
                 }
                 else {
                     state = 51;
+                    pointer--;
                     break;
                 }
 
@@ -417,10 +422,12 @@ Node* get_token(FILE* fp, lookup_table table) {
             case 18:
                 if(ch=='.') {
                     state = 19;
+                    string_flush(error);
                     break;
                 }
                 else {
                     state = 51;
+                    pointer--;
                     break;
                 }
 
@@ -580,6 +587,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 32;
                     number_index++;
                     number[number_index] = ch;
+                    error[strlen(error)] = ch;
                     pointer++;
                     break;
                 }
@@ -587,6 +595,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 34;
                     number_index++;
                     number[number_index] = ch;
+                    error[strlen(error)] = ch;
                     pointer++;
                     break;
                 }
@@ -605,6 +614,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 v.num = atoi(number);
                 n->val = v;
                 state = 0;
+                string_flush(error);
                 return n;
                 break;                
 
@@ -613,7 +623,23 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 36;
                     number_index++;
                     number[number_index] = ch;
+                    error[strlen(error)] = ch;
                     pointer++;
+                    break;
+                }
+                else if(ch=='.') {
+                    number[number_index] = '\0';
+                    n  = create_node();
+                    n->token = NUM;
+                    strcpy(n->lexeme, number);
+                    n->line_no = line_number;
+                    n->tag = 1;
+                    v.num = atoi(number);
+                    n->val = v;
+                    pointer--;
+                    string_flush(error);
+                    state = 0;
+                    return n;
                     break;
                 }
                 else {
@@ -623,16 +649,16 @@ Node* get_token(FILE* fp, lookup_table table) {
 
             case 35:
                 number[number_index] = '\0';
-                n  = create_node();
-                n->token = NUM;
-                strcpy(n->lexeme, number);
-                n->line_no = line_number;
-                n->tag = 1;
-                v.num = atoi(number);
-                n->val = v;
-                state = 0;
+                // n  = create_node();
+                // n->token = NUM;
+                // strcpy(n->lexeme, number);
+                // n->line_no = line_number;
+                // n->tag = 1;
+                // v.num = atoi(number);
+                // n->val = v;
+                state = 51;
                 pointer--;
-                return n;
+                // return n;
                 break;                            
 
             case 36:
@@ -640,6 +666,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 36;
                     number_index++;
                     number[number_index] = ch;
+                    error[strlen(error)] = ch;
                     pointer++;
                     break;
                 }
@@ -647,6 +674,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 37;
                     number_index++;
                     number[number_index] = ch;
+                    error[strlen(error)] = ch;
                     pointer++;
                     break;
                 }
@@ -667,6 +695,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 39;
                     pointer++;
                     number_index++;
+                    error[strlen(error)] = ch;
                     number[number_index] = ch;
                     break;
                 }
@@ -677,16 +706,16 @@ Node* get_token(FILE* fp, lookup_table table) {
 
             case 38: 
                 number[number_index] = '\0';
-                n  = create_node();
-                n->token = RNUM;
-                strcpy(n->lexeme, number);
-                n->line_no = line_number;
-                n->tag = 2;
-                v.rnum = atof(number);
-                n->val = v;
-                state = 0;
+                // n  = create_node();
+                // n->token = RNUM;
+                // strcpy(n->lexeme, number);
+                // n->line_no = line_number;
+                // n->tag = 2;
+                // v.rnum = atof(number);
+                // n->val = v;
+                // state = 0;
                 pointer--;
-                return n;
+                state = 51;
                 break;
 
             case 39:
@@ -704,19 +733,19 @@ Node* get_token(FILE* fp, lookup_table table) {
 
             case 40:
                 number[number_index] = '\0';
-                number_index--;
-                number[number_index] = '\0';
-                n  = create_node();
-                n->token = RNUM;
-                strcpy(n->lexeme, number);
-                n->line_no = line_number;
-                n->tag = 2;
-                v.rnum = atof(number);
-                n->val = v;
-                state = 0;
+                // number_index--;
+                // number[number_index] = '\0';
+                // n  = create_node();
+                // n->token = RNUM;
+                // strcpy(n->lexeme, number);
+                // n->line_no = line_number;
+                // n->tag = 2;
+                // v.rnum = atof(number);
+                // n->val = v;
+                // state = 0;
+                // pointer--;
                 pointer--;
-                pointer--;
-                return n;
+                state = 51;
                 break;
 
             case 41:
@@ -741,6 +770,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 v.rnum = atof(number);
                 n->val = v;
                 state = 0;
+                string_flush(error);
                 return n;
                 break;
             

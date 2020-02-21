@@ -30,33 +30,33 @@ int parser(char* filename) {
     lookup_table *table;
     int tokens_parsed = lexical_analyzer(filename, &token_stream, &table);
 
-    printf("*******************Lexical Analyzer Output: **********************\n");
+    // printf("*******************Lexical Analyzer Output: **********************\n");
     int i;
     int flag = 0;
     for(i=0; i<tokens_parsed; i++) {
         Node * n = token_stream[i];
-        if(n->token==ERROR) {
-            if(strlen(n->lexeme)>20)
-                printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
-            else
-                printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
-            flag = 1;            
-        }
-        else if(n->tag==0) {
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Lexeme: %s\t", n->lexeme);
-            printf("Line number: %d\t\n", n->line_no);
-        }
-        else if(n->tag==1){
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Value: %d\t", n->val.num);
-            printf("Line number: %d\t\n", n->line_no);
-        }
-        else {
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Value: %f\t", n->val.rnum);
-            printf("Line number: %d\t\n", n->line_no);
-        }
+        // if(n->token==ERROR) {
+        //     if(strlen(n->lexeme)>20)
+        //         printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
+        //     else
+        //         printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
+        //     flag = 1;            
+        // }
+        // else if(n->tag==0) {
+        //     printf("Token: %s\t", token_string_map[n->token]);
+        //     printf("Lexeme: %s\t", n->lexeme);
+        //     printf("Line number: %d\t\n", n->line_no);
+        // }
+        // else if(n->tag==1){
+        //     printf("Token: %s\t", token_string_map[n->token]);
+        //     printf("Value: %d\t", n->val.num);
+        //     printf("Line number: %d\t\n", n->line_no);
+        // }
+        // else {
+        //     printf("Token: %s\t", token_string_map[n->token]);
+        //     printf("Value: %f\t", n->val.rnum);
+        //     printf("Line number: %d\t\n", n->line_no);
+        // }
     }
 
     if(!flag) {
@@ -75,6 +75,7 @@ int parser(char* filename) {
 
 int parse_tokens(Node** token_stream, int tokens_parsed) {
     int ct = 0;
+    int flag2 = 0;
     /* ERROR HANDLING
         1. If terminals do not match
         2. If corresponding to a non terminal, there is an error entry in the parse table
@@ -86,6 +87,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
 
         symbol current_top = peek(Stack);
         tokens c_token;
+        int c_line;
         Node* n;
         if(ct == tokens_parsed) {
             c_token = $;
@@ -93,36 +95,56 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
         else {
             n = token_stream[ct];
             c_token = n->token;
+            c_line = n->line_no;
         }
 
         if( current_top.tag == 1) {
             rules r = parse_table[current_top.sym.non_terminal][c_token];
             int j;
             
-            if((c_token == $) && (r.count_of_symbols == -1))
-                break;
-
-            if(r.count_of_symbols == -1)
-                break;
-            
-            pop(&Stack);
-            // printf("%s --> ", non_terminals_string_map[current_top.sym.non_terminal]);
-            for(j=r.count_of_symbols-1; j>=0; j--) {
-                symbol c_sym = r.rule[j];
-                // if(r.rule[r.count_of_symbols - j - 1].tag == 0)
-                //     printf("%s ", token_string_map[r.rule[r.count_of_symbols - j -1].sym.terminal]);
-                // else
-                //     printf("%s ", non_terminals_string_map[r.rule[r.count_of_symbols - j -1].sym.non_terminal]);
-                if((c_sym.tag == 0) && (c_sym.sym.terminal == E)) {
+            if(r.count_of_symbols == -1) {
+                flag2 = 1;
+                follow_set fs = all_follow_sets[current_top.sym.non_terminal];
+                int k;
+                int flag = 0;
+                for(k=0; k<fs.count; k++) {
+                    if(c_token == fs.follow_set_token[k]) {
+                        flag = 1;
+                        pop(&Stack);
+                        break;
+                    }
+                }
+                if(flag) {
+                    printf("Syntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
                     continue;
                 }
                 else {
-                    push(&Stack, c_sym);
+                    printf("Syntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                    ct++;
+                    continue;
                 }
-                
             }
+            
+            else {
+                pop(&Stack);
+                printf("%s --> ", non_terminals_string_map[current_top.sym.non_terminal]);
+                for(j=r.count_of_symbols-1; j>=0; j--) {
+                    symbol c_sym = r.rule[j];
+                    if(r.rule[r.count_of_symbols - j - 1].tag == 0)
+                        printf("%s ", token_string_map[r.rule[r.count_of_symbols - j -1].sym.terminal]);
+                    else
+                        printf("%s ", non_terminals_string_map[r.rule[r.count_of_symbols - j -1].sym.non_terminal]);
+                    if((c_sym.tag == 0) && (c_sym.sym.terminal == E)) {
+                        continue;
+                    }
+                    else {
+                        push(&Stack, c_sym);
+                    }
+                    
+                }
 
-            // printf("\n\n");
+                printf("\n\n");
+            }
         }
 
         else {
@@ -131,10 +153,15 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                 // printf("Symbol Matched: %s\n", token_string_map[current_top.sym.terminal]);
                 ct++;
             }
+            else {
+                flag2 = 1;
+                printf("Syntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                ct++;
+            }
         }
     }
     
-    int parsed = (is_empty(Stack)) && (ct == tokens_parsed);
+    int parsed = (is_empty(Stack)) && (ct == tokens_parsed) && (!flag2);
     return parsed;
 }
 
