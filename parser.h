@@ -1,7 +1,6 @@
 #include "parser_def.h"
 #include "stack.h"
 
-#define NON_TERMINAL_SIZE 62
 #define GRAMMAR_FILE "grammar.txt"
 #define MAX_RULE_LENGTH 500
 

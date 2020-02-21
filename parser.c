@@ -21,7 +21,7 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
     "statement", "ioStmt", "var", "var2", "whichID", "simpleStmt", "assignmentStmt", "whichStmt", "lvalueIDstmt", "lvalueArrStmt", 
     "Index", "moduleReuseStmt", "optional", "idList", "newX", "expression", "new4", "AorBExpr", "arithmeticExpr", "new6",
     "term", "new7", "factor", "PlusMinus", "MulDiv", "relationalOP", "logicalOP", "boolKey", "boolExpr", "new8", "relationalExpr",
-    "declareStmt", "iterativeStmt", "whileCondition", "new10", "new9", "newY", "conditionalStatement", "caseStmt", "numericCases", 
+    "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
 int parser(char* filename) {
@@ -32,15 +32,24 @@ int parser(char* filename) {
 
     // printf("*******************Lexical Analyzer Output: **********************\n");
     int i;
-    for(i=0; i<tokens_parsed; i++) {
-        Node * n = token_stream[i];
-        if(n->tag==0) {
-            printf("%d: ", i);
-            printf("Token: %s\t", token_string_map[n->token]);
-            printf("Lexeme: %s\t", n->lexeme);
-            printf("Line number: %d\t\n", n->line_no);
-        }
-    }
+    // for(i=0; i<tokens_parsed; i++) {
+    //     Node * n = token_stream[i];
+    //     if(n->tag==0) {
+    //         printf("Token: %s\t", token_string_map[n->token]);
+    //         printf("Lexeme: %s\t", n->lexeme);
+    //         printf("Line number: %d\t\n", n->line_no);
+    //     }
+    //     else if(n->tag==1){
+    //         printf("Token: %s\t", token_string_map[n->token]);
+    //         printf("Value: %d\t", n->val.num);
+    //         printf("Line number: %d\t\n", n->line_no);
+    //     }
+    //     else {
+    //         printf("Token: %s\t", token_string_map[n->token]);
+    //         printf("Value: %f\t", n->val.rnum);
+    //         printf("Line number: %d\t\n", n->line_no);
+    //     }
+    // }
 
     read_grammar(GRAMMAR_FILE);
     find_first_sets();
@@ -65,7 +74,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
     */
     while(!is_empty(Stack)) {
 
-        symbol current_top = pop(&Stack);
+        symbol current_top = peek(Stack);
         tokens c_token;
         Node* n;
         if(ct == tokens_parsed) {
@@ -77,23 +86,39 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
         }
 
         if( current_top.tag == 1) {
-            // printf("%s\n", non_terminals_string_map[current_top.sym.non_terminal]);
             rules r = parse_table[current_top.sym.non_terminal][c_token];
-            for(int j=r.count_of_symbols-1; j>=0; j--) {
-                // printf("%s\n", non_terminals_string_map[r.rule[j].sym.non_terminal]);
+            int j;
+            
+            if((c_token == $) && (r.count_of_symbols == -1))
+                break;
+
+            if(r.count_of_symbols == -1)
+                break;
+            
+            pop(&Stack);
+            printf("%s --> ", non_terminals_string_map[current_top.sym.non_terminal]);
+            for(j=r.count_of_symbols-1; j>=0; j--) {
                 symbol c_sym = r.rule[j];
+                if(r.rule[r.count_of_symbols - j - 1].tag == 0)
+                    printf("%s ", token_string_map[r.rule[r.count_of_symbols - j -1].sym.terminal]);
+                else
+                    printf("%s ", non_terminals_string_map[r.rule[r.count_of_symbols - j -1].sym.non_terminal]);
                 if((c_sym.tag == 0) && (c_sym.sym.terminal == E)) {
                     continue;
                 }
                 else {
                     push(&Stack, c_sym);
                 }
+                
             }
+
+            printf("\n\n");
         }
 
         else {
             if( current_top.sym.terminal == n->token) {
-                printf("%s\n", token_string_map[current_top.sym.terminal]);
+                pop(&Stack);
+                printf("Symbol Matched: %s\n", token_string_map[current_top.sym.terminal]);
                 ct++;
             }
         }

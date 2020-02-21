@@ -68,7 +68,8 @@ new4 NUM
 new4 RNUM
 new4 ID
 new4 BO arithmeticExpr BC
-AorBExpr new8 boolExpr
+AorBExpr arithmeticExpr relationalExpr
+AorBExpr boolKey boolExpr
 arithmeticExpr term new6
 new6 PlusMinus term new6
 new6 E
@@ -93,13 +94,19 @@ boolKey TRUE
 boolKey FALSE
 boolExpr logicalOP new8 boolExpr
 boolExpr E
-new8 arithmeticExpr relationalExpr
+new8 arithmeticExpr relationalOP arithmeticExpr
 new8 boolKey
-relationalExpr relationalOP arithmeticExpr
+relationalExpr relationalOP arithmeticExpr boolExpr
 relationalExpr E
 declareStmt DECLARE idList COLON dataType2 SEMICOL
 iterativeStmt FOR BO ID IN range BC START statements END
-iterativeStmt WHILE BO AorBExpr BC START statements END
+iterativeStmt WHILE BO whileCondition BC START statements END
+whileCondition arithmeticExpr new10
+whileCondition boolKey new9
+new10 relationalOP arithmeticExpr boolExpr
+new9 logicalOP new8 newY
+newY new9
+newY E
 conditionalStatement SWITCH BO ID BC START CASE caseStmt
 caseStmt TRUE COLON statements BREAK SEMICOL CASE FALSE COLON statements BREAK SEMICOL END
 caseStmt FALSE COLON statements BREAK SEMICOL CASE TRUE COLON statements BREAK SEMICOL END

@@ -1,5 +1,6 @@
 #ifndef PARSER_DEF
 #define PARSER_DEF
+#define NON_TERMINAL_SIZE 58
 
 #include "lexer_def.h"
 
@@ -9,7 +10,7 @@ typedef enum{
     statement, ioStmt, var, var2, whichID, simpleStmt, assignmentStmt, whichStmt, lvalueIDstmt, lvalueArrStmt, 
     Index, moduleReuseStmt, optional, idList, newX, expression, new4, AorBExpr, arithmeticExpr, new6,
     term, new7, factor, PlusMinus, MulDiv, relationalOP, logicalOP, boolKey, boolExpr, new8, relationalExpr,
-    declareStmt, iterativeStmt, whileCondition, new10, new9, newY, conditionalStatement, caseStmt, numericCases, 
+    declareStmt, iterativeStmt, conditionalStatement, caseStmt, numericCases, 
     numericCase, new11, Default
 } non_terminals;
 
