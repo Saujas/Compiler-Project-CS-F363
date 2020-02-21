@@ -2,11 +2,13 @@
 
 #define MAX_BUFFER_LENGTH 200
 #define MAX_ID_LENGTH 20
+#define MAX_LEX_ERROR_SIZE 100
 #define MAX_RNUM_LENGTH 3 + DBL_MANT_DIG - DBL_MIN_EXP
 
 char buffer[MAX_BUFFER_LENGTH];
 char id[MAX_ID_LENGTH];
 char number[MAX_RNUM_LENGTH];
+char error[MAX_LEX_ERROR_SIZE];
 
 int state = 0;
 
@@ -66,6 +68,11 @@ Node* create_node() {
 
 }
 
+int add_error(char ch) {
+    error[strlen(error)] = ch;
+    return strlen(error);
+}
+
 Node* get_token(FILE* fp, lookup_table table) {
 
     char ch;
@@ -115,6 +122,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 }
                 else if  (ch=='=') {
                     state = 11;
+                    add_error(ch);
                     pointer++;
                     break;
                 }
@@ -125,11 +133,13 @@ Node* get_token(FILE* fp, lookup_table table) {
                 }
                 else if  (ch=='!') {
                     state = 16;
+                    add_error(ch);
                     pointer++;
                     break;
                 }
                 else if  (ch=='.') {
                     state = 18;
+                    add_error(ch);
                     pointer++;
                     break;
                 }
@@ -164,6 +174,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 }
                 else if ((ch>='a')&&(ch<='z')||(ch>='A')&&(ch<='Z')) {
                     state = 28;
+                    error[strlen(error)] = ch;
                     id[id_length] = ch;
                     pointer++;
                     break;
@@ -186,9 +197,11 @@ Node* get_token(FILE* fp, lookup_table table) {
                     break;
                 }
                 else {
+                    add_error(ch);
                     state = 51;
                     break;
                 }
+                
             case 1:
                 n = create_node();
                 n->token = PLUS;
@@ -229,6 +242,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     state = 5;
                     break;
                 }
+                add_error(ch);
 
             case 5:
                 n = create_node();
@@ -259,6 +273,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     pointer++;
                     break;
                 }
+                add_error(ch);
 
             case 7:
                 if(ch=='*') {
@@ -279,6 +294,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     pointer++;
                     break;
                 }
+                add_error(ch);
 
             case 8:
                 if(ch=='*') {
@@ -300,6 +316,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                     pointer++;
                     break;
                 }
+                add_error(ch);
 
             case 9:
                 state = 0;
@@ -503,6 +520,7 @@ Node* get_token(FILE* fp, lookup_table table) {
                 if(((ch>='a')&&(ch<='z'))||((ch>='A')&&(ch<='Z'))||((ch>='0')&&(ch<='9'))||(ch=='_')) {
                     state = 28;
                     pointer++;
+                    error[strlen(error)] = ch;
                     break;
                 }
                 else {
@@ -529,6 +547,7 @@ Node* get_token(FILE* fp, lookup_table table) {
 
                     n->line_no = line_number;
                     state = 0;
+                    string_flush(error);
                     return n;
                     break;
                 }
@@ -816,11 +835,13 @@ Node* get_token(FILE* fp, lookup_table table) {
             case 51:
                 n = create_node();
                 n->token = ERROR;
-                strcpy(n->lexeme, "Token not found");
-                // printf("Lexical error on line number: %d\n ", line_number);
+                strcpy(n->lexeme, error);
+                string_flush(error);
+                // printf("Lexical error on line number: %s\n ", n->lexeme);
                 n->line_no = line_number;
                 state = 0;
                 pointer++;
+                return n;
                 break;
 
             case 52:
@@ -886,6 +907,7 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
     int c_size = 0, c_max = INITIAL_TOKENS_IN_INPUT;
 
     Node* n;
+    string_flush(error);
 
     while(1) {
         n = get_token(fp, **table);
@@ -908,9 +930,6 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
         //     printf("Line number: %d\t\n", n->line_no);
         // }
 
-        if(n==NULL || n->token == ERROR) {
-            continue;
-        }
         else {
             if(c_size == c_max) {
                 *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_max * 2);
