@@ -17,14 +17,15 @@ static int pointer = 0;
 static int id_length = 0;
 static int number_index = 0;
 
-// char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
-//             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
-//             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
-//             "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
-//             "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
-//             "ENDDEF", "DRIVERENDDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
-//             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR"
-// };
+char * token_string_map_copy[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
+            "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
+            "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
+            "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
+            "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
+            "ENDDEF", "DRIVERENDDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
+            "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
+};
+
 
 FILE* open_file(char* filename) {
     FILE* fp = fopen(filename, "r");
@@ -56,7 +57,8 @@ int buffer_read(FILE* fp) {
 
     int char_read = fread(buffer, (size_t)sizeof(char), (size_t)(sizeof(buffer)), fp);
 
-    printf("Number of characters read are: %d\n", char_read);
+    // printf("Number of characters read are: %d\n", char_read);
+    // printf("%s\n", buffer);
     
     return char_read;
 }
@@ -921,9 +923,14 @@ Node* get_token(FILE* fp, lookup_table table) {
     
 }
 
-int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table) {
+int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table, int check) {
 
     FILE* fp = open_file(filename);
+    state = 0;
+    line_number = 1;
+    pointer = 0;
+    id_length = 0;
+    number_index = 0;
 
     if(!buffer_read(fp)) {
         printf("Error in reading file\n");
@@ -941,24 +948,9 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
 
     while(1) {
         n = get_token(fp, **table);
-        if(n==NULL)
+        if(n==NULL) {
             break;
-
-        // if(n->tag==0) {
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Lexeme: %s\t", n->lexeme);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
-        // else if(n->tag==1){
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Value: %d\t", n->val.num);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
-        // else {
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Value: %f\t", n->val.rnum);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
+        }
 
         else {
             if(c_size == c_max) {
@@ -969,6 +961,32 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
             (*token_stream)[c_size] = n;
             c_size++;
         }
+
+        if(check) {
+            if(n->token==ERROR) {
+                if(strlen(n->lexeme)>20)
+                    printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
+                else
+                    printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
+         
+            }
+            else if(n->tag==0) {
+                printf("Line number: %d\t", n->line_no);
+                printf("Lexeme: %s\t", n->lexeme);
+                printf("Token: %s\t\n", token_string_map_copy[n->token]);
+            }
+            else if(n->tag==1){
+                printf("Line number: %d\t", n->line_no);
+                printf("Value: %d\t", n->val.num);
+                printf("Token: %s\t\n", token_string_map_copy[n->token]);
+            }
+            else {
+                printf("Line number: %d\t", n->line_no);
+                printf("Value: %f\t", n->val.rnum);
+                printf("Token: %s\t\n", token_string_map_copy[n->token]);
+            }
+        }
+
     }
     fclose(fp);
     *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_size);

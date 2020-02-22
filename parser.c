@@ -30,7 +30,7 @@ int parser(char* filename) {
     
     Node ** token_stream;
     lookup_table *table;
-    int tokens_parsed = lexical_analyzer(filename, &token_stream, &table);
+    int tokens_parsed = lexical_analyzer(filename, &token_stream, &table, 0);
 
     // printf("*******************Lexical Analyzer Output: **********************\n");
     int i;
@@ -66,6 +66,7 @@ int parser(char* filename) {
     find_follow_sets();
     compute_parse_table();
 
+    printf("\n");
     int parsed = parse_tokens(token_stream, tokens_parsed);
     printf("Parsed: %d\n\n", parsed);
     // inorder_traversal(parse_tree);
@@ -91,7 +92,10 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
         tokens c_token;
         int c_line;
         Node* n;
-        if(ct == tokens_parsed) {
+        if(ct > tokens_parsed)
+            break;
+
+        else if(ct == tokens_parsed) {
             c_token = $;
         }
         else {
@@ -127,11 +131,14 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                     }
                 }
                 if(flag) {
-                    printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                    printf("\tSyntax error on line number %d just before: %s\n\n", c_line, token_string_map[c_token]);
                     continue;
                 }
                 else {
-                    printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                    if(c_token==$)
+                        printf("\tSyntax Error on line number %d: Abrupt ending\n\n", c_line);
+                    else
+                        printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
                     ct++;
                     continue;
                 }
@@ -192,7 +199,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             }
             else {
                 flag2 = 1;
-                printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                printf("\tSyntax error on line number %d ==> Expected : %s | Got: %s\n\n", c_line, token_string_map[current_top.sym.sym.terminal], token_string_map[c_token]);
                 pop(&Stack);
             }
         }
