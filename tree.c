@@ -43,19 +43,14 @@ t_node* create_leaf(Node n) {
     return leaf;
 }
 
-int insert_node(t_node* parent, t_node* child) {
-    if(child->tag==0)
-        printf("\nParent node: %s, Child: %s\n", nt_string_map[parent->node.internal], nt_string_map[child->node.internal]);
-    else
-
-        printf("\nParent node: %s, Child: %s\n", nt_string_map[parent->node.internal], t_string_map[child->node.leaf.token]);
-
-    if(parent->child == NULL) {
-        parent->child = child;
+int insert_node(t_node** parent, t_node* child) {
+    
+    if((*parent)->child == NULL) {
+        (*parent)->child = child;
     }
     else {
-        t_node* temp = parent->child;
-        parent->child = child;
+        t_node* temp = (*parent)->child;
+        (*parent)->child = child;
         child->sibling = temp;
     }
 
@@ -68,10 +63,8 @@ int inorder_traversal(t_node* root) {
     }
 
     while(root) {
-        if(root->child) {
-            inorder_traversal(root->child);
-            print_tnode(root);
-        }
+        inorder_traversal(root->child);
+        print_tnode(root);
         root = root->sibling;
     }
 

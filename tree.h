@@ -18,7 +18,7 @@ typedef struct tn {
     struct tn* child;
 } t_node;
 
-int insert_node(t_node* parent, t_node *child);
+int insert_node(t_node** parent, t_node *child);
 t_node* create_leaf(Node n);
 t_node* create_internal(non_terminals nt);
 int inorder_traversal(t_node* root);

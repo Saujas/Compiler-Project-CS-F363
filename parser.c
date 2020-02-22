@@ -69,7 +69,6 @@ int parser(char* filename) {
     int parsed = parse_tokens(token_stream, tokens_parsed);
     printf("Parsed: %d\n", parsed);
     inorder_traversal(parse_tree);
-    printf("\n%s\n", non_terminals_string_map[(parse_tree->child)->node.internal]);
 
     return 1;
 }
@@ -150,19 +149,25 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                     else
                         printf("%s ", non_terminals_string_map[r.rule[r.count_of_symbols - j -1].sym.non_terminal]);
                     if((c_sym.tag == 0) && (c_sym.sym.terminal == E)) {
+                        t_node* new_tn;
+                        Node n1 = *n;
+                        n1.token = E;
+                        strcpy(n1.lexeme, "E");
+                        new_tn = create_leaf(n1);
+                        insert_node(&parent, new_tn);
                         continue;
                     }
                     else {
                         t_node* new_tn;
                         if(c_sym.tag == 1) {
                             new_tn = create_internal(c_sym.sym.non_terminal);
-                            printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
+                            // printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
                         }
                         else {
                             new_tn = create_leaf(*n);
-                            printf("\nTerminal Node: %s, Parent: %s\n", token_string_map[new_tn->node.leaf.token], non_terminals_string_map[parent->node.internal]);
+                            // printf("\nTerminal Node: %s, Parent: %s\n", token_string_map[new_tn->node.leaf.token], non_terminals_string_map[parent->node.internal]);
                         }
-                        insert_node(parent, new_tn);
+                        insert_node(&parent, new_tn);
                         stack_ele new_ele;
                         new_ele.sym = c_sym;
                         new_ele.ptr = new_tn;
