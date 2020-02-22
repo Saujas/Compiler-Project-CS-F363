@@ -35,13 +35,13 @@ int parser(char* filename) {
     int flag = 0;
     for(i=0; i<tokens_parsed; i++) {
         Node * n = token_stream[i];
-        // if(n->token==ERROR) {
-        //     if(strlen(n->lexeme)>20)
-        //         printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
-        //     else
-        //         printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
-        //     flag = 1;            
-        // }
+        if(n->token==ERROR) {
+            // if(strlen(n->lexeme)>20)
+            //     printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
+            // else
+            //     printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
+            flag = 1;            
+        }
         // else if(n->tag==0) {
         //     printf("Token: %s\t", token_string_map[n->token]);
         //     printf("Lexeme: %s\t", n->lexeme);
@@ -59,16 +59,14 @@ int parser(char* filename) {
         // }
     }
 
-    if(!flag) {
-        read_grammar(GRAMMAR_FILE);
-        find_first_sets();
-        find_follow_sets();
-        compute_parse_table();
-        Stack = initialize_stack();
+    read_grammar(GRAMMAR_FILE);
+    find_first_sets();
+    find_follow_sets();
+    compute_parse_table();
+    Stack = initialize_stack();
 
-        int parsed = parse_tokens(token_stream, tokens_parsed);
-        printf("Parsed: %d\n", parsed);
-    }
+    int parsed = parse_tokens(token_stream, tokens_parsed);
+    printf("Parsed: %d\n", parsed);
 
     return 1;
 }
@@ -98,6 +96,16 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             c_line = n->line_no;
         }
 
+        if(c_token==ERROR) {
+            if(strlen(n->lexeme)>20)
+                printf("\tLexical error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
+            else
+                printf("\tLexical error on line number %d: %s\n", n->line_no, n->lexeme);
+            ct++;
+            printf("\n");
+            continue;
+        }
+
         if( current_top.tag == 1) {
             rules r = parse_table[current_top.sym.non_terminal][c_token];
             int j;
@@ -115,11 +123,11 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                     }
                 }
                 if(flag) {
-                    printf("Syntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                    printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
                     continue;
                 }
                 else {
-                    printf("Syntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                    printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
                     ct++;
                     continue;
                 }
@@ -155,8 +163,8 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             }
             else {
                 flag2 = 1;
-                printf("Syntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
-                ct++;
+                printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                pop(&Stack);
             }
         }
     }
