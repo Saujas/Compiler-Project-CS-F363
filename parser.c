@@ -1,11 +1,13 @@
 #include "parser.h"
 #include "lexer.h"
+#include "tree.h"
 
 rules* grammar[NON_TERMINAL_SIZE];
 rules parse_table[NON_TERMINAL_SIZE][TOKEN_NUMBERS];
 first_set all_first_sets[NON_TERMINAL_SIZE];
 follow_set all_follow_sets[NON_TERMINAL_SIZE];
 stack* Stack;
+t_node* parse_tree;
 
 char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
@@ -63,10 +65,11 @@ int parser(char* filename) {
     find_first_sets();
     find_follow_sets();
     compute_parse_table();
-    Stack = initialize_stack();
 
     int parsed = parse_tokens(token_stream, tokens_parsed);
     printf("Parsed: %d\n", parsed);
+    inorder_traversal(parse_tree);
+    printf("\n%s\n", non_terminals_string_map[(parse_tree->child)->node.internal]);
 
     return 1;
 }
@@ -79,11 +82,13 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
         2. If corresponding to a non terminal, there is an error entry in the parse table
         3. If stack becomes empty before end of input
         4. If input becomes empty before end of stack, need to check if rest of the stack symbols derive E
-        5. enda was getting parsed (debug)
     */
-    while(!is_empty(Stack)) {
 
-        symbol current_top = peek(Stack);
+    parse_tree = initialize_tree();
+    Stack = initialize_stack();
+    while(!is_empty(Stack)) {
+        
+        stack_ele current_top = peek(Stack);
         tokens c_token;
         int c_line;
         Node* n;
@@ -106,13 +111,13 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             continue;
         }
 
-        if( current_top.tag == 1) {
-            rules r = parse_table[current_top.sym.non_terminal][c_token];
+        if( current_top.sym.tag == 1) {
+            rules r = parse_table[current_top.sym.sym.non_terminal][c_token];
             int j;
             
             if(r.count_of_symbols == -1) {
                 flag2 = 1;
-                follow_set fs = all_follow_sets[current_top.sym.non_terminal];
+                follow_set fs = all_follow_sets[current_top.sym.sym.non_terminal];
                 int k;
                 int flag = 0;
                 for(k=0; k<fs.count; k++) {
@@ -135,7 +140,9 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             
             else {
                 pop(&Stack);
-                printf("%s --> ", non_terminals_string_map[current_top.sym.non_terminal]);
+                t_node* parent = current_top.ptr;
+
+                printf("%s --> ", non_terminals_string_map[current_top.sym.sym.non_terminal]);
                 for(j=r.count_of_symbols-1; j>=0; j--) {
                     symbol c_sym = r.rule[j];
                     if(r.rule[r.count_of_symbols - j - 1].tag == 0)
@@ -146,9 +153,21 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         continue;
                     }
                     else {
-                        push(&Stack, c_sym);
+                        t_node* new_tn;
+                        if(c_sym.tag == 1) {
+                            new_tn = create_internal(c_sym.sym.non_terminal);
+                            printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
+                        }
+                        else {
+                            new_tn = create_leaf(*n);
+                            printf("\nTerminal Node: %s, Parent: %s\n", token_string_map[new_tn->node.leaf.token], non_terminals_string_map[parent->node.internal]);
+                        }
+                        insert_node(parent, new_tn);
+                        stack_ele new_ele;
+                        new_ele.sym = c_sym;
+                        new_ele.ptr = new_tn;
+                        push(&Stack, new_ele);
                     }
-                    
                 }
 
                 printf("\n\n");
@@ -156,7 +175,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
         }
 
         else {
-            if( current_top.sym.terminal == n->token) {
+            if( current_top.sym.sym.terminal == n->token) {
                 pop(&Stack);
                 // printf("Symbol Matched: %s\n", token_string_map[current_top.sym.terminal]);
                 ct++;
@@ -179,8 +198,11 @@ stack* initialize_stack() {
     symbol s1;
     s1.sym.non_terminal = program;
     s1.tag = 1;
+    stack_ele top_ele;
+    top_ele.sym = s1;
+    top_ele.ptr = parse_tree;
 
-    push(&st, s1);
+    push(&st, top_ele);
     return st;
 }
 

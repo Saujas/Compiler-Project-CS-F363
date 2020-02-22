@@ -5,25 +5,28 @@ stack* create_stack() {
     return top;
 }
 
-int push(stack** top, symbol s) {
+int push(stack** top, stack_ele s) {
     stack* s1 = (stack*)malloc(sizeof(stack));
     s1->next = *top;
-    s1->sym = s;
+    (s1->ele).ptr = s.ptr;
+    (s1->ele).sym = s.sym;
     *top = s1;
+
+    return 1;
 }
 
-symbol pop(stack** top) {
+stack_ele pop(stack** top) {
     
     if(!is_empty(*top)) {
-        symbol s = (*top)->sym;
+        stack_ele s = (*top)->ele;
         *top = (*top)->next;
         return s;
     }
 }
 
-symbol peek(stack* top) {
+stack_ele peek(stack* top) {
     if(!is_empty(top)) {
-        return top->sym;
+        return top->ele;
     }
 }
 
