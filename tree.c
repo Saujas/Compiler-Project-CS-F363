@@ -61,10 +61,14 @@ int inorder_traversal(t_node* root) {
     if(root == NULL) {
         return 0;
     }
-
+    inorder_traversal(root->child);
+    print_tnode(root);
+    if(root->child==NULL)
+        return 0;
+    root = root->child;
+    root = root->sibling;
     while(root) {
-        inorder_traversal(root->child);
-        print_tnode(root);
+        inorder_traversal(root);
         root = root->sibling;
     }
 

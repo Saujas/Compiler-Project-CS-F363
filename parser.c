@@ -67,8 +67,8 @@ int parser(char* filename) {
     compute_parse_table();
 
     int parsed = parse_tokens(token_stream, tokens_parsed);
-    printf("Parsed: %d\n", parsed);
-    inorder_traversal(parse_tree);
+    printf("Parsed: %d\n\n", parsed);
+    // inorder_traversal(parse_tree);
 
     return 1;
 }
@@ -164,7 +164,9 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                             // printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
                         }
                         else {
-                            new_tn = create_leaf(*n);
+                            Node n1;
+                            n1.token = c_sym.sym.terminal;
+                            new_tn = create_leaf(n1);
                             // printf("\nTerminal Node: %s, Parent: %s\n", token_string_map[new_tn->node.leaf.token], non_terminals_string_map[parent->node.internal]);
                         }
                         insert_node(&parent, new_tn);
@@ -181,7 +183,10 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
 
         else {
             if( current_top.sym.sym.terminal == n->token) {
-                pop(&Stack);
+                stack_ele ele = pop(&Stack);
+                ele.ptr->node.leaf.tag = n->tag;
+                strcpy(ele.ptr->node.leaf.lexeme, n->lexeme);
+                ele.ptr->node.leaf.line_no = n->line_no;
                 // printf("Symbol Matched: %s\n", token_string_map[current_top.sym.terminal]);
                 ct++;
             }
