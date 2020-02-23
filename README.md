@@ -8,7 +8,7 @@
 
 ## Instructions to run
   1. run `make` to compile the code and generate executable
-  2. run the file stage1exe as pass input test case and output filename as parameters
+  2. run the file stage1exe as pass input test case and output filename as parameters</br>
 	Example: `./stage1exe test.txt parsetreeOutFile.txt`
 
 ## Current Progress
