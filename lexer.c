@@ -47,7 +47,7 @@ int string_flush(char *str) {
     return 1;
 }
 
-int buffer_read(FILE* fp) {
+int get_stream(FILE* fp) {
     if(fp == NULL) {
         printf("Invalid file pointer\n");
         exit(0);
@@ -75,7 +75,7 @@ int add_error(char ch) {
     return strlen(error);
 }
 
-Node* get_token(FILE* fp, lookup_table table) {
+Node* get_next_token(FILE* fp, lookup_table table) {
 
     char ch;
     Node* n;
@@ -84,7 +84,7 @@ Node* get_token(FILE* fp, lookup_table table) {
     while(1) {
 
         if (sizeof(buffer)==pointer) {
-            if(!buffer_read(fp)) {
+            if(!get_stream(fp)) {
                 printf("Error in reading file\n");
                 exit(0);
             }
@@ -932,7 +932,7 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
     id_length = 0;
     number_index = 0;
 
-    if(!buffer_read(fp)) {
+    if(!get_stream(fp)) {
         printf("Error in reading file\n");
         exit(0);
     }
@@ -947,7 +947,7 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
     string_flush(error);
 
     while(1) {
-        n = get_token(fp, **table);
+        n = get_next_token(fp, **table);
         if(n==NULL) {
             break;
         }

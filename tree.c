@@ -57,34 +57,53 @@ int insert_node(t_node** parent, t_node* child) {
     return 1;
 }
 
-int inorder_traversal(t_node* root) {
+int inorder_traversal(t_node* root, non_terminals parent) {
     if(root == NULL) {
         return 0;
     }
-    inorder_traversal(root->child);
-    print_tnode(root);
+    inorder_traversal(root->child, root->node.internal);
+    print_tnode(root, parent);
     if(root->child==NULL)
         return 0;
+    
+    t_node* org_root = root;
     root = root->child;
     root = root->sibling;
     while(root) {
-        inorder_traversal(root);
+        inorder_traversal(root, org_root->node.internal);
         root = root->sibling;
     }
 
     return 1;
 }
 
-int print_tnode(t_node* n) {
+int print_tnode(t_node* n, non_terminals parent) {
     if(n==NULL) {
         return 0;
     }
 
     if(n->tag == 0) {
-        printf("Lexeme: %s, Token: %s, Line No: %d\n", n->node.leaf.lexeme, t_string_map[n->node.leaf.token], n->node.leaf.line_no);
+        printf("Lexeme: %s\tLine No: %d\tToken: %s\t", n->node.leaf.lexeme, n->node.leaf.line_no, t_string_map[n->node.leaf.token]);
+        if(n->node.leaf.tag == 1)
+            printf("Value: %d\t\t", n->node.leaf.val.num);
+        else if(n->node.leaf.tag == 2)
+            printf("Value: %f\t\t", n->node.leaf.val.rnum);
+        else
+            printf("Value: ------\t\t");
+        
+        printf("Parent Node: %s\t\t", nt_string_map[parent]);
+        printf("Leaf Node: Yes\t");
+        printf("Node Symbol: ------\n");
     }
     else {
-        printf("Non Terminal: %s\n", nt_string_map[n->node.internal]);
+        printf("Lexeme: ------\tLine No: ------\tToken: ------\tValue: ------\t\t");
+        if(parent == -1)
+            printf("Parent Node: ROOT\t\t");
+        else
+            printf("Parent Node: %s\t\t", nt_string_map[parent]);
+        
+        printf("Leaf Node: No\t");
+        printf("Node Symbol: %s\n", nt_string_map[n->node.internal]);
     }
 
     return 1;

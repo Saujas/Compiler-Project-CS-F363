@@ -15,7 +15,7 @@ int find_first_sets();
 follow_set compute_follow_set(int nt, int* changed);
 int find_follow_sets();
 first_set find_first_set_rule(symbol* rule, int count);
-int compute_parse_table();
+int create_parse_table();
 int print_parse_table();
 int check_if_exists(follow_set current_set, tokens t);
 int check_if_duplicate_first(first_set current_set, tokens t);

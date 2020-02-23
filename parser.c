@@ -44,32 +44,20 @@ int parser(char* filename) {
             //     printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
             flag = 1;            
         }
-        // else if(n->tag==0) {
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Lexeme: %s\t", n->lexeme);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
-        // else if(n->tag==1){
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Value: %d\t", n->val.num);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
-        // else {
-        //     printf("Token: %s\t", token_string_map[n->token]);
-        //     printf("Value: %f\t", n->val.rnum);
-        //     printf("Line number: %d\t\n", n->line_no);
-        // }
     }
 
     read_grammar(GRAMMAR_FILE);
     find_first_sets();
     find_follow_sets();
-    compute_parse_table();
+    create_parse_table();
 
     printf("\n");
     int parsed = parse_tokens(token_stream, tokens_parsed);
-    printf("Parsed: %d\n\n", parsed);
-    // inorder_traversal(parse_tree);
+    if(parsed)
+        printf("Input code is syntactically correctl\n");
+    else
+        printf("Parsing unsuccessful, errors detected\n");
+    inorder_traversal(parse_tree, -1);
 
     return 1;
 }
@@ -348,7 +336,7 @@ int addRule(rules** grammar, symbol* rule, symbol nt, int count) {
     return 1;
 }
 
-int compute_parse_table() {
+int create_parse_table() {
 
     int i, j;
     for(i=0; i<NON_TERMINAL_SIZE; i++) {
