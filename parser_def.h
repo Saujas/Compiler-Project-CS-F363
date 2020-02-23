@@ -1,3 +1,8 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #ifndef PARSER_DEF
 #define PARSER_DEF
 #define NON_TERMINAL_SIZE 58

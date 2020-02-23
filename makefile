@@ -1,5 +1,5 @@
-exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o
-	gcc -o exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o
+stage1exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o
+	gcc -o stage1exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o
 
 parser.o: parser.h parser_def.h lexer.h lexer_def.h lookup_table.h stack.h
 	gcc -c -g parser.c
@@ -20,7 +20,7 @@ driver.o: lexer.h lookup_table.h lexer_def.h
 	gcc -c -g driver.c
 
 clean:
-	rm *.o
+	rm *.o && rm stage1exe
 
 run:
-	./exe $(filename)
+	./stage1exe $(input_file) $(output_file)

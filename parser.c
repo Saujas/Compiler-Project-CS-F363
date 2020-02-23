@@ -1,3 +1,8 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #include "parser.h"
 #include "lexer.h"
 #include "tree.h"
@@ -26,7 +31,7 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
-int parser(char* filename) {
+int parser(char* filename, char* output_fname) {
     
     Node ** token_stream;
     lookup_table *table;
@@ -51,13 +56,14 @@ int parser(char* filename) {
     find_follow_sets();
     create_parse_table();
 
-    printf("\n");
     int parsed = parse_tokens(token_stream, tokens_parsed);
     if(parsed)
-        printf("Input code is syntactically correctl\n");
+        printf("\tInput code is syntactically correctl\n");
     else
-        printf("Parsing unsuccessful, errors detected\n");
-    inorder_traversal(parse_tree, -1);
+        printf("\tParsing unsuccessful, errors detected\n");
+
+    print_parse_tree(parse_tree, output_fname);
+    printf("\n\tParse tree output has been saved to %s\n", output_fname);
 
     return 1;
 }
@@ -98,7 +104,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             else
                 printf("\tLexical error on line number %d: %s\n", n->line_no, n->lexeme);
             ct++;
-            printf("\n");
+            // printf("\n");
             continue;
         }
 
@@ -119,14 +125,14 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                     }
                 }
                 if(flag) {
-                    printf("\tSyntax error on line number %d just before: %s\n\n", c_line, token_string_map[c_token]);
+                    printf("\tSyntax error on line number %d just before: %s\n", c_line, token_string_map[c_token]);
                     continue;
                 }
                 else {
                     if(c_token==$)
-                        printf("\tSyntax Error on line number %d: Abrupt ending\n\n", c_line);
+                        printf("\tSyntax Error on line number %d: Abrupt ending\n", c_line);
                     else
-                        printf("\tSyntax error on line number %d: %s\n\n", c_line, token_string_map[c_token]);
+                        printf("\tSyntax error on line number %d: %s\n", c_line, token_string_map[c_token]);
                     ct++;
                     continue;
                 }
@@ -136,13 +142,13 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                 pop(&Stack);
                 t_node* parent = current_top.ptr;
 
-                printf("%s --> ", non_terminals_string_map[current_top.sym.sym.non_terminal]);
+                // printf("%s --> ", non_terminals_string_map[current_top.sym.sym.non_terminal]);
                 for(j=r.count_of_symbols-1; j>=0; j--) {
                     symbol c_sym = r.rule[j];
-                    if(r.rule[r.count_of_symbols - j - 1].tag == 0)
-                        printf("%s ", token_string_map[r.rule[r.count_of_symbols - j -1].sym.terminal]);
-                    else
-                        printf("%s ", non_terminals_string_map[r.rule[r.count_of_symbols - j -1].sym.non_terminal]);
+                    // if(r.rule[r.count_of_symbols - j - 1].tag == 0)
+                    //     printf("%s ", token_string_map[r.rule[r.count_of_symbols - j -1].sym.terminal]);
+                    // else
+                    //     printf("%s ", non_terminals_string_map[r.rule[r.count_of_symbols - j -1].sym.non_terminal]);
                     if((c_sym.tag == 0) && (c_sym.sym.terminal == E)) {
                         t_node* new_tn;
                         Node n1 = *n;
@@ -172,7 +178,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                     }
                 }
 
-                printf("\n\n");
+                // printf("\n\n");
             }
         }
 
@@ -187,7 +193,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             }
             else {
                 flag2 = 1;
-                printf("\tSyntax error on line number %d ==> Expected : %s | Got: %s\n\n", c_line, token_string_map[current_top.sym.sym.terminal], token_string_map[c_token]);
+                // printf("\tSyntax error on line number %d ==> Expected : %s | Got: %s\n\n", c_line, token_string_map[current_top.sym.sym.terminal], token_string_map[c_token]);
                 pop(&Stack);
             }
         }
