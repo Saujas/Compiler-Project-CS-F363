@@ -992,3 +992,72 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
     *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_size);
     return c_size;
 }
+
+
+int print_without_comments(char* filename) {
+    FILE* fp = open_file(filename);
+    
+    char ch, ch1;
+    int flag = 0;
+    int flag2 = 0;
+    int line = 1;
+
+    while((ch = fgetc(fp))!=EOF) {
+        if(!flag2) {
+            printf("%d.\t", line);
+            flag2 = 1;
+        }
+        if(ch=='\n') {
+            printf("%c", ch);
+            line++;
+            printf("%d.\t", line);
+            continue;
+        }
+        else if(flag==0 && ch=='*') {
+            ch1 = ch;
+            ch = fgetc(fp);
+            if(ch==EOF) {
+                printf("%c", ch1);
+                break;
+            }
+            else if(ch=='*') {
+                flag = 1;
+                continue;
+            }
+            else if(ch=='\n') {
+                printf("%c", ch1);
+                printf("%c", ch);
+                line++;
+                printf("%d.\t", line);
+                continue;
+            }
+            else {
+                printf("%c", ch1);
+                continue;
+            }
+            
+        }
+        else if(flag==1 && ch=='*') {
+            ch = fgetc(fp);
+            if(ch==EOF) {
+                break;
+            }
+            else if(ch=='*') {
+                flag = 0;
+                continue;
+            }
+            else if(ch=='\n') {
+                printf("%c", ch);
+                line++;
+                printf("%d.\t", line);
+                continue;
+            }
+
+        }
+        if(!flag)
+            printf("%c", ch);
+    }
+
+    fclose(fp);
+    return 1;
+}

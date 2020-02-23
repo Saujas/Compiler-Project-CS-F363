@@ -9,3 +9,4 @@ Node* create_node();
 int add_error(char ch);
 Node* get_next_token(FILE* fp, lookup_table table);
 int lexical_analyzer(char* filename, Node*** n, lookup_table** table, int check);
+int print_without_comments(char* filename);

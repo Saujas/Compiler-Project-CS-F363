@@ -26,7 +26,9 @@ int main(int argc, char* argv[]) {
                 break;
 
             case 1:
-                printf("\n\nComments\n\n");
+                printf("\n\nSource code after removing comments:\n");
+                print_without_comments(argv[1]);
+                printf("\n\n");
                 break;
 
             case 2:
