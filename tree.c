@@ -61,6 +61,7 @@ int print_parse_tree(t_node* root, char* fname) {
     FILE* fp = fopen(fname, "w");
 
     inorder_traversal(root, -1, fp);
+    fclose(fp);
 }
 
 int inorder_traversal(t_node* root, non_terminals parent, FILE* fp) {

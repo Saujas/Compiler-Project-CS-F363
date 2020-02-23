@@ -58,7 +58,7 @@ int parser(char* filename, char* output_fname) {
 
     int parsed = parse_tokens(token_stream, tokens_parsed);
     if(parsed)
-        printf("\tInput code is syntactically correctl\n");
+        printf("\tInput code is syntactically correct\n");
     else
         printf("\tParsing unsuccessful, errors detected\n");
 
