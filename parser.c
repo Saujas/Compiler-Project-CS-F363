@@ -7,6 +7,7 @@
 #include "lexer.h"
 #include "tree.h"
 
+// Global definitions used throughout parser
 rules* grammar[NON_TERMINAL_SIZE];
 rules parse_table[NON_TERMINAL_SIZE][TOKEN_NUMBERS];
 first_set all_first_sets[NON_TERMINAL_SIZE];
@@ -14,6 +15,7 @@ follow_set all_follow_sets[NON_TERMINAL_SIZE];
 stack* Stack;
 t_node* parse_tree;
 
+// Array of strings for all tokens
 char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
@@ -23,6 +25,7 @@ char * token_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "A
             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
 };
 
+// Array of strings for all non-terminals
 char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
     "new1", "output_plist", "new2", "dataType", "dataType2", "type", "range", "range2", "moduleDef", "statements", "new3",
     "statement", "ioStmt", "var", "var2", "whichID", "simpleStmt", "assignmentStmt", "whichStmt", "lvalueIDstmt", "lvalueArrStmt", 
@@ -31,6 +34,8 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
+/* Main function of parser which calls all other functions starting with lexical analyser
+*/
 int parser(char* filename, char* output_fname) {
     
     Node ** token_stream;
@@ -51,6 +56,7 @@ int parser(char* filename, char* output_fname) {
         }
     }
 
+    // Read grammar file and automatically compute first and follow sets, and parse table which are used by parse_tokens()
     read_grammar(GRAMMAR_FILE);
     find_first_sets();
     find_follow_sets();
@@ -58,9 +64,9 @@ int parser(char* filename, char* output_fname) {
 
     int parsed = parse_tokens(token_stream, tokens_parsed);
     if(parsed)
-        printf("\tInput code is syntactically correct\n");
+        printf("\n\tInput code is syntactically correct\n");
     else
-        printf("\tParsing unsuccessful, errors detected\n");
+        printf("\n\tParsing unsuccessful, errors detected\n");
 
     print_parse_tree(parse_tree, output_fname);
     printf("\n\tParse tree output has been saved to %s\n", output_fname);
@@ -68,6 +74,13 @@ int parser(char* filename, char* output_fname) {
     return 1;
 }
 
+
+/* This function parses the token stream returned by lexical analyser.
+   Uses computed first and follow sets, and parse table for parsing rules.
+   Also initalises tree and stack at the beginning.
+   Prints all lexical and syntax error.
+   Recovers from syntax errors by panic mode - uses follow sets of a non-matching non-terminal
+*/
 int parse_tokens(Node** token_stream, int tokens_parsed) {
     int ct = 0;
     int flag2 = 0;
@@ -88,42 +101,47 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
         Node* n;
         if(ct > tokens_parsed)
             break;
-
+        
+        // Adding $ if token stream is over
         else if(ct == tokens_parsed) {
             c_token = $;
         }
-        else {
+        else { // Getting information about a token 
             n = token_stream[ct];
             c_token = n->token;
             c_line = n->line_no;
         }
 
-        if(c_token==ERROR) {
+        if(c_token==ERROR) { // Printing lexical errors and continue to next token
             if(strlen(n->lexeme)>20)
                 printf("\tLexical error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
             else
                 printf("\tLexical error on line number %d: %s\n", n->line_no, n->lexeme);
             ct++;
             // printf("\n");
+            flag2 = 1;
             continue;
         }
 
+        // Checking if top of stack is a non-terminal
         if( current_top.sym.tag == 1) {
             rules r = parse_table[current_top.sym.sym.non_terminal][c_token];
             int j;
-            
+
+            // If no rule exists in parse table, then syntax error and recovery from it            
             if(r.count_of_symbols == -1) {
                 flag2 = 1;
-                follow_set fs = all_follow_sets[current_top.sym.sym.non_terminal];
+                follow_set fs = all_follow_sets[current_top.sym.sym.non_terminal]; //Checking precomputed follow set for error recovery
                 int k;
                 int flag = 0;
                 for(k=0; k<fs.count; k++) {
                     if(c_token == fs.follow_set_token[k]) {
                         flag = 1;
-                        pop(&Stack);
+                        pop(&Stack); //Pop from stack if input token found in follow set
                         break;
                     }
                 }
+                //Printing syntax errors with appropriate reason
                 if(flag) {
                     printf("\tSyntax error on line number %d just before: %s\n", c_line, token_string_map[c_token]);
                     continue;
@@ -138,7 +156,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                 }
             }
             
-            else {
+            else { //Correct parsing
                 pop(&Stack);
                 t_node* parent = current_top.ptr;
 
@@ -153,28 +171,28 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         t_node* new_tn;
                         Node n1 = *n;
                         n1.token = E;
-                        strcpy(n1.lexeme, "E");
+                        strcpy(n1.lexeme, "E"); //Empty derivation of non-terminal
                         new_tn = create_leaf(n1);
                         insert_node(&parent, new_tn);
                         continue;
                     }
                     else {
                         t_node* new_tn;
-                        if(c_sym.tag == 1) {
+                        if(c_sym.tag == 1) { //Creating internal node to be inserted in tree
                             new_tn = create_internal(c_sym.sym.non_terminal);
                             // printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
                         }
-                        else {
+                        else { //Creating leaf node to be inserted in tree
                             Node n1;
                             n1.token = c_sym.sym.terminal;
                             new_tn = create_leaf(n1);
                             // printf("\nTerminal Node: %s, Parent: %s\n", token_string_map[new_tn->node.leaf.token], non_terminals_string_map[parent->node.internal]);
                         }
-                        insert_node(&parent, new_tn);
+                        insert_node(&parent, new_tn); //Inserting new node into parse tree
                         stack_ele new_ele;
                         new_ele.sym = c_sym;
                         new_ele.ptr = new_tn;
-                        push(&Stack, new_ele);
+                        push(&Stack, new_ele); // Pushing production of non-terminal onto stack
                     }
                 }
 
@@ -182,8 +200,8 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             }
         }
 
-        else {
-            if( current_top.sym.sym.terminal == n->token) {
+        else { //If top of stack is a terminal
+            if( current_top.sym.sym.terminal == n->token) { //Correct matching
                 stack_ele ele = pop(&Stack);
                 ele.ptr->node.leaf.tag = n->tag;
                 strcpy(ele.ptr->node.leaf.lexeme, n->lexeme);
@@ -191,9 +209,9 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                 // printf("Symbol Matched: %s\n", token_string_map[current_top.sym.terminal]);
                 ct++;
             }
-            else {
+            else { //Syntax error on non-matching of a terminal. Top of stack is popped
                 flag2 = 1;
-                // printf("\tSyntax error on line number %d ==> Expected : %s | Got: %s\n\n", c_line, token_string_map[current_top.sym.sym.terminal], token_string_map[c_token]);
+                printf("\tSyntax error on line number %d ==> Expected : %s | Got: %s\n", c_line, token_string_map[current_top.sym.sym.terminal], token_string_map[c_token]);
                 pop(&Stack);
             }
         }
@@ -203,7 +221,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
     return parsed;
 }
 
-
+//Initialise stack with start symbol
 stack* initialize_stack() {
     stack* st = create_stack();
     symbol s1;
@@ -217,6 +235,7 @@ stack* initialize_stack() {
     return st;
 }
 
+//Read grammar file and store in global variables as a set of rules
 int read_grammar(char* filename) {
     FILE* fp = fopen(filename, "r");
 
@@ -293,6 +312,7 @@ int read_grammar(char* filename) {
     fclose(fp);
 }
 
+// Convert a string to an enum for easy storing and comparison later on
 symbol convert_to_symbol(char* str) {
     symbol res;
 
@@ -316,6 +336,7 @@ symbol convert_to_symbol(char* str) {
     return res;
 }
 
+//Adding one rule to the grammar
 int addRule(rules** grammar, symbol* rule, symbol nt, int count) {
     
     rules* new_rule = (rules*) malloc(sizeof(rules));
@@ -342,6 +363,7 @@ int addRule(rules** grammar, symbol* rule, symbol nt, int count) {
     return 1;
 }
 
+// Creating parse table of size NON_TERMINAL_SIZE * TOKEN_SIZE using first and follow sets
 int create_parse_table() {
 
     int i, j;
@@ -389,6 +411,7 @@ int create_parse_table() {
     return 1;
 }
 
+// Print parse table for debugging
 int print_parse_table() {
     int i, j;
     for(i=0; i<NON_TERMINAL_SIZE; i++) {
@@ -416,6 +439,7 @@ int print_parse_table() {
     return 1;
 }
 
+// Find first set of a rule for helping to fill parse table
 first_set find_first_set_rule(symbol* rule, int count) {
     // printf("\n\n****\n\n");
     first_set fs_rule;
@@ -454,7 +478,7 @@ first_set find_first_set_rule(symbol* rule, int count) {
     return fs_rule;
 }
 
-
+// Find first set of a given non-terminal enum
 first_set compute_first_set(int nt) {
     if(all_first_sets[nt].first_set_token != NULL) {
         return all_first_sets[nt];
@@ -519,6 +543,7 @@ first_set compute_first_set(int nt) {
     return current_set;
 }
 
+// Find first set of all non-terminals in grammar
 int find_first_sets() {
     int i;
     for(i=0; i<NON_TERMINAL_SIZE; i++) {
@@ -538,6 +563,7 @@ int find_first_sets() {
     return 1;
 }
 
+// Find follow set of a given non-terminal enum
 follow_set compute_follow_set(int nt, int* changed) {
 
     follow_set current_set = all_follow_sets[nt];
@@ -635,6 +661,7 @@ follow_set compute_follow_set(int nt, int* changed) {
     return current_set;
 }
 
+// Check if a particular token already lies in a follow set
 int check_if_exists(follow_set current_set, tokens t) {
     int i, exists=0;
     for(i=0; i<current_set.count; i++) {
@@ -647,6 +674,7 @@ int check_if_exists(follow_set current_set, tokens t) {
     return exists;
 }
 
+// Check if a particular token already lies in a first set
 int check_if_duplicate_first(first_set current_set, tokens t) {
     int i, exists=0;
     for(i=0; i<current_set.count; i++) {
@@ -659,6 +687,8 @@ int check_if_duplicate_first(first_set current_set, tokens t) {
     return exists;
 }
 
+// Merge two different first sets, while removing duplicates
+// Includes E in the first set if add_e is 1 
 int merge_first_first(first_set* current_set, first_set new_set, int add_e) {
     int empty_exists = 0, i;
 
@@ -690,6 +720,7 @@ int merge_first_first(first_set* current_set, first_set new_set, int add_e) {
     return empty_exists;
 }
 
+// Add all elements of a first set to the given follow set, while removing duplicates
 int merge_follow_first(follow_set* current_set, first_set new_set) {
     int changed = 0, i;
     if(new_set.first_set_token == NULL)
@@ -718,6 +749,7 @@ int merge_follow_first(follow_set* current_set, first_set new_set) {
     return changed;
 }
 
+// Merge two different follow sets, while removing duplicates
 int merge_follow_follow(follow_set* current_set, follow_set new_set) {
     int changed = 0, i;
     if(new_set.follow_set_token == NULL)
@@ -744,10 +776,12 @@ int merge_follow_follow(follow_set* current_set, follow_set new_set) {
     return changed;
 }
 
+// Find max of two numbers
 int max(int a, int b) {
     return (a >= b ? a: b);
 }
 
+// Find follow set of all non-terminals in grammar
 int find_follow_sets() {
     follow_set first;
     first.follow_set_token = (tokens*)malloc(sizeof(tokens));
@@ -774,11 +808,3 @@ int find_follow_sets() {
     //     printf("\n");
     // }
 }
-
-
-// int main_parser(char* filename) {
-//     Node ** token_stream;
-//     lookup_table *table;
-//     parse_token_stream(filename, token_stream, table);
-//     read_grammar("grammar.txt");
-// }

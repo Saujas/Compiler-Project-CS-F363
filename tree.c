@@ -1,5 +1,11 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #include"tree.h"
 
+// Array of strings of all non-terminals
 char * nt_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
     "new1", "output_plist", "new2", "dataType", "dataType2", "type", "range", "range2", "moduleDef", "statements", "new3",
     "statement", "ioStmt", "var", "var2", "whichID", "simpleStmt", "assignmentStmt", "whichStmt", "lvalueIDstmt", "lvalueArrStmt", 
@@ -8,6 +14,7 @@ char * nt_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "mod
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
+// Array of strings of all tokens
 char * t_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
@@ -17,12 +24,14 @@ char * t_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY
             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
 };
 
+// Initialise tree with start symbol program
 t_node* initialize_tree() {
     t_node* root = create_internal(program);
 
     return root;
 }
 
+// Creating a new internal node
 t_node* create_internal(non_terminals nt) {
     t_node* intern = (t_node*) malloc(sizeof(t_node));
     intern->tag = 1;
@@ -33,6 +42,7 @@ t_node* create_internal(non_terminals nt) {
     return intern;
 }
 
+// Creating a new leaf node
 t_node* create_leaf(Node n) {
     t_node* leaf = (t_node*) malloc(sizeof(t_node));
     leaf->tag = 0;
@@ -43,6 +53,8 @@ t_node* create_leaf(Node n) {
     return leaf;
 }
 
+// Inserting a node with given parent.
+// If the parent node has a child, it is inserted as a sibling of its chils
 int insert_node(t_node** parent, t_node* child) {
     
     if((*parent)->child == NULL) {
@@ -57,6 +69,7 @@ int insert_node(t_node** parent, t_node* child) {
     return 1;
 }
 
+// Print entire parse tree into file with given name
 int print_parse_tree(t_node* root, char* fname) {
     FILE* fp = fopen(fname, "w");
 
@@ -64,6 +77,8 @@ int print_parse_tree(t_node* root, char* fname) {
     fclose(fp);
 }
 
+// Traverse tree inorder - Left child, then parent, then sibling(s)
+// Recursive implementation
 int inorder_traversal(t_node* root, non_terminals parent, FILE* fp) {
     if(root == NULL) {
         return 0;
@@ -84,12 +99,13 @@ int inorder_traversal(t_node* root, non_terminals parent, FILE* fp) {
     return 1;
 }
 
+// Print a node during inorder traversal into the given file
 int print_tnode(t_node* n, non_terminals parent, FILE* fp) {
     if(n==NULL) {
         return 0;
     }
 
-    if(n->tag == 0) {
+    if(n->tag == 0) { //Print a leaf node with its value
         fprintf(fp, "Lexeme: %s\tLine No: %d\tToken: %s\t", n->node.leaf.lexeme, n->node.leaf.line_no, t_string_map[n->node.leaf.token]);
         if(n->node.leaf.tag == 1)
             fprintf(fp, "Value: %d\t", n->node.leaf.val.num);
@@ -102,7 +118,7 @@ int print_tnode(t_node* n, non_terminals parent, FILE* fp) {
         fprintf(fp, "Leaf Node: Yes\t");
         fprintf(fp, "Node Symbol: ------\n\n");
     }
-    else {
+    else { //Printing an internal node with blank lexeme and token
         fprintf(fp, "Lexeme: ------\tLine No: ------\tToken: ------\tValue: ------\t");
         if(parent == -1)
             fprintf(fp, "Parent Node: ROOT\t");

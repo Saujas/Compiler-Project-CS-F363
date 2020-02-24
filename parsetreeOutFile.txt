@@ -1,118 +1,80 @@
-Lexeme: declare	Line No: 1	Token: DECLARE	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
+Lexeme: declare	Line No: 3	Token: DECLARE	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDeclarations	Leaf Node: No	Node Symbol: moduleDeclaration
 
-Lexeme: module	Line No: 1	Token: MODULE	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
+Lexeme: module	Line No: 3	Token: MODULE	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: readArr	Line No: 1	Token: ID	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
+Lexeme: compute	Line No: 3	Token: ID	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ;	Line No: 1	Token: SEMICOL	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ;	Line No: 3	Token: SEMICOL	Value: ------	Parent Node: moduleDeclaration	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: moduleDeclarations
 
-Lexeme: E	Line No: 3	Token: E	Value: ------	Parent Node: moduleDeclarations	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 4	Token: E	Value: ------	Parent Node: moduleDeclarations	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDeclarations	Leaf Node: No	Node Symbol: moduleDeclarations
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ROOT	Leaf Node: No	Node Symbol: program
 
-Lexeme: <<	Line No: 3	Token: DEF	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 4	Token: E	Value: ------	Parent Node: otherModules	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: otherModules	Leaf Node: No	Node Symbol: module
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: otherModules
 
-Lexeme: module	Line No: 3	Token: MODULE	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: <<<	Line No: 4	Token: DRIVERDEF	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: arraySum	Line No: 3	Token: ID	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: driverModule
 
-Lexeme: >>	Line No: 3	Token: ENDDEF	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: driver	Line No: 4	Token: DRIVER	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: takes	Line No: 4	Token: TAKES	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: program	Line No: 4	Token: PROGRAM	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: input	Line No: 4	Token: INPUT	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: >>>	Line No: 4	Token: DRIVERENDDEF	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: [	Line No: 4	Token: SQBO	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+Lexeme: start	Line No: 5	Token: START	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: list	Line No: 4	Token: ID	Value: ------	Parent Node: input_plist	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: driverModule	Leaf Node: No	Node Symbol: moduleDef
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: input_plist
+Lexeme: declare	Line No: 6	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: :	Line No: 4	Token: COLON	Value: ------	Parent Node: input_plist	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
 
-Lexeme: array	Line No: 4	Token: ARRAY	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+Lexeme: var_1_	Line No: 6	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: input_plist	Leaf Node: No	Node Symbol: dataType
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
 
-Lexeme: [	Line No: 4	Token: SQBO	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ,	Line No: 6	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: 1	Line No: 4	Token: NUM	Value: 0	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: dataType	Leaf Node: No	Node Symbol: range
+Lexeme: var_2_	Line No: 6	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ..	Line No: 4	Token: RANGEOP	Value: ------	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ,	Line No: 6	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: 15	Line No: 4	Token: NUM	Value: 0	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
 
-Lexeme: ]	Line No: 4	Token: SQBC	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+Lexeme: var_3_	Line No: 6	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: of	Line No: 4	Token: OF	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 6	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: real	Line No: 4	Token: REAL	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: dataType	Leaf Node: No	Node Symbol: type
+Lexeme: :	Line No: 6	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ,	Line No: 4	Token: COMMA	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+Lexeme: integer	Line No: 6	Token: INTEGER	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: input_plist	Leaf Node: No	Node Symbol: new1
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
 
-Lexeme: n	Line No: 4	Token: ID	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ;	Line No: 6	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: :	Line No: 4	Token: COLON	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
 
-Lexeme: integer	Line No: 4	Token: INTEGER	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: dataType
-
-Lexeme: E	Line No: 4	Token: E	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: new1
-
-Lexeme: ]	Line No: 4	Token: SQBC	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 4	Token: SEMICOL	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: returns	Line No: 5	Token: RETURNS	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: ret
-
-Lexeme: [	Line No: 5	Token: SQBO	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: sum	Line No: 5	Token: ID	Value: ------	Parent Node: output_plist	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ret	Leaf Node: No	Node Symbol: output_plist
-
-Lexeme: :	Line No: 5	Token: COLON	Value: ------	Parent Node: output_plist	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: real	Line No: 5	Token: REAL	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: output_plist	Leaf Node: No	Node Symbol: type
-
-Lexeme: E	Line No: 5	Token: E	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: output_plist	Leaf Node: No	Node Symbol: new2
-
-Lexeme: ]	Line No: 5	Token: SQBC	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 5	Token: SEMICOL	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: start	Line No: 6	Token: START	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: moduleDef
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDef	Leaf Node: No	Node Symbol: statements
 
 Lexeme: declare	Line No: 7	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
 
-Lexeme: index	Line No: 7	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
+Lexeme: R1_abc	Line No: 7	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
 
@@ -122,7 +84,7 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	L
 
 Lexeme: :	Line No: 7	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: integer	Line No: 7	Token: INTEGER	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
+Lexeme: boolean	Line No: 7	Token: BOOLEAN	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
 
@@ -130,13 +92,13 @@ Lexeme: ;	Line No: 7	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf 
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDef	Leaf Node: No	Node Symbol: statements
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
 Lexeme: declare	Line No: 8	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
 
-Lexeme: t	Line No: 8	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
+Lexeme: r2_ABC	Line No: 8	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
 
@@ -146,7 +108,7 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	L
 
 Lexeme: :	Line No: 8	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: boolean	Line No: 8	Token: BOOLEAN	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
+Lexeme: integer	Line No: 8	Token: INTEGER	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
 
@@ -156,15 +118,55 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statemen
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: sum	Line No: 9	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: declare	Line No: 9	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
+
+Lexeme: R3_abc	Line No: 9	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
+
+Lexeme: E	Line No: 9	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
+
+Lexeme: :	Line No: 9	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: real	Line No: 9	Token: REAL	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
+
+Lexeme: ;	Line No: 9	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
+
+Lexeme: get_value	Line No: 10	Token: GET_VALUE	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
+
+Lexeme: (	Line No: 10	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: var_1_	Line No: 10	Token: ID	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: )	Line No: 10	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ;	Line No: 10	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
+
+Lexeme: var_2_	Line No: 11	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
 
-Lexeme: :=	Line No: 9	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: :=	Line No: 11	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
 
-Lexeme: 0.0	Line No: 9	Token: RNUM	Value: 0.000000	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: 10	Line No: 11	Token: NUM	Value: 0	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
@@ -172,31 +174,31 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Lea
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 9	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 11	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
 
-Lexeme: E	Line No: 9	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 11	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
 
-Lexeme: E	Line No: 9	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 11	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
 
-Lexeme: E	Line No: 9	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 11	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
 
-Lexeme: ;	Line No: 9	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ;	Line No: 11	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
 
@@ -206,29 +208,7 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statemen
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: for	Line No: 10	Token: FOR	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: iterativeStmt
-
-Lexeme: (	Line No: 10	Token: BO	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: index	Line No: 10	Token: ID	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: in	Line No: 10	Token: IN	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: 1	Line No: 10	Token: NUM	Value: 0	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: iterativeStmt	Leaf Node: No	Node Symbol: range
-
-Lexeme: ..	Line No: 10	Token: RANGEOP	Value: ------	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: 15	Line No: 10	Token: NUM	Value: 0	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: )	Line No: 10	Token: BC	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: start	Line No: 11	Token: START	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: t	Line No: 12	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: var_3_	Line No: 12	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
 
@@ -236,65 +216,35 @@ Lexeme: :=	Line No: 12	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	L
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
 
-Lexeme: index	Line No: 12	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: -	Line No: 12	Token: MINUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
-
-Lexeme: <=	Line No: 12	Token: LE	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
-
-Lexeme: n	Line No: 12	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
-
-Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: PlusMinus
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
+
+Lexeme: (	Line No: 12	Token: BO	Value: ------	Parent Node: new4	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: new4
+
+Lexeme: 6	Line No: 12	Token: NUM	Value: 0	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new4	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 12	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: )	Line No: 12	Token: BC	Value: ------	Parent Node: new4	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ;	Line No: 12	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
@@ -304,71 +254,253 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statemen
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: iterativeStmt	Leaf Node: No	Node Symbol: statements
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: switch	Line No: 13	Token: SWITCH	Value: ------	Parent Node: conditionalStatement	Leaf Node: Yes	Node Symbol: ------
+Lexeme: [	Line No: 13	Token: SQBO	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: conditionalStatement
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: No	Node Symbol: optional
 
-Lexeme: (	Line No: 13	Token: BO	Value: ------	Parent Node: conditionalStatement	Leaf Node: Yes	Node Symbol: ------
+Lexeme: R1_abc	Line No: 13	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: t	Line No: 13	Token: ID	Value: ------	Parent Node: conditionalStatement	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: optional	Leaf Node: No	Node Symbol: idList
 
-Lexeme: )	Line No: 13	Token: BC	Value: ------	Parent Node: conditionalStatement	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ,	Line No: 13	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: start	Line No: 14	Token: START	Value: ------	Parent Node: conditionalStatement	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
 
-Lexeme: case	Line No: 15	Token: CASE	Value: ------	Parent Node: conditionalStatement	Leaf Node: Yes	Node Symbol: ------
+Lexeme: r2_ABC	Line No: 13	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: true	Line No: 15	Token: TRUE	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ,	Line No: 13	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: conditionalStatement	Leaf Node: No	Node Symbol: caseStmt
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
 
-Lexeme: :	Line No: 15	Token: COLON	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: R3_abc	Line No: 13	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: print	Line No: 15	Token: PRINT	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 13	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
 
-Lexeme: (	Line No: 15	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ]	Line No: 13	Token: SQBC	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: list	Line No: 15	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: :=	Line No: 13	Token: ASSIGNOP	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var2	Leaf Node: No	Node Symbol: var
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: moduleReuseStmt
 
-Lexeme: [	Line No: 15	Token: SQBO	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: use	Line No: 13	Token: USE	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+Lexeme: module	Line No: 13	Token: MODULE	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: index	Line No: 15	Token: ID	Value: ------	Parent Node: Index	Leaf Node: Yes	Node Symbol: ------
+Lexeme: compute	Line No: 13	Token: ID	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichID	Leaf Node: No	Node Symbol: Index
+Lexeme: with	Line No: 13	Token: WITH	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ]	Line No: 15	Token: SQBC	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: parameters	Line No: 13	Token: PARAMETERS	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ioStmt	Leaf Node: No	Node Symbol: var2
+Lexeme: var_1_	Line No: 13	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: )	Line No: 15	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: No	Node Symbol: idList
 
-Lexeme: ;	Line No: 15	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ,	Line No: 13	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
+
+Lexeme: var_2_	Line No: 13	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ,	Line No: 13	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
+
+Lexeme: var_34	Line No: 13	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: E	Line No: 13	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
+
+Lexeme: ;	Line No: 13	Token: SEMICOL	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: caseStmt	Leaf Node: No	Node Symbol: statements
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: sum	Line No: 16	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 15	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: end	Line No: 15	Token: END	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: <<	Line No: 16	Token: DEF	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: otherModules	Leaf Node: No	Node Symbol: module
+
+Lexeme: module	Line No: 16	Token: MODULE	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: compute	Line No: 16	Token: ID	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: >>	Line No: 16	Token: ENDDEF	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: takes	Line No: 17	Token: TAKES	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: input	Line No: 17	Token: INPUT	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: [	Line No: 17	Token: SQBO	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: a	Line No: 17	Token: ID	Value: ------	Parent Node: input_plist	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: input_plist
+
+Lexeme: :	Line No: 17	Token: COLON	Value: ------	Parent Node: input_plist	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: integer	Line No: 17	Token: INTEGER	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: input_plist	Leaf Node: No	Node Symbol: dataType
+
+Lexeme: ,	Line No: 17	Token: COMMA	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: input_plist	Leaf Node: No	Node Symbol: new1
+
+Lexeme: b	Line No: 17	Token: ID	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: :	Line No: 17	Token: COLON	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: integer	Line No: 17	Token: INTEGER	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: dataType
+
+Lexeme: ,	Line No: 17	Token: COMMA	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: new1
+
+Lexeme: c	Line No: 17	Token: ID	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: :	Line No: 17	Token: COLON	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: integer	Line No: 17	Token: INTEGER	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: dataType
+
+Lexeme: E	Line No: 17	Token: E	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: new1
+
+Lexeme: ]	Line No: 17	Token: SQBC	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ;	Line No: 17	Token: SEMICOL	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: returns	Line No: 18	Token: RETURNS	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: ret
+
+Lexeme: [	Line No: 18	Token: SQBO	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: res_1	Line No: 18	Token: ID	Value: ------	Parent Node: output_plist	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ret	Leaf Node: No	Node Symbol: output_plist
+
+Lexeme: :	Line No: 18	Token: COLON	Value: ------	Parent Node: output_plist	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: boolean	Line No: 18	Token: BOOLEAN	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: output_plist	Leaf Node: No	Node Symbol: type
+
+Lexeme: ,	Line No: 18	Token: COMMA	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: output_plist	Leaf Node: No	Node Symbol: new2
+
+Lexeme: res_2_a	Line No: 18	Token: ID	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: :	Line No: 18	Token: COLON	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: integer	Line No: 18	Token: INTEGER	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new2	Leaf Node: No	Node Symbol: type
+
+Lexeme: ,	Line No: 18	Token: COMMA	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new2	Leaf Node: No	Node Symbol: new2
+
+Lexeme: res_2__b	Line No: 18	Token: ID	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: :	Line No: 18	Token: COLON	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: real	Line No: 18	Token: REAL	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new2	Leaf Node: No	Node Symbol: type
+
+Lexeme: E	Line No: 18	Token: E	Value: ------	Parent Node: new2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new2	Leaf Node: No	Node Symbol: new2
+
+Lexeme: ]	Line No: 18	Token: SQBC	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ;	Line No: 18	Token: SEMICOL	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: start	Line No: 19	Token: START	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: moduleDef
+
+Lexeme: declare	Line No: 20	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
+
+Lexeme: b	Line No: 20	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
+
+Lexeme: E	Line No: 20	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
+
+Lexeme: :	Line No: 20	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: boolean	Line No: 20	Token: BOOLEAN	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
+
+Lexeme: ;	Line No: 20	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDef	Leaf Node: No	Node Symbol: statements
+
+Lexeme: res_2_a	Line No: 21	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
 
-Lexeme: :=	Line No: 16	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: :=	Line No: 21	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
 
-Lexeme: sum	Line No: 16	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: -	Line No: 21	Token: MINUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: PlusMinus
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
+
+Lexeme: (	Line No: 21	Token: BO	Value: ------	Parent Node: new4	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: new4
+
+Lexeme: a	Line No: 21	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
-Lexeme: E	Line No: 16	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
 
@@ -376,59 +508,247 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Lea
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 16	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: *	Line No: 21	Token: MUL	Value: ------	Parent Node: MulDiv	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: MulDiv
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+Lexeme: b	Line No: 21	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: +	Line No: 16	Token: PLUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: factor
+
+Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new4	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: -	Line No: 21	Token: MINUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: PlusMinus
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
-Lexeme: list	Line No: 16	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: c	Line No: 21	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
-Lexeme: [	Line No: 16	Token: SQBO	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: index	Line No: 16	Token: ID	Value: ------	Parent Node: Index	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichID	Leaf Node: No	Node Symbol: Index
-
-Lexeme: ]	Line No: 16	Token: SQBC	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 16	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: /	Line No: 21	Token: DIV	Value: ------	Parent Node: MulDiv	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: MulDiv
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
-Lexeme: E	Line No: 16	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+Lexeme: 5	Line No: 21	Token: NUM	Value: 0	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: factor
+
+Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: new7
+
+Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: new6
+
+Lexeme: )	Line No: 21	Token: BC	Value: ------	Parent Node: new4	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ;	Line No: 21	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
+
+Lexeme: res_2__b	Line No: 22	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
+
+Lexeme: :=	Line No: 22	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
+
+Lexeme: (	Line No: 22	Token: BO	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: (	Line No: 22	Token: BO	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: res_2_a	Line No: 22	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: +	Line No: 22	Token: PLUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: PlusMinus
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: a	Line No: 22	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: new6
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
 
-Lexeme: E	Line No: 16	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: AorBExpr
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: )	Line No: 22	Token: BC	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: *	Line No: 22	Token: MUL	Value: ------	Parent Node: MulDiv	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: MulDiv
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: 12	Line No: 22	Token: NUM	Value: 564515552	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: factor
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: +	Line No: 22	Token: PLUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: PlusMinus
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: 22.34E-2	Line No: 22	Token: RNUM	Value: 0.000000	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: AorBExpr
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: )	Line No: 22	Token: BC	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: /	Line No: 22	Token: DIV	Value: ------	Parent Node: MulDiv	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: MulDiv
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: 13	Line No: 22	Token: NUM	Value: 564518112	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: factor
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new7	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
 
-Lexeme: E	Line No: 16	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 22	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
 
-Lexeme: ;	Line No: 16	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ;	Line No: 22	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
 
@@ -438,577 +758,19 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statemen
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: E	Line No: 17	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: break	Line No: 17	Token: BREAK	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 17	Token: SEMICOL	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: case	Line No: 18	Token: CASE	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: false	Line No: 18	Token: FALSE	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: :	Line No: 18	Token: COLON	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: print	Line No: 18	Token: PRINT	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
-
-Lexeme: (	Line No: 18	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: sum	Line No: 18	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var2	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 18	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ioStmt	Leaf Node: No	Node Symbol: var2
-
-Lexeme: )	Line No: 18	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 18	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: caseStmt	Leaf Node: No	Node Symbol: statements
-
-Lexeme: print	Line No: 19	Token: PRINT	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
-
-Lexeme: (	Line No: 19	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: index	Line No: 19	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var2	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 19	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ioStmt	Leaf Node: No	Node Symbol: var2
-
-Lexeme: )	Line No: 19	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 19	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: E	Line No: 21	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: break	Line No: 21	Token: BREAK	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 21	Token: SEMICOL	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: end	Line No: 22	Token: END	Value: ------	Parent Node: caseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: end	Line No: 24	Token: END	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: print	Line No: 25	Token: PRINT	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
-
-Lexeme: (	Line No: 25	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: sum	Line No: 25	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var2	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 25	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ioStmt	Leaf Node: No	Node Symbol: var2
-
-Lexeme: )	Line No: 25	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 25	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: E	Line No: 26	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: end	Line No: 26	Token: END	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: otherModules
-
-Lexeme: E	Line No: 27	Token: E	Value: ------	Parent Node: otherModules	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: otherModules	Leaf Node: No	Node Symbol: otherModules
-
-Lexeme: <<<	Line No: 27	Token: DRIVERDEF	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: driverModule
-
-Lexeme: driver	Line No: 27	Token: DRIVER	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: program	Line No: 27	Token: PROGRAM	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: >>>	Line No: 27	Token: DRIVERENDDEF	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: start	Line No: 28	Token: START	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: driverModule	Leaf Node: No	Node Symbol: moduleDef
-
-Lexeme: declare	Line No: 29	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
-
-Lexeme: A	Line No: 29	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: E	Line No: 29	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: :	Line No: 29	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: array	Line No: 29	Token: ARRAY	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
-
-Lexeme: [	Line No: 29	Token: SQBO	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: 1	Line No: 29	Token: NUM	Value: 0	Parent Node: Index	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: range2	Leaf Node: No	Node Symbol: Index
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: dataType2	Leaf Node: No	Node Symbol: range2
-
-Lexeme: ..	Line No: 29	Token: RANGEOP	Value: ------	Parent Node: range2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: 15	Line No: 29	Token: NUM	Value: 0	Parent Node: Index	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: range2	Leaf Node: No	Node Symbol: Index
-
-Lexeme: ]	Line No: 29	Token: SQBC	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: of	Line No: 29	Token: OF	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: real	Line No: 29	Token: REAL	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: dataType2	Leaf Node: No	Node Symbol: type
-
-Lexeme: ;	Line No: 29	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDef	Leaf Node: No	Node Symbol: statements
-
-Lexeme: declare	Line No: 30	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
-
-Lexeme: k	Line No: 30	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: E	Line No: 30	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: :	Line No: 30	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: integer	Line No: 30	Token: INTEGER	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
-
-Lexeme: ;	Line No: 30	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: declare	Line No: 31	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
-
-Lexeme: s	Line No: 31	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: E	Line No: 31	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: :	Line No: 31	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: real	Line No: 31	Token: REAL	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
-
-Lexeme: ;	Line No: 31	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: get_value	Line No: 32	Token: GET_VALUE	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
-
-Lexeme: (	Line No: 32	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: k	Line No: 32	Token: ID	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: )	Line No: 32	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 32	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: E	Line No: 33	Token: E	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: No	Node Symbol: optional
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: moduleReuseStmt
-
-Lexeme: use	Line No: 33	Token: USE	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: module	Line No: 33	Token: MODULE	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: readArr	Line No: 33	Token: ID	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: with	Line No: 33	Token: WITH	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: parameters	Line No: 33	Token: PARAMETERS	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: A	Line No: 33	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: ,	Line No: 33	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: k	Line No: 33	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: E	Line No: 33	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
-
-Lexeme: ;	Line No: 33	Token: SEMICOL	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: [	Line No: 34	Token: SQBO	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: No	Node Symbol: optional
-
-Lexeme: s	Line No: 34	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: optional	Leaf Node: No	Node Symbol: idList
-
-Lexeme: E	Line No: 34	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: ]	Line No: 34	Token: SQBC	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: :=	Line No: 34	Token: ASSIGNOP	Value: ------	Parent Node: optional	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: moduleReuseStmt
-
-Lexeme: use	Line No: 34	Token: USE	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: module	Line No: 34	Token: MODULE	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: arraySum	Line No: 34	Token: ID	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: with	Line No: 34	Token: WITH	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: parameters	Line No: 34	Token: PARAMETERS	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: A	Line No: 34	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: ,	Line No: 34	Token: COMMA	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: k	Line No: 34	Token: ID	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: E	Line No: 34	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: newX	Leaf Node: No	Node Symbol: newX
-
-Lexeme: ;	Line No: 34	Token: SEMICOL	Value: ------	Parent Node: moduleReuseStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: print	Line No: 35	Token: PRINT	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
-
-Lexeme: (	Line No: 35	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: s	Line No: 35	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var2	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 35	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ioStmt	Leaf Node: No	Node Symbol: var2
-
-Lexeme: )	Line No: 35	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 35	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: E	Line No: 36	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
-
-Lexeme: end	Line No: 36	Token: END	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: <<	Line No: 43	Token: DEF	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: otherModules	Leaf Node: No	Node Symbol: module
-
-Lexeme: module	Line No: 43	Token: MODULE	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: readArr	Line No: 43	Token: ID	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: >>	Line No: 43	Token: ENDDEF	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: takes	Line No: 44	Token: TAKES	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: input	Line No: 44	Token: INPUT	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: [	Line No: 44	Token: SQBO	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: arr1	Line No: 44	Token: ID	Value: ------	Parent Node: input_plist	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: input_plist
-
-Lexeme: :	Line No: 44	Token: COLON	Value: ------	Parent Node: input_plist	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: array	Line No: 44	Token: ARRAY	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: input_plist	Leaf Node: No	Node Symbol: dataType
-
-Lexeme: [	Line No: 44	Token: SQBO	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: 1	Line No: 44	Token: NUM	Value: 0	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: dataType	Leaf Node: No	Node Symbol: range
-
-Lexeme: ..	Line No: 44	Token: RANGEOP	Value: ------	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: 15	Line No: 44	Token: NUM	Value: 0	Parent Node: range	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ]	Line No: 44	Token: SQBC	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: of	Line No: 44	Token: OF	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: real	Line No: 44	Token: REAL	Value: ------	Parent Node: type	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: dataType	Leaf Node: No	Node Symbol: type
-
-Lexeme: ,	Line No: 44	Token: COMMA	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: input_plist	Leaf Node: No	Node Symbol: new1
-
-Lexeme: k	Line No: 44	Token: ID	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: :	Line No: 44	Token: COLON	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: integer	Line No: 44	Token: INTEGER	Value: ------	Parent Node: dataType	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: dataType
-
-Lexeme: E	Line No: 44	Token: E	Value: ------	Parent Node: new1	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new1	Leaf Node: No	Node Symbol: new1
-
-Lexeme: ]	Line No: 44	Token: SQBC	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 44	Token: SEMICOL	Value: ------	Parent Node: module	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: E	Line No: 45	Token: E	Value: ------	Parent Node: ret	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: ret
-
-Lexeme: start	Line No: 45	Token: START	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: module	Leaf Node: No	Node Symbol: moduleDef
-
-Lexeme: declare	Line No: 46	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
-
-Lexeme: tempvar	Line No: 46	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: E	Line No: 46	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: :	Line No: 46	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: real	Line No: 46	Token: REAL	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
-
-Lexeme: ;	Line No: 46	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDef	Leaf Node: No	Node Symbol: statements
-
-Lexeme: declare	Line No: 47	Token: DECLARE	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: declareStmt
-
-Lexeme: i	Line No: 47	Token: ID	Value: ------	Parent Node: idList	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: idList
-
-Lexeme: E	Line No: 47	Token: E	Value: ------	Parent Node: newX	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: idList	Leaf Node: No	Node Symbol: newX
-
-Lexeme: :	Line No: 47	Token: COLON	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: integer	Line No: 47	Token: INTEGER	Value: ------	Parent Node: dataType2	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: declareStmt	Leaf Node: No	Node Symbol: dataType2
-
-Lexeme: ;	Line No: 47	Token: SEMICOL	Value: ------	Parent Node: declareStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: i	Line No: 48	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: b	Line No: 23	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
 
-Lexeme: :=	Line No: 48	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: :=	Line No: 23	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
 
-Lexeme: 1	Line No: 48	Token: NUM	Value: 0	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: a	Line No: 23	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
-
-Lexeme: E	Line No: 48	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
-
-Lexeme: E	Line No: 48	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
-
-Lexeme: E	Line No: 48	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
-
-Lexeme: E	Line No: 48	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
-
-Lexeme: ;	Line No: 48	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: while	Line No: 49	Token: WHILE	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: iterativeStmt
-
-Lexeme: (	Line No: 49	Token: BO	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: i	Line No: 49	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
-
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
 
@@ -1016,29 +778,29 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Lea
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
 
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
 
-Lexeme: <=	Line No: 49	Token: LE	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
+Lexeme: <=	Line No: 23	Token: LE	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
 
-Lexeme: k	Line No: 49	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: b	Line No: 23	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
 
@@ -1046,63 +808,29 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Lea
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
 
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: iterativeStmt	Leaf Node: No	Node Symbol: AorBExpr
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
 
-Lexeme: E	Line No: 49	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: AND	Line No: 23	Token: AND	Value: ------	Parent Node: logicalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: logicalOP
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
 
-Lexeme: )	Line No: 49	Token: BC	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: start	Line No: 50	Token: START	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: get_value	Line No: 51	Token: GET_VALUE	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
-
-Lexeme: (	Line No: 51	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: tempvar	Line No: 51	Token: ID	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: )	Line No: 51	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ;	Line No: 51	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: iterativeStmt	Leaf Node: No	Node Symbol: statements
-
-Lexeme: arr1	Line No: 52	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
-
-Lexeme: [	Line No: 52	Token: SQBO	Value: ------	Parent Node: lvalueArrStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueArrStmt
-
-Lexeme: i	Line No: 52	Token: ID	Value: ------	Parent Node: Index	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueArrStmt	Leaf Node: No	Node Symbol: Index
-
-Lexeme: ]	Line No: 52	Token: SQBC	Value: ------	Parent Node: lvalueArrStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: :=	Line No: 52	Token: ASSIGNOP	Value: ------	Parent Node: lvalueArrStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: tempvar	Line No: 52	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: c	Line No: 23	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
-Lexeme: E	Line No: 52	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
 
@@ -1110,53 +838,29 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Lea
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 52	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
 
-Lexeme: E	Line No: 52	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: new8
 
-Lexeme: E	Line No: 52	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: >=	Line No: 23	Token: GE	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
-
-Lexeme: E	Line No: 52	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueArrStmt	Leaf Node: No	Node Symbol: expression
-
-Lexeme: ;	Line No: 52	Token: SEMICOL	Value: ------	Parent Node: lvalueArrStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
-
-Lexeme: i	Line No: 53	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
-
-Lexeme: :=	Line No: 53	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
-
-Lexeme: i	Line No: 53	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: a	Line No: 23	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
-Lexeme: E	Line No: 53	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
 
@@ -1164,49 +868,89 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Lea
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 53	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: OR	Line No: 23	Token: OR	Value: ------	Parent Node: logicalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: logicalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: a	Line No: 23	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
 
-Lexeme: +	Line No: 53	Token: PLUS	Value: ------	Parent Node: PlusMinus	Leaf Node: Yes	Node Symbol: ------
-
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: PlusMinus
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
-Lexeme: 1	Line No: 53	Token: NUM	Value: 0	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: <	Line No: 23	Token: LT	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: 0	Line No: 23	Token: NUM	Value: 0	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: term
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
 
-Lexeme: E	Line No: 53	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
 
-Lexeme: E	Line No: 53	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new6	Leaf Node: No	Node Symbol: new6
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
 
-Lexeme: E	Line No: 53	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: AND	Line No: 23	Token: AND	Value: ------	Parent Node: logicalOP	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: logicalOP
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: boolExpr
 
-Lexeme: E	Line No: 53	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+Lexeme: false	Line No: 23	Token: FALSE	Value: ------	Parent Node: boolKey	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: boolKey
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: E	Line No: 23	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: boolExpr
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
 
-Lexeme: ;	Line No: 53	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ;	Line No: 23	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
 
@@ -1216,21 +960,327 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statemen
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: E	Line No: 55	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
+Lexeme: res_1	Line No: 24	Token: ID	Value: ------	Parent Node: assignmentStmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: simpleStmt	Leaf Node: No	Node Symbol: assignmentStmt
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+Lexeme: :=	Line No: 24	Token: ASSIGNOP	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: whichStmt	Leaf Node: No	Node Symbol: lvalueIDstmt
 
-Lexeme: end	Line No: 55	Token: END	Value: ------	Parent Node: iterativeStmt	Leaf Node: Yes	Node Symbol: ------
+Lexeme: (	Line No: 24	Token: BO	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: true	Line No: 24	Token: TRUE	Value: ------	Parent Node: boolKey	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: boolKey
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: AorBExpr
+
+Lexeme: AND	Line No: 24	Token: AND	Value: ------	Parent Node: logicalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: logicalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: c	Line No: 24	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: ==	Line No: 24	Token: EQ	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: b	Line No: 24	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: )	Line No: 24	Token: BC	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: expression	Leaf Node: No	Node Symbol: AorBExpr
+
+Lexeme: OR	Line No: 24	Token: OR	Value: ------	Parent Node: logicalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: logicalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: (	Line No: 24	Token: BO	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: b	Line No: 24	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: >	Line No: 24	Token: GT	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: p	Line No: 24	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: AorBExpr
+
+Lexeme: AND	Line No: 24	Token: AND	Value: ------	Parent Node: logicalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: logicalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: (	Line No: 24	Token: BO	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: a	Line No: 24	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: <=	Line No: 24	Token: LE	Value: ------	Parent Node: relationalOP	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: relationalOP
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: c	Line No: 24	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: factor
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: relationalExpr	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: factor	Leaf Node: No	Node Symbol: AorBExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: AorBExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: )	Line No: 24	Token: BC	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: )	Line No: 24	Token: BC	Value: ------	Parent Node: factor	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: term
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new7	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: term	Leaf Node: No	Node Symbol: new7
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: arithmeticExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: new6	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: arithmeticExpr	Leaf Node: No	Node Symbol: new6
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: new8
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: relationalExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new8	Leaf Node: No	Node Symbol: relationalExpr
+
+Lexeme: E	Line No: 24	Token: E	Value: ------	Parent Node: boolExpr	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: boolExpr	Leaf Node: No	Node Symbol: boolExpr
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: No	Node Symbol: expression
+
+Lexeme: ;	Line No: 24	Token: SEMICOL	Value: ------	Parent Node: lvalueIDstmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: assignmentStmt	Leaf Node: No	Node Symbol: whichStmt
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: simpleStmt
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
 
-Lexeme: E	Line No: 56	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
+Lexeme: print	Line No: 26	Token: PRINT	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statement	Leaf Node: No	Node Symbol: ioStmt
+
+Lexeme: (	Line No: 26	Token: BO	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: res_1	Line No: 26	Token: ID	Value: ------	Parent Node: var	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var2	Leaf Node: No	Node Symbol: var
+
+Lexeme: E	Line No: 26	Token: E	Value: ------	Parent Node: whichID	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: var	Leaf Node: No	Node Symbol: whichID
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ioStmt	Leaf Node: No	Node Symbol: var2
+
+Lexeme: )	Line No: 26	Token: BC	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ;	Line No: 26	Token: SEMICOL	Value: ------	Parent Node: ioStmt	Leaf Node: Yes	Node Symbol: ------
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: statement
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: new3	Leaf Node: No	Node Symbol: statements
+
+Lexeme: E	Line No: 27	Token: E	Value: ------	Parent Node: new3	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
 
@@ -1240,11 +1290,15 @@ Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statemen
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
 
-Lexeme: end	Line No: 56	Token: END	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: statements	Leaf Node: No	Node Symbol: new3
+
+Lexeme: end	Line No: 27	Token: END	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: otherModules
 
-Lexeme: E	Line No: 56	Token: E	Value: ------	Parent Node: otherModules	Leaf Node: Yes	Node Symbol: ------
+Lexeme: E	Line No: 27	Token: E	Value: ------	Parent Node: otherModules	Leaf Node: Yes	Node Symbol: ------
 
 Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: otherModules	Leaf Node: No	Node Symbol: otherModules
 

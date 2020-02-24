@@ -9,6 +9,7 @@
 
 #include "lexer_def.h"
 
+// Enums of all non-terminals are stored here
 typedef enum{
     program, moduleDeclarations, moduleDeclaration, otherModules, driverModule, module, ret, input_plist,
     new1, output_plist, new2, dataType, dataType2, type, range, range2, moduleDef, statements, new3,
@@ -19,27 +20,33 @@ typedef enum{
     numericCase, new11, Default
 } non_terminals;
 
+// A unit is a union of a non-teminal enum or a token enum
 typedef union {
     non_terminals non_terminal;
     tokens terminal;
 } unit;
 
+// A symbol structure consisting of a union unit and a tag to identify the union
 typedef struct {
     unit sym;
     int tag;
 } symbol;
 
+// A rule is an array of symbols corresponding to a single production of a non-terminal, a count of symbols,
+// and a pointer to the next production of the same non-terminal
 typedef struct grammar_rule {
     symbol* rule;
     int count_of_symbols;
     struct grammar_rule* next; 
 } rules;
 
+// Structure for first set containing an array of token enums and a count
 typedef struct {
     tokens* first_set_token;
     int count;
 } first_set;
 
+// Structure for follow set containing an array of token enums and a count
 typedef struct {
     tokens* follow_set_token;
     int count;

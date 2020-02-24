@@ -7,6 +7,8 @@
 #include "lexer_def.h"
 #include "lookup_table.h"
 
+/* Function definitions for all functions used in lexer. Detailed descriptions in lexer.c
+*/
 FILE* open_file(char* filename);
 int string_flush(char *str);
 int get_stream(FILE* fp);

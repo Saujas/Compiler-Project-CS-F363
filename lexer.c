@@ -5,23 +5,31 @@
 
 #include "lexer.h"
 
+/* Constants used throughout the FILE 
+*/
 #define MAX_BUFFER_LENGTH 200
 #define MAX_ID_LENGTH 20
 #define MAX_LEX_ERROR_SIZE 100
 #define MAX_RNUM_LENGTH 3 + DBL_MANT_DIG - DBL_MIN_EXP
 
+/* Certain arrays to store buffer, lexeme in case of an ID token, a NUM or an RNUM, and the set of characters causing a lexical error
+*/
 char buffer[MAX_BUFFER_LENGTH];
 char id[MAX_ID_LENGTH];
 char number[MAX_RNUM_LENGTH];
 char error[MAX_LEX_ERROR_SIZE];
 
+/* Global variables used in lexer
+*/
 int state = 0;
-
 static int line_number = 1;
 static int pointer = 0;
 static int id_length = 0;
 static int number_index = 0;
 
+/* Token to string map indexed by enums defined in lexer_def.h
+   Used in printing lexemes quickly
+*/
 char * token_string_map_copy[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
@@ -31,7 +39,8 @@ char * token_string_map_copy[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF
             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
 };
 
-
+/* For opening a file and returning the corresponding file pointer
+*/
 FILE* open_file(char* filename) {
     FILE* fp = fopen(filename, "r");
 
@@ -43,6 +52,9 @@ FILE* open_file(char* filename) {
     return fp;
 }
 
+/* Function for clearing a string passed to it
+   Useful for clearing the input buffer, error array, number array and id array
+*/
 int string_flush(char *str) {
     int i;
     int len = strlen(str);
@@ -52,6 +64,9 @@ int string_flush(char *str) {
     return 1;
 }
 
+/* The function for reading from the file into the buffer defined at the top, with a max of 
+   MAX_BUFFER_LENGTH characters
+*/
 int get_stream(FILE* fp) {
     if(fp == NULL) {
         printf("Invalid file pointer\n");
@@ -68,6 +83,8 @@ int get_stream(FILE* fp) {
     return char_read;
 }
 
+/* Allocating memory for a token node and returning the pointer
+*/
 Node* create_node() {
     Node* n = (Node*) malloc(sizeof(Node));
     n->tag = 0;
@@ -75,11 +92,18 @@ Node* create_node() {
 
 }
 
+/* Adding a character to the error array
+*/
 int add_error(char ch) {
     error[strlen(error)] = ch;
     return strlen(error);
 }
 
+/* This function calculates which state in the DFA to proceed based on switch-case statements.
+   The while loop runs until a matching correct token is found, after which this function returns a pointer to a node
+   containing the token found, and other details according to the definition in lexer_def.h
+   If an error is encountered, it returns a pointer to a node which contains the lexeme which caused the error
+*/
 Node* get_next_token(FILE* fp, lookup_table table) {
 
     char ch;
@@ -87,7 +111,8 @@ Node* get_next_token(FILE* fp, lookup_table table) {
     Value v;
 
     while(1) {
-
+        /* This if statement is to check whether the buffer has been read, and whether to read the rest of the file
+        */
         if (sizeof(buffer)==pointer) {
             if(!get_stream(fp)) {
                 printf("Error in reading file\n");
@@ -99,6 +124,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
         
         ch = buffer[pointer];
         switch(state) {
+            //The start state corresponds to state 0
             case 0: 
                 if (ch=='>') {
                     state = 43;
@@ -146,7 +172,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 }
                 else if  (ch=='.') {
                     state = 18;
-                    add_error(ch);
+                    add_error(ch); //The error array is updated on the possibility of encountering an error and flushed if token matches
                     pointer++;
                     break;
                 }
@@ -179,19 +205,19 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                     pointer++;
                     break;
                 }
-                else if ((ch>='a')&&(ch<='z')||(ch>='A')&&(ch<='Z')) {
+                else if ((ch>='a')&&(ch<='z')||(ch>='A')&&(ch<='Z')) { //For checking if id or keyword
                     state = 28;
                     error[strlen(error)] = ch;
                     id[id_length] = ch;
                     pointer++;
                     break;
                 }
-                else if (ch==' ' || ch=='\t') {
+                else if (ch==' ' || ch=='\t') { //Ignoring all white spaces and tabs
                     state = 30;
                     pointer++;
                     break;
                 }
-                else if (ch>='0' && ch<='9') {
+                else if (ch>='0' && ch<='9') { //For checking if digit
                     string_flush(number);
                     number_index = 0;
                     error[strlen(error)] = ch;
@@ -211,7 +237,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 }
                 
             case 1:
-                n = create_node();
+                n = create_node(); //An example of a final state where a token is found and its node pointer is returned 
                 n->token = PLUS;
                 strcpy(n->lexeme, "+");
                 n->line_no = line_number;
@@ -262,7 +288,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 break;
 
             case 6:
-                if(ch=='*') {
+                if(ch=='*') { //For removing comments in user source code, states 6,7,8,9 are used
                     state = 7;
                     pointer++;
                     break;
@@ -332,7 +358,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 break;
 
             case 10:
-                line_number++;
+                line_number++; //Increments line number even though inside comments
                 if(ch=='*') {
                     state = 7;
                     pointer++;
@@ -360,7 +386,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                     break;
                 }
                 else {
-                    state = 51;
+                    state = 51; //Example of error being encountered on which the state is changed to 51
                     pointer--;
                     break;
                 }
@@ -527,7 +553,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
             case 28:
                 id_length++;
 
-                if(id_length<MAX_ID_LENGTH) {
+                if(id_length<MAX_ID_LENGTH) { //Checking if id length is less than 20
                     id[id_length] = ch; 
                 }
 
@@ -548,14 +574,17 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                     id_length = 0;
                     n = create_node();
 
+                    /*The lexeme is searched for in the lookup table, to check if it's a keyword or not.
+                    Further details in lookup.c
+                    */
                     List tmp = search(id, table);
                     
                     if(tmp == NULL) {
-                        n->token = ID;
+                        n->token = ID; //Returning an ID token
                         strcpy(n->lexeme, id);
                     }
                     else {
-                        n->token = tmp->token;
+                        n->token = tmp->token; //Returning a keyword token found in the lookup table
                         strcpy(n->lexeme, tmp->lexeme);
                     }
 
@@ -567,7 +596,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 }
                 else {
                     id_length = 0;
-                    string_flush(id);
+                    string_flush(id); //Error on encountering is length > 20
                     pointer--;
                     state = 51;
                     break;
@@ -575,7 +604,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
 
             case 30:
                 if((ch==' ') || (ch=='\t')) {
-                    state = 30;
+                    state = 30; //Ignoring tabs and spaces
                     pointer++;
                     break;
                 }
@@ -590,7 +619,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
 
             case 32:
                 // printf("%s\n", number);
-                if((ch>='0')&&(ch<='9')) {
+                if((ch>='0')&&(ch<='9')) { //For identifying a NUM or RNUM
                     state = 32;
                     number_index++;
                     number[number_index] = ch;
@@ -626,7 +655,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 break;                
 
             case 34:
-                if((ch>='0')&&(ch<='9')) {
+                if((ch>='0')&&(ch<='9')) { //Checking RNUM
                     state = 36;
                     number_index++;
                     number[number_index] = ch;
@@ -655,7 +684,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 }
 
             case 35:
-                number[number_index] = '\0';
+                number[number_index] = '\0'; //Error state. Eg- 120.
                 // n  = create_node();
                 // n->token = NUM;
                 // strcpy(n->lexeme, number);
@@ -669,7 +698,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 break;                            
 
             case 36:
-                if((ch>='0')&&(ch<='9')) {
+                if((ch>='0')&&(ch<='9')) { //Checking for mantissa-exopnent form
                     state = 36;
                     number_index++;
                     number[number_index] = ch;
@@ -712,7 +741,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 }
 
             case 38: 
-                number[number_index] = '\0';
+                number[number_index] = '\0'; //Error state - Eg: 180.ea
                 // n  = create_node();
                 // n->token = RNUM;
                 // strcpy(n->lexeme, number);
@@ -739,7 +768,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 }
 
             case 40:
-                number[number_index] = '\0';
+                number[number_index] = '\0'; //Error state - Eg: 120.E+a
                 // number_index--;
                 // number[number_index] = '\0';
                 // n  = create_node();
@@ -870,7 +899,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 break;
 
             case 51:
-                n = create_node();
+                n = create_node(); //This is the error state which returns an error token which returns the lexeme stored in array error
                 n->token = ERROR;
                 strcpy(n->lexeme, error);
                 string_flush(error);
@@ -881,7 +910,7 @@ Node* get_next_token(FILE* fp, lookup_table table) {
                 return n;
                 break;
 
-            case 52:
+            case 52: //State on encountering EOF character, which terminates the function
                 return NULL;
                 break;
 
@@ -928,6 +957,10 @@ Node* get_next_token(FILE* fp, lookup_table table) {
     
 }
 
+/*  The main function of the lexer which calls get_next_token for every token until EOF
+    It stores every received correct node pointer in a token stream.
+    It also prints lexer output, which includes correct lexemes with line numbers, as well as lexical errors
+*/
 int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table, int check) {
 
     FILE* fp = open_file(filename);
@@ -958,7 +991,7 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
         }
 
         else {
-            if(c_size == c_max) {
+            if(c_size == c_max) { //Reallocating token stream size
                 *token_stream = (Node **) realloc(*token_stream, sizeof(Node *) * c_max * 2);
                 c_max *= 2;
             }
@@ -968,24 +1001,24 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
         }
 
         if(check) {
-            if(n->token==ERROR) {
+            if(n->token==ERROR) { //Printing lexical error with reason
                 if(strlen(n->lexeme)>20)
-                    printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
+                    printf("\tError on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
                 else
-                    printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
+                    printf("\tError on line number %d: %s\n", n->line_no, n->lexeme);
          
             }
-            else if(n->tag==0) {
+            else if(n->tag==0) { //Printing correct lexemes other than numbers
                 printf("Line number: %d\t", n->line_no);
                 printf("Lexeme: %s\t", n->lexeme);
                 printf("Token: %s\t\n", token_string_map_copy[n->token]);
             }
-            else if(n->tag==1){
+            else if(n->tag==1){ //Printing NUM values
                 printf("Line number: %d\t", n->line_no);
                 printf("Value: %d\t", n->val.num);
                 printf("Token: %s\t\n", token_string_map_copy[n->token]);
             }
-            else {
+            else { //Printing RNUM values
                 printf("Line number: %d\t", n->line_no);
                 printf("Value: %f\t", n->val.rnum);
                 printf("Token: %s\t\n", token_string_map_copy[n->token]);
@@ -998,7 +1031,9 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
     return c_size;
 }
 
-
+/* Function for printing the original user source code with comments removed.
+   Line numbers are maintained
+*/
 int print_without_comments(char* filename) {
     FILE* fp = open_file(filename);
     

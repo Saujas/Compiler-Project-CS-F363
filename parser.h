@@ -6,9 +6,13 @@
 #include "parser_def.h"
 #include "stack.h"
 
+/* Defined name of grammar file here which can be changed as suited
+*/
 #define GRAMMAR_FILE "grammar.txt"
 #define MAX_RULE_LENGTH 500
 
+/* Function definitions for all functions used in parser. Detailed descriptions in parser.c
+*/
 int parser(char* filename, char* output_fname);
 int parse_tokens(Node** token_stream, int tokens_parsed);
 int read_grammar(char* filename);
@@ -28,5 +32,4 @@ int merge_first_first(first_set *current_set, first_set new_set, int add_e);
 int merge_follow_first(follow_set *current_set, first_set new_set);
 int merge_follow_follow(follow_set *current_set, follow_set new_set);
 int max(int a, int b);
-
 stack* initialize_stack();

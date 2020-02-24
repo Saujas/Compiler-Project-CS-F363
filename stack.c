@@ -5,11 +5,13 @@
 
 #include "stack.h"
 
+//Create empty stack
 stack* create_stack() {
     stack* top = NULL;
     return top;
 }
 
+//Push an element to top of stack
 int push(stack** top, stack_ele s) {
     stack* s1 = (stack*)malloc(sizeof(stack));
     s1->next = *top;
@@ -20,6 +22,7 @@ int push(stack** top, stack_ele s) {
     return 1;
 }
 
+//Pop an element at the top of the stack
 stack_ele pop(stack** top) {
     
     if(!is_empty(*top)) {
@@ -29,12 +32,14 @@ stack_ele pop(stack** top) {
     }
 }
 
+//Get the elemet at the top of the stack but don't remove it
 stack_ele peek(stack* top) {
     if(!is_empty(top)) {
         return top->ele;
     }
 }
 
+//Check if stack empty
 int is_empty(stack* top) {
     if(top==NULL) {
         return 1;
@@ -43,6 +48,7 @@ int is_empty(stack* top) {
 
 }
 
+//Get cuurent size of stack
 int size(stack* top) {
     if(!is_empty(top)) {
         stack* temp = top;

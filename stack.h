@@ -7,6 +7,9 @@
 #include "tree.h"
 // #include "lexer_def.h"
 
+/* Structure for a single stack element, containing a symbol(non-terminal enum or token enum),
+   and a pointer to a tree node to be used in tree.c for parse tree creation
+*/
 typedef struct {
     symbol sym;
     t_node* ptr;
@@ -17,6 +20,8 @@ typedef struct _stack{
     struct  _stack* next;
 } stack;
 
+/* Function definitions for all functions used in stack. Detailed descriptions in stack.c
+*/
 int push(stack** top, stack_ele s);
 stack_ele pop(stack** top);
 int is_empty(stack* top);
