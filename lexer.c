@@ -1003,9 +1003,9 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
         if(check) {
             if(n->token==ERROR) { //Printing lexical error with reason
                 if(strlen(n->lexeme)>20)
-                    printf("\tError on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
+                    printf("Error on line number %d: %s (Length of identifier cannot exceed 20)\n", n->line_no, n->lexeme);
                 else
-                    printf("\tError on line number %d: %s\n", n->line_no, n->lexeme);
+                    printf("Error on line number %d: %s\n", n->line_no, n->lexeme);
          
             }
             else if(n->tag==0) { //Printing correct lexemes other than numbers
