@@ -26,6 +26,8 @@ typedef struct tn {
     int tag;
     struct tn* sibling;
     struct tn* child;
+    struct tn* parent;//new additions
+    int line_num;//new additions
 } t_node;
 
 /* Function definitions for all functions used in tree. Detailed descriptions in tree.c

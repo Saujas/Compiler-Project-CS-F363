@@ -38,7 +38,8 @@ t_node* create_internal(non_terminals nt) {
     intern->sibling = NULL;
     intern->child = NULL;
     intern->node.internal = nt;
-
+    intern->line_num = 0;//new additions
+    intern->parent = NULL;//new additions
     return intern;
 }
 
@@ -49,6 +50,8 @@ t_node* create_leaf(Node n) {
     leaf->sibling = NULL;
     leaf->child = NULL;
     leaf->node.leaf = n;
+    intern->line_num = 0;//new additions
+    intern->parent = NULL;//new additions
 
     return leaf;
 }
@@ -56,7 +59,8 @@ t_node* create_leaf(Node n) {
 // Inserting a node with given parent.
 // If the parent node has a child, it is inserted as a sibling of its chils
 int insert_node(t_node** parent, t_node* child) {
-    
+
+    child->parent = (*parent);//new additions
     if((*parent)->child == NULL) {
         (*parent)->child = child;
     }

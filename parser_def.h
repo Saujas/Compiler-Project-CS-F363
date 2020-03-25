@@ -38,6 +38,7 @@ typedef struct grammar_rule {
     symbol* rule;
     int count_of_symbols;
     struct grammar_rule* next; 
+    int rule_num;//new additions
 } rules;
 
 // Structure for first set containing an array of token enums and a count

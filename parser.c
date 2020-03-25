@@ -253,6 +253,7 @@ int read_grammar(char* filename) {
     char * token, *nt;
     char* delim = " ";
     char** rule;
+    int rule_num=0;//new additions
 
     while( fscanf(fp, "%[^\n]\n", buf) != EOF ) {
         // printf("%s\n", buf);
@@ -284,8 +285,9 @@ int read_grammar(char* filename) {
                 // printf("%s:%s ", rule[i], non_terminals_string_map[rhs[i].sym.non_terminal]);
             }
         }
-
-        addRule(grammar, rhs, lhs, count);
+        rule_num++;//new additions
+        addRule(grammar, rhs, lhs, count, rule_num);//new additions
+        
     }
 
     for(i=0; i<NON_TERMINAL_SIZE; i++) {
@@ -337,10 +339,11 @@ symbol convert_to_symbol(char* str) {
 }
 
 //Adding one rule to the grammar
-int addRule(rules** grammar, symbol* rule, symbol nt, int count) {
+int addRule(rules** grammar, symbol* rule, symbol nt, int count, int rule_num) {
     
     rules* new_rule = (rules*) malloc(sizeof(rules));
     new_rule->next = NULL;new_rule->count_of_symbols = count;
+    new_rule->rule_num=rule_num;//new additions
     new_rule->rule = (symbol*) malloc(sizeof(symbol)*count);
 
     int i;
