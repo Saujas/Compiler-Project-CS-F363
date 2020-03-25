@@ -51,8 +51,8 @@ t_node* create_leaf(Node n) {
     leaf->sibling = NULL;
     leaf->child = NULL;
     leaf->node.leaf = n;
-    intern->rule_num = 0;//new additions
-    intern->parent = NULL;//new additions
+    leaf->rule_num = 0;//new additions
+    leaf->parent = NULL;//new additions
 
     return leaf;
 }
@@ -121,7 +121,8 @@ int print_tnode(t_node* n, non_terminals parent, FILE* fp) {
         
         fprintf(fp, "Parent Node: %s\t", nt_string_map[parent]);
         fprintf(fp, "Leaf Node: Yes\t");
-        fprintf(fp, "Node Symbol: ------\n\n");
+        fprintf(fp, "Node Symbol: ------\t");
+        fprintf(fp, "Rule Number: %d\n\n", n->rule_num);
     }
     else { //Printing an internal node with blank lexeme and token
         fprintf(fp, "Lexeme: ------\tLine No: ------\tToken: ------\tValue: ------\t");
@@ -131,7 +132,8 @@ int print_tnode(t_node* n, non_terminals parent, FILE* fp) {
             fprintf(fp, "Parent Node: %s\t", nt_string_map[parent]);
         
         fprintf(fp, "Leaf Node: No\t");
-        fprintf(fp, "Node Symbol: %s\n\n", nt_string_map[n->node.internal]);
+        fprintf(fp, "Node Symbol: %s\t", nt_string_map[n->node.internal]);
+        fprintf(fp, "Rule Number: %d\n\n", n->rule_num);
     }
 
     return 1;
