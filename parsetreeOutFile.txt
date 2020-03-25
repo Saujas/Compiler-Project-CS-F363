@@ -1,34 +1,34 @@
-Lexeme: E	Line No: 2	Token: E	Value: ------	Parent Node: moduleDeclarations	Leaf Node: Yes	Node Symbol: ------	Rule Number: 3
+Lexeme: E                     Line No: 2    Token: E                     Value: -                Parent Node: moduleDeclarations    Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: moduleDeclarations	Rule Number: 1
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: program               Leaf Node: No   Node Symbol: moduleDeclarations  Rule Number: 3         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: ROOT	Leaf Node: No	Node Symbol: program	Rule Number: 1
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: ROOT                  Leaf Node: No   Node Symbol: program             Rule Number: 1         
 
-Lexeme: E	Line No: 2	Token: E	Value: ------	Parent Node: otherModules	Leaf Node: Yes	Node Symbol: ------	Rule Number: 6
+Lexeme: E                     Line No: 2    Token: E                     Value: -                Parent Node: otherModules          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: otherModules	Rule Number: 1
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: program               Leaf Node: No   Node Symbol: otherModules        Rule Number: 6         
 
-Lexeme: <<<	Line No: 2	Token: DRIVERDEF	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------	Rule Number: 0
+Lexeme: <<<                   Line No: 2    Token: DRIVERDEF             Value: -                Parent Node: driverModule          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: driverModule	Rule Number: 1
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: program               Leaf Node: No   Node Symbol: driverModule        Rule Number: 7         
 
-Lexeme: driver	Line No: 2	Token: DRIVER	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------	Rule Number: 0
+Lexeme: driver                Line No: 2    Token: DRIVER                Value: -                Parent Node: driverModule          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: program	Line No: 2	Token: PROGRAM	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------	Rule Number: 0
+Lexeme: program               Line No: 2    Token: PROGRAM               Value: -                Parent Node: driverModule          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: >>>	Line No: 2	Token: DRIVERENDDEF	Value: ------	Parent Node: driverModule	Leaf Node: Yes	Node Symbol: ------	Rule Number: 0
+Lexeme: >>>                   Line No: 2    Token: DRIVERENDDEF          Value: -                Parent Node: driverModule          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: start	Line No: 3	Token: START	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------	Rule Number: 0
+Lexeme: start                 Line No: 3    Token: START                 Value: -                Parent Node: moduleDef             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: driverModule	Leaf Node: No	Node Symbol: moduleDef	Rule Number: 7
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: driverModule          Leaf Node: No   Node Symbol: moduleDef           Rule Number: 30        
 
-Lexeme: E	Line No: 5	Token: E	Value: ------	Parent Node: statements	Leaf Node: Yes	Node Symbol: ------	Rule Number: 31
+Lexeme: E                     Line No: 5    Token: E                     Value: -                Parent Node: statements            Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: moduleDef	Leaf Node: No	Node Symbol: statements	Rule Number: 30
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: moduleDef             Leaf Node: No   Node Symbol: statements          Rule Number: 31        
 
-Lexeme: end	Line No: 5	Token: END	Value: ------	Parent Node: moduleDef	Leaf Node: Yes	Node Symbol: ------	Rule Number: 0
+Lexeme: end                   Line No: 5    Token: END                   Value: -                Parent Node: moduleDef             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: E	Line No: 5	Token: E	Value: ------	Parent Node: otherModules	Leaf Node: Yes	Node Symbol: ------	Rule Number: 6
+Lexeme: E                     Line No: 5    Token: E                     Value: -                Parent Node: otherModules          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: ------	Line No: ------	Token: ------	Value: ------	Parent Node: program	Leaf Node: No	Node Symbol: otherModules	Rule Number: 1
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: program               Leaf Node: No   Node Symbol: otherModules        Rule Number: 6         
 

@@ -104,36 +104,35 @@ int inorder_traversal(t_node* root, non_terminals parent, FILE* fp) {
     return 1;
 }
 
-// Print a node during inorder traversal into the given file
 int print_tnode(t_node* n, non_terminals parent, FILE* fp) {
     if(n==NULL) {
         return 0;
     }
 
     if(n->tag == 0) { //Print a leaf node with its value
-        fprintf(fp, "Lexeme: %s\tLine No: %d\tToken: %s\t", n->node.leaf.lexeme, n->node.leaf.line_no, t_string_map[n->node.leaf.token]);
+        fprintf(fp, "Lexeme: %-20s  Line No: %-3d  Token: %-20s  ", n->node.leaf.lexeme, n->node.leaf.line_no, t_string_map[n->node.leaf.token]);
         if(n->node.leaf.tag == 1)
-            fprintf(fp, "Value: %d\t", n->node.leaf.val.num);
+            fprintf(fp, "Value: %-15d  ", n->node.leaf.val.num);
         else if(n->node.leaf.tag == 2)
-            fprintf(fp, "Value: %f\t", n->node.leaf.val.rnum);
+            fprintf(fp, "Value: %-15f  ", n->node.leaf.val.rnum);
         else
-            fprintf(fp, "Value: ------\t");
+            fprintf(fp, "Value: %-15s  ", "-");
         
-        fprintf(fp, "Parent Node: %s\t", nt_string_map[parent]);
-        fprintf(fp, "Leaf Node: Yes\t");
-        fprintf(fp, "Node Symbol: ------\t");
-        fprintf(fp, "Rule Number: %d\n\n", n->rule_num);
+        fprintf(fp, "Parent Node: %-20s  ", nt_string_map[parent]);
+        fprintf(fp, "Leaf Node: Yes  ");
+        fprintf(fp, "Node Symbol: %-20s", "-");
+        fprintf(fp, "Rule Number: %-10d\n\n", n->rule_num);
     }
     else { //Printing an internal node with blank lexeme and token
-        fprintf(fp, "Lexeme: ------\tLine No: ------\tToken: ------\tValue: ------\t");
+        fprintf(fp, "Lexeme: %-20s  Line No: %-3s  Token: %-20s  Value: %-15s  ", "-", "-", "-", "-");
         if(parent == -1)
-            fprintf(fp, "Parent Node: ROOT\t");
+            fprintf(fp, "Parent Node: ROOT%16s  ", " ");
         else
-            fprintf(fp, "Parent Node: %s\t", nt_string_map[parent]);
+            fprintf(fp, "Parent Node: %-20s  ", nt_string_map[parent]);
         
-        fprintf(fp, "Leaf Node: No\t");
-        fprintf(fp, "Node Symbol: %s\t", nt_string_map[n->node.internal]);
-        fprintf(fp, "Rule Number: %d\n\n", n->rule_num);
+        fprintf(fp, "Leaf Node: No   ");
+        fprintf(fp, "Node Symbol: %-20s", nt_string_map[n->node.internal]);
+        fprintf(fp, "Rule Number: %-10d\n\n", n->rule_num);
     }
 
     return 1;

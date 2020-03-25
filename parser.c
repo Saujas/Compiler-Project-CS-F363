@@ -74,7 +74,6 @@ int parser(char* filename, char* output_fname) {
     return 1;
 }
 
-
 /* This function parses the token stream returned by lexical analyser.
    Uses computed first and follow sets, and parse table for parsing rules.
    Also initalises tree and stack at the beginning.
@@ -159,6 +158,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
             else { //Correct parsing
                 pop(&Stack);
                 t_node* parent = current_top.ptr;
+                parent->rule_num = r.rule_num; // new additions
 
                 // printf("%s --> ", non_terminals_string_map[current_top.sym.sym.non_terminal]);
                 for(j=r.count_of_symbols-1; j>=0; j--) {
@@ -173,7 +173,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         n1.token = E;
                         strcpy(n1.lexeme, "E"); //Empty derivation of non-terminal
                         new_tn = create_leaf(n1);
-                        new_tn->rule_num = r.rule_num;//new additions
+                        // new_tn->rule_num = r.rule_num;//new additions
                         insert_node(&parent, new_tn);
                         continue;
                     }
@@ -181,7 +181,6 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         t_node* new_tn;
                         if(c_sym.tag == 1) { //Creating internal node to be inserted in tree
                             new_tn = create_internal(c_sym.sym.non_terminal);
-                            new_tn->rule_num = r.rule_num;//new additions
                             // printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
                         }
                         else { //Creating leaf node to be inserted in tree
@@ -344,7 +343,8 @@ symbol convert_to_symbol(char* str) {
 int addRule(rules** grammar, symbol* rule, symbol nt, int count, int rule_num) {
     
     rules* new_rule = (rules*) malloc(sizeof(rules));
-    new_rule->next = NULL;new_rule->count_of_symbols = count;
+    new_rule->next = NULL;
+    new_rule->count_of_symbols = count;
     new_rule->rule_num=rule_num;//new additions
     new_rule->rule = (symbol*) malloc(sizeof(symbol)*count);
 
