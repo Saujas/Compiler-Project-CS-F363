@@ -173,6 +173,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         n1.token = E;
                         strcpy(n1.lexeme, "E"); //Empty derivation of non-terminal
                         new_tn = create_leaf(n1);
+                        new_tn->rule_num = r.rule_num;//new additions
                         insert_node(&parent, new_tn);
                         continue;
                     }
@@ -180,7 +181,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         t_node* new_tn;
                         if(c_sym.tag == 1) { //Creating internal node to be inserted in tree
                             new_tn = create_internal(c_sym.sym.non_terminal);
-                            //new_tn->rule_num = ;//new additions
+                            new_tn->rule_num = r.rule_num;//new additions
                             // printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
                         }
                         else { //Creating leaf node to be inserted in tree
@@ -376,6 +377,7 @@ int create_parse_table() {
             parse_table[i][j].rule=NULL;
             parse_table[i][j].next=NULL;
             parse_table[i][j].count_of_symbols=-1;
+            parse_table[i][j].rule_num = 0;//new additions
         }
     }
     for(i=0; i<NON_TERMINAL_SIZE; i++) {
@@ -392,6 +394,7 @@ int create_parse_table() {
                 }
                 parse_table[i][fs.first_set_token[k]].rule = temp->rule;
                 parse_table[i][fs.first_set_token[k]].count_of_symbols = temp->count_of_symbols;
+                parse_table[i][fs.first_set_token[k]].rule_num = temp->rule_num;//new additions
             }
             if(flag) {
                 follow_set fs = all_follow_sets[i];
@@ -399,6 +402,7 @@ int create_parse_table() {
                 for(l=0; l<fs.count; l++) {
                     parse_table[i][fs.follow_set_token[l]].rule = temp->rule;
                     parse_table[i][fs.follow_set_token[l]].count_of_symbols = temp->count_of_symbols;
+                    parse_table[i][fs.follow_set_token[l]].rule_num = temp->rule_num;//new additions
                 }
             }
             // printf("%s --> ", non_terminals_string_map[i]);
