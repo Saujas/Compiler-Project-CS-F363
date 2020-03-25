@@ -8,6 +8,7 @@
 
 #include"lexer_def.h"
 #include"parser_def.h"
+#include "ast_def.h"
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -28,6 +29,10 @@ typedef struct tn {
     struct tn* child;
     struct tn* parent;//new additions
     int rule_num;//new additions
+
+    // FOR AST
+    AST tree_node;
+    AST tree_node_inh;
 } t_node;
 
 /* Function definitions for all functions used in tree. Detailed descriptions in tree.c
