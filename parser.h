@@ -16,7 +16,7 @@
 int parser(char* filename, char* output_fname);
 int parse_tokens(Node** token_stream, int tokens_parsed);
 int read_grammar(char* filename);
-int addRule(rules** grammar, symbol* rule, symbol nt, int count_of_symbols, int rule_num);
+int addRule(rules** grammar, symbol* rule, symbol nt, int count_of_symbols, int rule_num);//new additions
 int main_parser(char* filename);
 symbol convert_to_symbol(char* str);
 first_set compute_first_set(int nt);

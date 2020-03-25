@@ -180,6 +180,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                         t_node* new_tn;
                         if(c_sym.tag == 1) { //Creating internal node to be inserted in tree
                             new_tn = create_internal(c_sym.sym.non_terminal);
+                            //new_tn->rule_num = ;//new additions
                             // printf("\nNon terminal node: %s, Parent: %s\n", non_terminals_string_map[c_sym.sym.non_terminal], non_terminals_string_map[parent->node.internal]);
                         }
                         else { //Creating leaf node to be inserted in tree

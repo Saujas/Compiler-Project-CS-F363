@@ -27,6 +27,7 @@ char * t_string_map[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY
 // Initialise tree with start symbol program
 t_node* initialize_tree() {
     t_node* root = create_internal(program);
+    root->rule_num = 1;//new additions
 
     return root;
 }
@@ -38,7 +39,7 @@ t_node* create_internal(non_terminals nt) {
     intern->sibling = NULL;
     intern->child = NULL;
     intern->node.internal = nt;
-    intern->line_num = 0;//new additions
+    intern->rule_num = 0;//new additions
     intern->parent = NULL;//new additions
     return intern;
 }
@@ -50,14 +51,14 @@ t_node* create_leaf(Node n) {
     leaf->sibling = NULL;
     leaf->child = NULL;
     leaf->node.leaf = n;
-    intern->line_num = 0;//new additions
+    intern->rule_num = 0;//new additions
     intern->parent = NULL;//new additions
 
     return leaf;
 }
 
 // Inserting a node with given parent.
-// If the parent node has a child, it is inserted as a sibling of its chils
+// If the parent node has a child, it is inserted as a sibling of its child
 int insert_node(t_node** parent, t_node* child) {
 
     child->parent = (*parent);//new additions
