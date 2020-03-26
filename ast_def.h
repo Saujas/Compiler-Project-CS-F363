@@ -20,6 +20,7 @@ typedef struct ast_node {
     
     struct ast_node* parent;
     struct ast_node* next;
+    struct ast_node* concatenated;
     struct ast_node* child;
 
     Node* leaf_token;
