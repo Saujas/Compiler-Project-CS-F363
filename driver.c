@@ -4,6 +4,7 @@
 // Saujas Adarkar - 2017A7PS0109P
 
 #include "parser.h"
+#include "ast.h"
 #include "lexer.h"
 #include <time.h>
 
@@ -44,10 +45,12 @@ int main(int argc, char* argv[]) {
         printf("2: For invoking only lexer\n");
         printf("3: For invoking both lexer and parser\n");
         printf("4: For printing total time for lexer and parser\n");
+        printf("5: For creating AST\n");
         scanf("%d", &choice);
 
         Node ** token_stream = NULL;
         lookup_table *table = NULL;
+        t_node** parse_tree_ptr;
 
         switch(choice) {
             case 0: //Program exit
@@ -80,6 +83,12 @@ int main(int argc, char* argv[]) {
                 printf("Total_CPU_time: %lf\n", total_CPU_time);
                 printf("Total_CPU_time_in_seconds: %lf\n", total_CPU_time_in_seconds);
                 printf("*****\n\n");
+                break;
+
+            case 5:
+                printf("\n");
+                parse_tree_ptr = parser(argv[1], argv[2]);
+                generate_AST(*parse_tree_ptr);
                 break;
 
             default: printf("\nInvalid Choice\n\n");

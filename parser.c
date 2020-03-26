@@ -36,7 +36,7 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
 
 /* Main function of parser which calls all other functions starting with lexical analyser
 */
-int parser(char* filename, char* output_fname) {
+t_node** parser(char* filename, char* output_fname) {
     
     Node ** token_stream;
     lookup_table *table;
@@ -71,7 +71,7 @@ int parser(char* filename, char* output_fname) {
     print_parse_tree(parse_tree, output_fname);
     printf("\n\tParse tree output has been saved to %s\n", output_fname);
 
-    return 1;
+    return &parse_tree;
 }
 
 /* This function parses the token stream returned by lexical analyser.
