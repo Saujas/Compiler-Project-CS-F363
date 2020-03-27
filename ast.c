@@ -4,7 +4,7 @@ char* ast_string_map[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
     "LVALUE_ARR_STMT", "MODULE_REUSE_STMT", "ID_LIST", "NEWX", "EXPRESSION", "NEW6", "NEW7", "NEW8", "RELATIONAL_EXPR", 
-    "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE"
+    "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE", "IO_READ", "IO_WRITE"
 };
 
 char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
@@ -51,10 +51,9 @@ void create_AST_Util(t_node* node) {
 
 }
 
-AST create_leaf_node(t_node* parse_tree_node, int label) {
+AST create_leaf_node(t_node* parse_tree_node, int label, int rule_num) {
     int l = label;
     int tag = 0;
-    int rule_num = parse_tree_node->rule_num;
     AST parent = parse_tree_node->parent->tree_node;
     AST child = NULL;
     AST next = NULL;
@@ -131,7 +130,11 @@ void print_ast_node(AST node) {
         printf("Rule no: %d - %s\n", node->rule_num, ast_string_map[node->label]);
     }
     else {
-        printf("Rule no: %d - %s\n", node->rule_num, node->leaf_token->lexeme);
+        printf("Rule no: %d - %s", node->rule_num, node->leaf_token->lexeme);
+        if(node->label == IO_READ || node->label == IO_WRITE) {
+            printf("    %s", ast_string_map[node->label]);
+        }
+        printf("\n");
     }
 }
 
@@ -192,9 +195,13 @@ void convert_to_AST_node(t_node* node) {
             break;
 
         case 9:
-        case 41:
         case 111:
             node->tree_node = node->child->sibling->sibling->tree_node;
+            break;
+
+        case 41:
+            node->tree_node = node->child->sibling->sibling->tree_node;
+            node->tree_node->child->label = IO_WRITE;
             break;
 
         case 17:
@@ -229,7 +236,7 @@ void convert_to_AST_node(t_node* node) {
         case 91:
         case 92:
         case 93:
-            node->tree_node = create_leaf_node(node->child, -1);
+            node->tree_node = create_leaf_node(node->child, -1, rule_num);
             // node->child->tree_node->parent = node->tree_node->parent;
             break;
 
@@ -307,7 +314,7 @@ void convert_to_AST_node(t_node* node) {
             break;
 
         case 4:
-            node->tree_node = create_leaf_node(node->child->sibling->sibling, MODULE_DECLARATION);
+            node->tree_node = create_leaf_node(node->child->sibling->sibling, MODULE_DECLARATION, rule_num);
             // node->child->tree_node->parent = node->tree_node->parent;
             break;
 
@@ -322,7 +329,7 @@ void convert_to_AST_node(t_node* node) {
         case 8:
             label = AST_MODULE;
             tag = 1;
-            child = create_leaf_node(node->child->sibling->sibling, -1);
+            child = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
  
             temp = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling;
             child->next = temp->tree_node;
@@ -354,7 +361,7 @@ void convert_to_AST_node(t_node* node) {
                 label = OUTPUT_PLIST;
 
             tag = 1;
-            child = create_leaf_node(node->child, -1);
+            child = create_leaf_node(node->child, -1, rule_num);
 
             child->next = node->child->sibling->sibling->tree_node;
             child->next->next = node->child->sibling->sibling->sibling->tree_node;
@@ -371,7 +378,7 @@ void convert_to_AST_node(t_node* node) {
                 label = NEW2;
 
             tag = 1;
-            child = create_leaf_node(node->child->sibling, -1);
+            child = create_leaf_node(node->child->sibling, -1, rule_num);
 
             child->next = node->child->sibling->sibling->sibling->tree_node;
             child->next->next = node->child->sibling->sibling->sibling->sibling->tree_node;
@@ -400,8 +407,8 @@ void convert_to_AST_node(t_node* node) {
             label = RANGE;
             tag = 1;
 
-            child = create_leaf_node(node->child, -1);
-            child->next = create_leaf_node(node->child->sibling->sibling, -1);
+            child = create_leaf_node(node->child, -1, rule_num);
+            child->next = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
@@ -419,7 +426,8 @@ void convert_to_AST_node(t_node* node) {
             break;
         
         case 40:
-            node->tree_node = create_leaf_node(node->child->sibling->sibling, -1);
+            node->tree_node = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
+            node->tree_node->label = IO_READ;
             break;
 
         case 42:
@@ -434,7 +442,7 @@ void convert_to_AST_node(t_node* node) {
             
             tag = 1;
 
-            child = create_leaf_node(node->child, -1);
+            child = create_leaf_node(node->child, -1, rule_num);
             child->next = node->child->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
@@ -460,11 +468,11 @@ void convert_to_AST_node(t_node* node) {
 
             if(temp->tree_node != NULL) {
                 child = temp->tree_node;
-                child->next = create_leaf_node(node->child->sibling->sibling->sibling, -1);
+                child->next = create_leaf_node(node->child->sibling->sibling->sibling, -1, rule_num);
                 child->next->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
             }
             else {
-                child = create_leaf_node(node->child->sibling->sibling->sibling, -1);
+                child = create_leaf_node(node->child->sibling->sibling->sibling, -1, rule_num);
                 child->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
             }
 
@@ -476,7 +484,7 @@ void convert_to_AST_node(t_node* node) {
             label = NEWX;
             tag = 1;
 
-            child = create_leaf_node(node->child->sibling, -1);
+            child = create_leaf_node(node->child->sibling, -1, rule_num);
             child->next = node->child->sibling->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
@@ -498,7 +506,7 @@ void convert_to_AST_node(t_node* node) {
             label = AST_FOR;
             tag = 1;
 
-            child = create_leaf_node(node->child->sibling->sibling, -1);
+            child = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
             child->next = node->child->sibling->sibling->sibling->sibling->tree_node;
             child->next->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
 
@@ -521,7 +529,7 @@ void convert_to_AST_node(t_node* node) {
             label = CONDITIONAL_STMT;
             tag = 1;
 
-            child = create_leaf_node(node->child->sibling->sibling, -1);
+            child = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
             child->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
@@ -554,7 +562,7 @@ void convert_to_AST_node(t_node* node) {
             label = NUMERIC_CASE;
             tag = 1;
 
-            child = create_leaf_node(node->child, -1);
+            child = create_leaf_node(node->child, -1, rule_num);
             child->next = node->child->sibling->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
@@ -600,7 +608,7 @@ void convert_to_AST_node(t_node* node) {
             label = RELATIONAL_EXPR;
             tag = 1;
             child = node->child->tree_node;
-            child->next = node->tree_node_inh;
+            child->next = extract_inherited(node);
             child->next->next = node->child->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);

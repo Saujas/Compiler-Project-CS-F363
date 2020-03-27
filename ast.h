@@ -5,7 +5,7 @@
 
 AST generate_AST(t_node* root);
 void create_AST_Util(t_node* node);
-AST create_leaf_node(t_node* parse_tree_node, int label);
+AST create_leaf_node(t_node* parse_tree_node, int label, int rule_num);
 AST create_NT_node(Label label, int tag, int rule_num, AST parent, AST child, AST next, Node* node);
 void link_children(t_node* node);
 void link_parent(t_node* node);
