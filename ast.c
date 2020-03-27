@@ -7,6 +7,14 @@ char* ast_string_map[AST_LABEL_NUMBER] = {
     "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE"
 };
 
+char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
+    "new1", "output_plist", "new2", "dataType", "dataType2", "type", "range", "range2", "moduleDef", "statements", "new3",
+    "statement", "ioStmt", "var", "var2", "whichID", "simpleStmt", "assignmentStmt", "whichStmt", "lvalueIDstmt", "lvalueArrStmt", 
+    "Index", "moduleReuseStmt", "optional", "idList", "newX", "expression", "new4", "AorBExpr", "arithmeticExpr", "new6",
+    "term", "new7", "factor", "PlusMinus", "MulDiv", "relationalOP", "logicalOP", "boolKey", "boolExpr", "new8", "relationalExpr",
+    "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
+    "numericCase", "new11", "Default"};
+
 AST generate_AST(t_node* root) {
     if(root == NULL) {
         return NULL;
@@ -96,6 +104,7 @@ void link_parent(t_node* node) {
 }
 
 void print_ast(AST root) {
+    
     if(root == NULL) {
         return;
     }
@@ -119,16 +128,16 @@ void print_ast(AST root) {
 
 void print_ast_node(AST node) {
     if (node->tag == 1) {
-        printf("%s\n", ast_string_map[node->label]);
+        printf("Rule no: %d - %s\n", node->rule_num, ast_string_map[node->label]);
     }
     else {
-        printf("%s\n", node->leaf_token->lexeme);
+        printf("Rule no: %d - %s\n", node->rule_num, node->leaf_token->lexeme);
     }
 }
 
 void convert_to_AST_node(t_node* node) {
     int rule_num = node->rule_num;
-    // printf("HELLO %d\n", rule_num);
+    // printf("HELLO %d: %s\n", rule_num, ast_non_terminals_string_map[node->node.internal]);
 
     Label label;
     int tag;
@@ -282,11 +291,11 @@ void convert_to_AST_node(t_node* node) {
                 label = MODULE_DECLARATIONS;
             else if(rule_num == 5)
                 label = OTHER_MODULES;
-            else if(rule_num==31)
+            else if(rule_num == 32)
                 label = STATEMENTS;
-            else if(rule_num==65)
+            else if(rule_num == 65)
                 label = EXPRESSION;
-            else if(rule_num==107)
+            else if(rule_num == 107)
                 label = NUMERIC_CASES;
 
             tag = 1;
@@ -306,7 +315,6 @@ void convert_to_AST_node(t_node* node) {
             label = AST_DRIVER;
             tag = 1;
             child = node->child->sibling->sibling->sibling->sibling->tree_node;
-
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
             break;
@@ -558,35 +566,34 @@ void convert_to_AST_node(t_node* node) {
         case 75:
         case 96:
             node->tree_node = node->child->sibling->tree_node;
-            node->child->sibling->tree_node_inh = node->child->tree_node;
             break;
 
         case 74:
         case 77:
         case 95:
         case 99:
-            node->tree_node = node->tree_node_inh;
+            node->tree_node = extract_inherited(node);
             break;
 
         case 73:
         case 76:
         case 94:
-            node->tree_node = node->child->sibling->sibling->tree_node;
             
-            if (rule_num == 73)
-                label = NEW6;
-            else if (rule_num == 76)
-                label = NEW7;
-            else if (rule_num == 94)
-                label = NEW8;
+            // if (rule_num == 73)
+            //     label = NEW6;
+            // else if (rule_num == 76)
+            //     label = NEW7;
+            // else if (rule_num == 94)
+            //     label = NEW8;
             
-            tag = 1;
-            child = node->child->tree_node;
-            child->next = node->tree_node_inh;
-            child->next->next = node->child->sibling->tree_node;
+            // tag = 1;
+            // child = node->child->tree_node;
+            // child->next = node->tree_node_inh;
+            // child->next->next = node->child->sibling->tree_node;
 
-            node->child->sibling->sibling->tree_node_inh = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
-            link_parent(node->child);
+            // node->child->sibling->sibling->tree_node_inh = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
+            // link_parent(node->child);
+            node->tree_node = node->child->sibling->sibling->tree_node;
             break;
 
         case 98:
@@ -603,3 +610,41 @@ void convert_to_AST_node(t_node* node) {
     }
 }
 
+AST extract_inherited(t_node* node) {
+    int rule_num = node->parent->rule_num;
+    AST inherited = NULL;
+    t_node* parent = node->parent;
+    Label label;
+    AST child = NULL, temp;
+
+    switch(rule_num) {
+        case 71:
+        case 72:
+        case 75:
+        case 96:
+            
+            inherited = parent->child->tree_node;
+            break;
+
+        case 73:
+        case 76:
+        case 94:
+
+            if (rule_num == 73)
+                label = NEW6;
+            else if (rule_num == 76)
+                label = NEW7;
+            else if (rule_num == 94)
+                label = NEW8;
+
+            child = parent->child->tree_node;
+            child->next = extract_inherited(parent);
+            child->next->next = parent->child->sibling->tree_node;
+
+            inherited = create_NT_node(label, 1, rule_num, NULL, child, NULL, NULL);
+
+            break;
+    }
+
+    return inherited;
+}

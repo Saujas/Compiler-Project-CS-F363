@@ -207,6 +207,7 @@ int parse_tokens(Node** token_stream, int tokens_parsed) {
                 ele.ptr->node.leaf.tag = n->tag;
                 strcpy(ele.ptr->node.leaf.lexeme, n->lexeme);
                 ele.ptr->node.leaf.line_no = n->line_no;
+                ele.ptr->node.leaf.val = n->val;
                 // printf("Symbol Matched: %s\n", token_string_map[current_top.sym.terminal]);
                 ct++;
             }
