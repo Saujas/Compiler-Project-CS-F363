@@ -5,6 +5,9 @@
 #include <stdlib.h>
 
 #include "ast_def.h"
+#include "label.h"
+
+typedef struct ast_node* AST;
 
 #define SYMBOL_TABLE_SLOTS 41
 
