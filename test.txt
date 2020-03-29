@@ -5,27 +5,14 @@ declare module compute;
 start
 	get_value(var_1_);
 	
-	while(i<=k)
-	start
-		get_value(tempvar);
-		arr1[i]:=tempvar;
-		i:=i+1;
-		** the semantics of while needs an increment and will be taken care of at the second phase**
-	end	
-
-	var_2_:=10;
-	
-	while(i<=k)
-	start
-		get_value(tempvar);
-		arr1[i]:=tempvar;
-		i:=i+1;
-		** the semantics of while needs an increment and will be taken care of at the second phase**
-	end
-
-	var_3_:= -(6);
-	[R1_abc, r2_ABC, R3_abc] := use module compute with parameters var_1_, var_2_, var_34;
 	** do not bother that the last variable is not declared. It will be taken care of later in the semantic analysis phase**
+end
+
+<<module compute>>
+takes input[arr1:array[1..15] of real, b:integer, c:integer];
+returns [res_1:boolean, res_2_a:integer, res_2__b:real];
+start
+	declare b:boolean;
 end
 
 **verify the output of the lexical analyzer as well**

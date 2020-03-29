@@ -1,9 +1,6 @@
 #ifndef _LABEL_
 #define _LABEL_
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 #define AST_LABEL_NUMBER 36
 
 typedef enum {

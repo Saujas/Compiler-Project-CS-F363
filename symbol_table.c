@@ -11,6 +11,24 @@ int hash(char* key, int slots) {
     return result % slots;
 }
 
+Symbol_Node* search(char* id, Symbol_Table_Tree table_tree_node) {
+    Symbol_Table* table = table_tree_node->table;
+    int h = hash(id, table->number_of_slots);
+    Symbol_List* temp = table->slots[h]->head;
+
+    while(temp->symbol != NULL) {
+        if( strcmp(temp->symbol->node->leaf_token->lexeme, id) == 0) {
+            return temp->symbol;
+        }   
+        temp = temp->next;
+    }
+    if(table_tree_node->parent) {
+        return search(id, table_tree_node->parent);
+    }
+
+    return NULL;
+}
+
 
 void insert_symbol(Symbol_Table* symbol_table, char* key, Symbol_Node* node) {
     int hash_value = hash(key, symbol_table->slots);
@@ -103,6 +121,22 @@ Symbol_Table_Tree create_symbol_table_tree(AST root) {
     traverse_ast(root, tree);
 
     return tree;
+}
+
+Symbol_Node* make_symbol_node(AST node, int datatype, int assigned, int width, int offset, void* memory, int usage, Range range[2], int array_datatype) {
+    Symbol_Node* symbol_node = (Symbol_Node*) malloc(sizeof(Symbol_Node));
+    symbol_node->node = node;
+    symbol_node->datatype = dataType;
+    symbol_node->usage = usage;
+    symbol_node->assigned = assigned;
+    symbol_node->offset = offset;
+    symbol_node->width = width;
+    symbol_node->memory = memory;
+    symbol_node->range[0] = range[0];
+    symbol_node->range[1] = range[1];
+    symbol_node->array_datatype = array_datatype;
+
+    return symbol_node;
 }
 
 void traverse_ast(AST node, Symbol_Table_Tree current) {
@@ -210,5 +244,84 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         }
     }
 
+    // New for loop
+    if(node->rule_num == 101 && node->tag == 1) {
+        new = make_symbol_table_tree_node(current, AST_FOR, "FOR");
+        new->is_declared = -1;
+        new->is_defined = -1;
+    }
     
+    // New while loop
+    if(node->rule_num == 102 && node->tag == 1) {
+        new = make_symbol_table_tree_node(current, AST_WHILE, "WHILE");
+        new->is_declared = -2;
+        new->is_defined = -2;
+    }
+    
+    if(node->rule_num == 11 && node->tag == 1) {
+        int datatype;
+        int array_datatype;
+        Node* type = NULL;
+        AST temp = node;
+        Symbol_Node* symbol_node;
+        while(temp) {
+            type = temp->child->next->leaf_token;
+            if(type != NULL) {
+                if(strcmp(type->lexeme, "integer")==0) {
+                    datatype = 0;
+                }
+                else if(strcmp(type->lexeme, "real")==0) {
+                    datatype = 1; 
+                }
+                else if(strcmp(type->lexeme, "boolean")==0) {
+                    datatype = 2;
+                }
+                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+            }
+            else {
+                datatype = 3;
+                if(strcmp(temp->child->next->child->next->leaf_token->lexeme, "integer")==0) {
+                    array_datatype = 0;
+                }
+                else {
+                    array_datatype = 1;
+                }
+                AST range1 = temp->child->next->child->child;
+                AST range2 = range1->next;
+                Range range[2];
+
+                range[0].tag = 0;
+                range[0].range_pointer.value = range2->leaf_token->val.num;
+
+                range[1].tag = 0;
+                range[1].range_pointer.value = range2->leaf_token->val.num;
+
+                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
+            }
+            insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+            temp = node->child->next->next;
+        }
+    }
+
+    if(node->rule_num == 14 && node->tag == 1) {
+        int datatype;
+        Node* type = NULL;
+        AST temp = node;
+        Symbol_Node* symbol_node;
+        while(temp) {
+            type = temp->child->next->leaf_token;
+            if(strcmp(type->lexeme, "integer")==0) {
+                datatype = 0;
+            }
+            else if(strcmp(type->lexeme, "real")==0) {
+                datatype = 1; 
+            }
+            else if(strcmp(type->lexeme, "boolean")==0) {
+                datatype = 2;
+            }
+            symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+            insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+            temp = node->child->next->next;
+        }
+    }
 }

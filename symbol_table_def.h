@@ -7,10 +7,20 @@
 #include "ast_def.h"
 #include "label.h"
 typedef struct ast_node* AST;
+typedef struct symbol_node Symbol_Node;
 
 #define SYMBOL_TABLE_SLOTS 41
 
-typedef struct ast_node* AST;
+union array_range {
+    Symbol_Node* id;
+    int value;
+};
+
+typedef struct {
+    union array_range range_pointer;
+    int tag;
+} Range;
+
 
 struct symbol_node {
     AST node;
@@ -18,6 +28,10 @@ struct symbol_node {
     int assigned;
     int width;
     int offset;
+    void* memory;
+    int usage;
+    Range range[2];
+    int array_datatype;
 };
 
 typedef struct symbol_node Symbol_Node;

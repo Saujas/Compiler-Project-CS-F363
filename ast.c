@@ -108,19 +108,20 @@ void print_ast(AST root) {
         return;
     }
 
-    print_ast(root->child);
     print_ast_node(root);
+    // print_ast(root->child);
 
     if(root->child==NULL) {
         return;
     }
     
     root = root->child;
-    root = root->next;
+    // root = root->next;
     while(root) {
         print_ast(root);
         root = root->next;
     }
+    printf("\n");
 
     return;
 }
