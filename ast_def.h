@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "parser_def.h"
+#include "symbol_table_def.h"
 #include "label.h"
 
 typedef struct ast_node {
@@ -16,6 +17,8 @@ typedef struct ast_node {
     struct ast_node* child;
 
     Node* leaf_token;
+
+    Symbol_Table_Tree* current_scope;
 
 } AST_Node;
 

@@ -4,6 +4,15 @@ declare module compute;
 <<<driver program>>>
 start
 	get_value(var_1_);
+	
+	while(i<=k)
+	start
+		get_value(tempvar);
+		arr1[i]:=tempvar;
+		i:=i+1;
+		** the semantics of while needs an increment and will be taken care of at the second phase**
+	end	
+
 	var_2_:=10;
 	
 	while(i<=k)

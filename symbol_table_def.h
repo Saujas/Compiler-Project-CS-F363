@@ -6,17 +6,18 @@
 
 #include "ast_def.h"
 #include "label.h"
-
 typedef struct ast_node* AST;
 
 #define SYMBOL_TABLE_SLOTS 41
+
+typedef struct ast_node* AST;
 
 struct symbol_node {
     AST node;
     int datatype;
     int assigned;
     int width;
-    int offset;    
+    int offset;
 };
 
 typedef struct symbol_node Symbol_Node;
@@ -35,7 +36,7 @@ struct slots_list {
 
 typedef struct slots_list Slots_List;
 
-struct symbol_table{
+struct symbol_table {
     Slots_List** slots;
     int number_of_slots;
 };
@@ -48,6 +49,10 @@ struct symbol_table_tree_node {
     struct symbol_table_tree_node* parent;
     struct symbol_table_tree_node* child;
     struct symbol_table_tree_node* sibling;
+
+    int is_defined;
+    int is_declared;
+    int is_called;
 
     Label label;
     char* name;
