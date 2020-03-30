@@ -89,21 +89,24 @@ Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label la
     node->output = NULL;
     node->table = create_symbol_table(SYMBOL_TABLE_SLOTS);
 
-    if(parent==NULL) {
-        
-    }
+    if(label != INPUT_PLIST && label != OUTPUT_PLIST) {
 
-    else if(parent->child == NULL) {
-        parent->child = node;
-    }
-    else {
-        Symbol_Table_Tree temp = parent->child;
-
-        while(temp->sibling) {
-            temp = temp->sibling;
+        if(parent==NULL) {
+            
         }
 
-        temp->sibling = node;
+        else if(parent->child == NULL) {
+            parent->child = node;
+        }
+        else {
+            Symbol_Table_Tree temp = parent->child;
+
+            while(temp->sibling) {
+                temp = temp->sibling;
+            }
+
+            temp->sibling = node;
+        }
     }
     
     return node;
@@ -160,11 +163,14 @@ void print_symbol_tables(Symbol_Table_Tree tree) {
     printf("Label: %s\n", ast_string_map_copy[tree->label]);
     printf("Name: %s\n\n", tree->name);
     if(tree->is_function && tree->is_defined) {
+        printf("In input_plist:\n");
         print_slots(tree->input->table);
+        printf("In output_plist:\n");
         print_slots(tree->output->table);
     }
     if(tree->table != NULL)
         print_slots(tree->table);
+    
     print_symbol_tables(tree->child);
 
     Symbol_Table_Tree temp = tree->sibling;
@@ -181,6 +187,7 @@ void print_slots(Symbol_Table* table) {
         printf("In slot %d\n", i);
         print_symbols(table->slots[i]);
     }
+    printf("\n");
 }
 
 void print_symbols(Slots_List* list) {
@@ -241,7 +248,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         }
 
         else if( !declared && !defined) {
-            new = make_symbol_table_tree_node(current, MODULE_DECLARATION, name, 1);
+            new = make_symbol_table_tree_node(current, AST_MODULE, name, 1);
             new->input = make_symbol_table_tree_node(current, INPUT_PLIST, name, 0);
             new->output = make_symbol_table_tree_node(current, OUTPUT_PLIST, name, 0);
             new->is_defined = 1;
@@ -384,12 +391,15 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                 symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
             }
             insert_symbol(current->input->table, temp->child->leaf_token->lexeme, symbol_node);
-            printf("%d\n", node->rule_num);
-            temp = node->child->next->next;
+            temp = temp->child->next->next;
         }
     }
 
     if(node->rule_num == 14 && node->tag == 1) {
+        // printf("%s\n", ast_string_map_copy[node->label]);
+        // printf("IIII\n");
+        // if(node->tag==1)
+        //     printf("TAG\n");
         int datatype;
         Node* type = NULL;
         AST temp = node;
@@ -404,10 +414,18 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             }
             else if(strcmp(type->lexeme, "boolean")==0) {
                 datatype = 2;
+                // printf("Ho\n");
             }
             symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+            // printf("Hi\n");
             insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
-            temp = node->child->next->next;
+            temp = temp->child->next->next;
+            // if(temp==NULL) {
+            //     printf("Yes\n");
+            // }
+            // else {
+            //     printf("No\n");
+            // }
         }
     }
 
@@ -467,12 +485,17 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             }
         }
     }
-    printf("%d\n", node->rule_num);
+    // if(node->tag)
+    //     printf("%s\n", ast_string_map_copy[node->label]);
+    // else
+    //     printf("%s\n", node->leaf_token->lexeme);
     traverse_ast(node->child, new);
     AST temp = node->next;
+    // printf("\n");
     while(temp) {
         traverse_ast(temp, current);
         temp = temp->next;
     }
+    
 
 }

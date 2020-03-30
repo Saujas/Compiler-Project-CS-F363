@@ -9,7 +9,7 @@
 typedef struct ast_node* AST;
 typedef struct symbol_node Symbol_Node;
 
-#define SYMBOL_TABLE_SLOTS 3
+#define SYMBOL_TABLE_SLOTS 5
 
 union array_range {
     Symbol_Node* id;

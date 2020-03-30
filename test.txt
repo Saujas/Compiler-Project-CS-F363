@@ -2,10 +2,12 @@
 
 <<<driver program>>>
 start
-
+	declare b:boolean;
 end
 
 <<module compute>>
-takes input[a:integer];
+takes input[a:integer, f:real];
+returns [res_1:boolean];
 start
+	declare b:boolean;
 end
