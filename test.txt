@@ -11,3 +11,15 @@ returns [res_1:boolean];
 start
 	declare b:boolean;
 end
+
+<<module com>>
+takes input[a:integer, f:real];
+returns [res_1:boolean, b:integer];
+start
+	declare c:boolean;
+	for(index in  1..15)
+	start
+		declare a:real;
+		declare b:array[8:10] of type real;
+	end
+end

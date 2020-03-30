@@ -99,9 +99,11 @@ Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label la
             parent->child = node;
         }
         else {
+            // printf("%s %s\n", ast_string_map_copy[parent->label], name);
             Symbol_Table_Tree temp = parent->child;
 
             while(temp->sibling) {
+                printf("%s %s\n", ast_string_map_copy[parent->label], temp->sibling->name);
                 temp = temp->sibling;
             }
 
@@ -167,13 +169,14 @@ void print_symbol_tables(Symbol_Table_Tree tree) {
         print_slots(tree->input->table);
         printf("In output_plist:\n");
         print_slots(tree->output->table);
+        printf("In function:\n");
     }
     if(tree->table != NULL)
         print_slots(tree->table);
     
-    print_symbol_tables(tree->child);
+    // print_symbol_tables(tree->child);
 
-    Symbol_Table_Tree temp = tree->sibling;
+    Symbol_Table_Tree temp = tree->child;
     while(temp) {
         print_symbol_tables(temp);
         temp = temp->sibling;
@@ -396,10 +399,6 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
     }
 
     if(node->rule_num == 14 && node->tag == 1) {
-        // printf("%s\n", ast_string_map_copy[node->label]);
-        // printf("IIII\n");
-        // if(node->tag==1)
-        //     printf("TAG\n");
         int datatype;
         Node* type = NULL;
         AST temp = node;
@@ -414,18 +413,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             }
             else if(strcmp(type->lexeme, "boolean")==0) {
                 datatype = 2;
-                // printf("Ho\n");
             }
             symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
-            // printf("Hi\n");
             insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
             temp = temp->child->next->next;
-            // if(temp==NULL) {
-            //     printf("Yes\n");
-            // }
-            // else {
-            //     printf("No\n");
-            // }
         }
     }
 
@@ -485,17 +476,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             }
         }
     }
-    // if(node->tag)
-    //     printf("%s\n", ast_string_map_copy[node->label]);
-    // else
-    //     printf("%s\n", node->leaf_token->lexeme);
-    traverse_ast(node->child, new);
-    AST temp = node->next;
-    // printf("\n");
+    AST temp = node->child;
     while(temp) {
-        traverse_ast(temp, current);
+        traverse_ast(temp, new);
         temp = temp->next;
-    }
-    
+    }    
 
 }
