@@ -1,19 +1,11 @@
 ** This testcase demonstrates the syntactic correctness of the constructs such as modules, simple and declaration statements, and expressions**
 
-declare module compute;
 <<<driver program>>>
 start
-	get_value(var_1_);
-	
-	** do not bother that the last variable is not declared. It will be taken care of later in the semantic analysis phase**
+
 end
 
 <<module compute>>
-takes input[arr1:array[1..15] of real, b:integer, c:integer];
-returns [res_1:boolean, res_2_a:integer, res_2__b:real];
+takes input[a:integer];
 start
-	declare b:boolean;
 end
-
-**verify the output of the lexical analyzer as well**
-**check the correctness of the parse tree**

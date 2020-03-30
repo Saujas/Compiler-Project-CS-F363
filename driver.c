@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "lexer.h"
+#include "symbol_table.h"
 #include <time.h>
 
 /* Main function called on execting the program
@@ -45,7 +46,7 @@ int main(int argc, char* argv[]) {
         printf("2: For invoking only lexer\n");
         printf("3: For invoking both lexer and parser\n");
         printf("4: For printing total time for lexer and parser\n");
-        printf("5: For creating AST\n");
+        printf("5: For creating AST and symbol table\n");
         scanf("%d", &choice);
 
         Node ** token_stream = NULL;
@@ -88,7 +89,8 @@ int main(int argc, char* argv[]) {
             case 5:
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], argv[2]);
-                generate_AST(*parse_tree_ptr);
+                AST root = generate_AST(*parse_tree_ptr);
+                create_symbol_table_tree(root);
                 break;
 
             default: printf("\nInvalid Choice\n\n");

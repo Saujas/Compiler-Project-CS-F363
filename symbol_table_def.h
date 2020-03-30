@@ -9,7 +9,7 @@
 typedef struct ast_node* AST;
 typedef struct symbol_node Symbol_Node;
 
-#define SYMBOL_TABLE_SLOTS 41
+#define SYMBOL_TABLE_SLOTS 3
 
 union array_range {
     Symbol_Node* id;
@@ -63,6 +63,10 @@ struct symbol_table_tree_node {
     struct symbol_table_tree_node* parent;
     struct symbol_table_tree_node* child;
     struct symbol_table_tree_node* sibling;
+
+    int is_function;
+    struct symbol_table_tree_node* input;
+    struct symbol_table_tree_node* output;
 
     int is_defined;
     int is_declared;
