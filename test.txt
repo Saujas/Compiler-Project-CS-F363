@@ -5,21 +5,14 @@ start
 	declare b:boolean;
 end
 
-<<module compute>>
-takes input[a:integer, f:real];
-returns [res_1:boolean];
-start
-	declare b:boolean;
-end
 
 <<module com>>
-takes input[a:integer, f:real];
-returns [res_1:boolean, b:integer];
+takes input[a:integer, a:real];
+returns [res_1:boolean, b:integer, res_1: real];
 start
-	declare c:boolean;
+	declare d:real;
 	for(index in  1..15)
 	start
-		declare a:real;
-		declare b:array[8:10] of type real;
-	end
+		declare v, c:array[b:d] of type real;
+	end	
 end

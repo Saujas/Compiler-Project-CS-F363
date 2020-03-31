@@ -29,17 +29,56 @@ Symbol_Node* search_symbol_table(char* id, Symbol_Table_Tree table_tree_node) {
     Symbol_Table* table = table_tree_node->table;
     int h = hash_symbol_table(id, table->number_of_slots);
     Symbol_List* temp = table->slots[h]->head;
+    
+    Symbol_Node* temp1 = NULL;
 
-    while(temp->symbol != NULL) {
+    while(temp) {
         if( strcmp(temp->symbol->node->leaf_token->lexeme, id) == 0) {
             return temp->symbol;
         }   
+        
         temp = temp->next;
     }
-    if(table_tree_node->parent) {
-        return search_symbol_table(id, table_tree_node->parent);
+
+    
+    if(table_tree_node->is_function) {            
+        temp1 = search_current_scope(id, table_tree_node->input);
+    }
+    
+    if(table_tree_node->is_function && !temp1) {
+        
+        temp1 = search_current_scope(id, table_tree_node->output);
     }
 
+    if(table_tree_node->parent && !temp1) {        
+        temp1 = search_symbol_table(id, table_tree_node->parent);
+    }
+
+    
+    return temp1;
+}
+
+Symbol_Node* search_current_scope(char* id, Symbol_Table_Tree table_tree_node) {
+    Symbol_Table* table = table_tree_node->table;
+    int h = hash_symbol_table(id, table->number_of_slots);
+    Symbol_List* temp = table->slots[h]->head;
+    
+    if(!temp) {
+        return NULL;
+    }
+
+    while(temp) {
+        if( strcmp(temp->symbol->node->leaf_token->lexeme, id) == 0) {
+            return temp->symbol;
+        }   
+        
+        temp = temp->next;
+    }
+
+    if(table_tree_node->is_function)
+        return search_current_scope(id, table_tree_node->output);
+
+    
     return NULL;
 }
 
@@ -48,6 +87,7 @@ void insert_symbol(Symbol_Table* symbol_table, char* key, Symbol_Node* node) {
     int hash_value = hash_symbol_table(key, symbol_table->number_of_slots);
     Symbol_List* new = (Symbol_List*) malloc(sizeof(Symbol_List));
     new->symbol = node;
+    new->next = NULL;
     Slots_List* temp = symbol_table->slots[hash_value];
     if(temp->head) {
         new->next = temp->head;
@@ -103,7 +143,7 @@ Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label la
             Symbol_Table_Tree temp = parent->child;
 
             while(temp->sibling) {
-                printf("%s %s\n", ast_string_map_copy[parent->label], temp->sibling->name);
+                // printf("%s %s\n", ast_string_map_copy[parent->label], temp->sibling->name);
                 temp = temp->sibling;
             }
 
@@ -163,7 +203,9 @@ void print_symbol_tables(Symbol_Table_Tree tree) {
         return;
     printf("\nIn scope:\n");
     printf("Label: %s\n", ast_string_map_copy[tree->label]);
-    printf("Name: %s\n\n", tree->name);
+    printf("Name: %s\n", tree->name);
+    // if(tree->parent)
+    //     printf("Parent: %s\n\n", tree->parent->name);
     if(tree->is_function && tree->is_defined) {
         printf("In input_plist:\n");
         print_slots(tree->input->table);
@@ -203,7 +245,14 @@ void print_symbols(Slots_List* list) {
         printf("Name of variable: %s ", symbol->node->leaf_token->lexeme);
         printf("Datatype: %d\t", symbol->datatype);
         if(symbol->datatype == 3) {
-            printf("Array range: %d..%d", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.value);
+            if(symbol->range[0].tag == 0 && symbol->range[1].tag == 0)
+                printf("Array range: %d..%d", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.value);
+            else if(symbol->range[0].tag == 0 && symbol->range[1].tag == 1)
+                printf("Array range: %d..%s", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 0)
+                printf("Array range: %s..%d", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.value);
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 1)
+                printf("Array range: %s..%s", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
         }
         count--;
         temp = temp->next;
@@ -359,7 +408,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         Node* type = NULL;
         AST temp = node;
         Symbol_Node* symbol_node;
+        int flag = 0;
         while(temp) {
+            flag = 0;
             type = temp->child->next->leaf_token;
             if(type != NULL) {
                 if(strcmp(type->lexeme, "integer")==0) {
@@ -371,7 +422,14 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                 else if(strcmp(type->lexeme, "boolean")==0) {
                     datatype = 2;
                 }
-                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+                // printf("Hi\n");
+                if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
+                    // printf("Hi\n");
+                    symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+                    flag = 1;
+                }
+                else
+                    printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
             }
             else {
                 datatype = 3;
@@ -386,14 +444,20 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                 Range range[2];
 
                 range[0].tag = 0;
-                range[0].range_pointer.value = range2->leaf_token->val.num;
+                range[0].range_pointer.value = range1->leaf_token->val.num;
 
                 range[1].tag = 0;
                 range[1].range_pointer.value = range2->leaf_token->val.num;
 
-                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
+                if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
+                    symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
+                    flag = 1;
+                }
+                else
+                    printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
             }
-            insert_symbol(current->input->table, temp->child->leaf_token->lexeme, symbol_node);
+            if(flag)
+                insert_symbol(current->input->table, temp->child->leaf_token->lexeme, symbol_node);
             temp = temp->child->next->next;
         }
     }
@@ -414,8 +478,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             else if(strcmp(type->lexeme, "boolean")==0) {
                 datatype = 2;
             }
-            symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
-            insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
+            if(search_current_scope(temp->child->leaf_token->lexeme, current->output)==NULL) {
+                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+                insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
+            }
+            else
+                printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
             temp = temp->child->next->next;
         }
     }
@@ -437,12 +505,24 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             else if(strcmp(type->lexeme, "boolean")==0) {
                 datatype = 2;
             }
-            symbol_node = make_symbol_node(temp->child->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
-            insert_symbol(current->table, temp->child->child->leaf_token->lexeme, symbol_node);
+            // printf("Hi\n");
+            // printf("%s %s\n", temp->child->child->leaf_token->lexeme, current->name);
+
+            if(search_current_scope(temp->child->child->leaf_token->lexeme, current)==NULL) {
+                symbol_node = make_symbol_node(temp->child->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+                insert_symbol(current->table, temp->child->child->leaf_token->lexeme, symbol_node);
+            }
+            else
+                printf("Line: %d - Variable %s already declared\n", temp->child->child->leaf_token->line_no, temp->child->child->leaf_token->lexeme);
+
             temp = temp->child->child->next;
             while(temp) {
-                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
-                insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+                if(search_current_scope(temp->child->leaf_token->lexeme, current)==NULL) {
+                    symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+                    insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+                }
+                else
+                    printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                 temp = temp->child->next;
             }
             
@@ -459,20 +539,80 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             AST range1 = temp->child->next->child->child;
             AST range2 = range1->next;
             Range range[2];
+            int flag = 1;
 
-            range[0].tag = 0;
-            range[0].range_pointer.value = range1->leaf_token->val.num;
+            if(range1->leaf_token->token == NUM) {
+                range[0].tag = 0;
+                range[0].range_pointer.value = range1->leaf_token->val.num;
+                if(range1->leaf_token->val.num <= 0) {
+                    printf("Line: %d - Variable used as array index has to be positive: %d\n", range1->leaf_token->line_no, range1->leaf_token->val.num);
+                    flag = 0;
+                }
+            }
+            else {
+                // printf("Hi\n");
+                Symbol_Node* temp1 = search_symbol_table(range1->leaf_token->lexeme, current);
+                if(temp1 != NULL) {
+                    if(temp1->datatype == 0) {
+                        range[0].tag = 1;
+                        range[0].range_pointer.id = temp1;
+                    }
+                    else {
+                        flag = 0;
+                        printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp1->node->leaf_token->line_no, temp1->node->leaf_token->lexeme);
+                    }
+                }
+                else {
+                    printf("Line: %d - Variable used as array index: %s is not declared\n", range1->leaf_token->line_no, range1->leaf_token->lexeme);
+                    flag = 0;
+                }
+            }
 
-            range[1].tag = 0;
-            range[1].range_pointer.value = range2->leaf_token->val.num;
+            if(range2->leaf_token->token == NUM) {
+                range[1].tag = 0;
+                range[1].range_pointer.value = range2->leaf_token->val.num;
+                if(range2->leaf_token->val.num <= 0) {
+                    printf("Line: %d - Variable used as array index has to be positive: %d\n", range2->leaf_token->line_no, range2->leaf_token->val.num);
+                    flag = 0;
+                }
+            }
+            else {
+                Symbol_Node* temp1 = search_symbol_table(range2->leaf_token->lexeme, current);
+                if(temp1 != NULL) {
+                    if(temp1->datatype == 0) {
+                        range[1].tag = 1;
+                        range[1].range_pointer.id = temp1;
+                    }
+                    else {
+                        flag = 0;
+                        printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp1->node->leaf_token->line_no, temp1->node->leaf_token->lexeme);
+                    }
+                }
+                else {
+                    printf("Line: %d - Variable used as array index: %s is not declared\n", range2->leaf_token->line_no, range2->leaf_token->lexeme);
+                    flag = 0;
+                }
+            }
 
-            symbol_node = make_symbol_node(temp->child->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
-            insert_symbol(current->table, temp->child->child->leaf_token->lexeme, symbol_node);
-            temp = temp->child->child->next;
-            while(temp) {
-                symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
-                insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
-                temp = temp->child->next;
+            if(flag) {
+
+                if(search_current_scope(temp->child->child->leaf_token->lexeme, current)==NULL) {
+                    symbol_node = make_symbol_node(temp->child->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
+                    insert_symbol(current->table, temp->child->child->leaf_token->lexeme, symbol_node);
+                }
+                else
+                    printf("Line: %d - Variable %s already declared\n", temp->child->child->leaf_token->line_no, temp->child->child->leaf_token->lexeme);
+
+                temp = temp->child->child->next;
+                while(temp) {
+                    if(search_current_scope(temp->child->leaf_token->lexeme, current)==NULL) {
+                        symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, range, array_datatype);
+                        insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+                    }
+                    else
+                        printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
+                    temp = temp->child->next;
+                }
             }
         }
     }
