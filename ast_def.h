@@ -7,6 +7,7 @@
 #include "label.h"
 
 typedef struct symbol_table_tree_node* Symbol_Table_Tree;
+typedef struct symbol_node Symbol_Node;
 
 typedef struct ast_node {
     Label label;
@@ -19,6 +20,8 @@ typedef struct ast_node {
     struct ast_node* child;
 
     Node* leaf_token;
+
+    Symbol_Node* symbol_table_node;
 
     Symbol_Table_Tree current_scope;
 

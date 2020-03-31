@@ -86,6 +86,7 @@ Symbol_Node* search_current_scope(char* id, Symbol_Table_Tree table_tree_node) {
 void insert_symbol(Symbol_Table* symbol_table, char* key, Symbol_Node* node) {
     int hash_value = hash_symbol_table(key, symbol_table->number_of_slots);
     Symbol_List* new = (Symbol_List*) malloc(sizeof(Symbol_List));
+    node->node->symbol_table_node = node;
     new->symbol = node;
     new->next = NULL;
     Slots_List* temp = symbol_table->slots[hash_value];
