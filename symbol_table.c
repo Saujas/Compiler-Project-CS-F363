@@ -189,6 +189,23 @@ int check_if_declared(Symbol_Table_Tree current, char* lexeme) {
     return 0;
 }
 
+int check_if_called(Symbol_Table_Tree current, char* lexeme) {
+    Symbol_Table_Tree temp = current->child;
+
+    if(temp == NULL)
+        return 0;
+
+    while(temp) {
+        if((strcmp(temp->name, lexeme) == 0) && (temp->is_called == 1)) {
+            return 1;
+        }
+
+        temp = temp->sibling;
+    }
+
+    return 0;
+}
+
 Symbol_Table_Tree create_symbol_table_tree(AST root) {
     Symbol_Table_Tree tree = make_symbol_table_tree_node(NULL, AST_PROGRAM, "main", 0);
     traverse_ast(root, tree);
@@ -285,6 +302,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         return;
 
     node->current_scope = current;
+    // printf("%d\n", node->rule_num);
     
     Symbol_Table_Tree new = current;
 
@@ -293,11 +311,27 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         char * name = node->child->leaf_token->lexeme;
         int declared = check_if_declared(current, name);
         int defined = check_if_defined(current, name);
+        int called = check_if_called(current, name);
         
         if(defined) {
             //error;
-            printf("%s Module already defined\n", name);
-            exit(-1);
+            printf("Line %d - %s Module already defined\n", node->child->leaf_token->line_no, name);
+            // exit(-1);
+        }
+
+        else if(declared && (!called) && (!defined)) {
+            printf("Line %d - Redundant declaration found for module %s\n", node->child->leaf_token->line_no, name);
+            return;
+            // Symbol_Table_Tree temp = current->child;
+
+            // while(temp) {
+            //     if(strcmp(name, temp->name) == 0) {
+            //         new = temp;
+            //         new->is_defined = 1;
+            //         break;
+            //     }
+            //     temp = temp->sibling;
+            // }
         }
 
         else if( !declared && !defined) {
@@ -308,7 +342,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             // new->is_declared = 1;
         }
 
-        else if (declared) {
+        else if (declared && called) {
             Symbol_Table_Tree temp = current->child;
 
             while(temp) {
@@ -320,6 +354,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                 temp = temp->sibling;
             }
         }
+
     }
 
     // Driver Module definition
@@ -330,7 +365,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         if(defined) {
             // error
             printf("DRIVER Module is already defined\n");
-            exit(-1);
+            // exit(-1);
         }
         else {
             new = make_symbol_table_tree_node(current, AST_DRIVER, "AST_DRIVER", 0);
@@ -340,14 +375,14 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
     }
 
     // Top-level module declarations
-    if(node->tag == 1 && node->rule_num == 4) {
-        char* name = node->child->leaf_token->lexeme;
+    if(node->tag == 0 && node->rule_num == 4) {
+        char* name = node->leaf_token->lexeme;
         int declared = check_if_declared(current, name);
 
         if(declared) {
             // error
-            printf("%s Module is already declared\n", name);
-            exit(-1);
+            printf("Line %d - %s Module is already declared\n", node->leaf_token->line_no, name);
+            // exit(-1);
         }
 
         else {
@@ -361,8 +396,15 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
 
     // Function Call Handling
     if(node->tag == 1 && node->rule_num == 59) {
-        char* name = node->child->leaf_token->lexeme;
 
+        AST temp_node;
+        if(node->child->tag == 0) 
+            temp_node = node->child;
+        else {
+            temp_node = node->child->next;
+        }
+
+        char* name = temp_node->leaf_token->lexeme;
         Symbol_Table_Tree temp = current;
 
         while(temp->parent != NULL) {
@@ -371,18 +413,18 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
 
         temp = temp->child;
         
-        int declared = 0; 
+        int declared = 0;
         while(temp) {
-            if( !strcmp(name, temp->name) && (temp->label == MODULE_DECLARATION)) {
+            if( strcmp(name, temp->name)==0 && (temp->label == MODULE_DECLARATION || temp->label == AST_MODULE)) {
                 declared = 1;
                 break;
             }
             temp = temp->sibling;
         }
-
+        
         if(!declared) {
-            printf("%s Incorrect Function Call, Module not found\n", name);
-            exit(-1);
+            printf("Line %d - %s Incorrect Function Call, Module not found\n", temp_node->leaf_token->line_no, name);
+            // exit(-1);
         }
         else {
             temp->is_called = 1;
@@ -403,6 +445,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         new->is_defined = -2;
     }
     
+    // INPUT PLIST
     if(node->rule_num == 11 && node->tag == 1) {
         int datatype;
         int array_datatype;
@@ -463,6 +506,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         }
     }
 
+    // OUTPUT PLIST
     if(node->rule_num == 14 && node->tag == 1) {
         int datatype;
         Node* type = NULL;
@@ -489,6 +533,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         }
     }
 
+    // DECLARE STATEMENT
     if(node->rule_num == 100 && node->tag == 1) {
         int datatype;
         int array_datatype;
@@ -560,7 +605,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                     }
                     else {
                         flag = 0;
-                        printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp1->node->leaf_token->line_no, temp1->node->leaf_token->lexeme);
+                        printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp->child->child->leaf_token->line_no, temp1->node->leaf_token->lexeme);
                     }
                 }
                 else {
@@ -576,6 +621,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                     printf("Line: %d - Variable used as array index has to be positive: %d\n", range2->leaf_token->line_no, range2->leaf_token->val.num);
                     flag = 0;
                 }
+                if(range[0].tag == 0 && range[0].range_pointer.value >= range[1].range_pointer.value) {
+                    printf("Line: %d - Lower array limit greater than upper array limit\n", range2->leaf_token->line_no);
+                    flag = 0;
+                }
             }
             else {
                 Symbol_Node* temp1 = search_symbol_table(range2->leaf_token->lexeme, current);
@@ -586,7 +635,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                     }
                     else {
                         flag = 0;
-                        printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp1->node->leaf_token->line_no, temp1->node->leaf_token->lexeme);
+                        printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp->child->child->leaf_token->line_no, temp1->node->leaf_token->lexeme);
                     }
                 }
                 else {
@@ -617,6 +666,57 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             }
         }
     }
+
+    // HANDLING VARIABLE USAGE
+    if(node->rule_num == 40 && node->tag == 0) {
+        char* name = node->leaf_token->lexeme;
+        Symbol_Node* temp;
+
+        temp = search_symbol_table(name, current);
+
+        if(!temp) {
+            printf("Line: %d - Variable %s not declared\n", node->leaf_token->line_no, name);
+        }
+        else if((temp->datatype == 3) || (temp->datatype == 2)) {
+            printf("Line: %d - Incompatible datatype of variable %s\n", node->leaf_token->line_no, name);
+        }
+
+    }
+
+    if((node->rule_num == 52 || node->rule_num == 42 || node->rule_num == 58 || node->rule_num == 69
+    || node->rule_num == 103 || node->rule_num == 101) && node->tag == 0) {
+        char* name = node->leaf_token->lexeme;
+
+        Symbol_Node* temp = search_symbol_table(name, current);
+
+        if(!temp) {
+            printf("Line: %d - Variable %s not declared\n", node->leaf_token->line_no, name);
+        }
+    }
+
+    if(node->rule_num == 59 && node->tag == 1) {
+        AST temp = node->child;
+        
+        while(temp) {
+            AST temp2 = temp;
+            if(temp->tag == 1) {
+                
+                while((temp2->rule_num == 62 || temp2->rule_num == 63) && (temp2->tag == 1)) {
+                    char* name = temp2->child->leaf_token->lexeme;
+
+                    if(search_symbol_table(name, current) == NULL) {
+                        printf("Line: %d - Variable %s not declared\n", temp2->child->leaf_token->line_no, name);
+                    }
+
+                    temp2 = temp2->child->next;
+                    if(!temp2)
+                        break;
+                }
+            }
+            temp = temp->next;
+        }
+    }
+
     AST temp = node->child;
     while(temp) {
         traverse_ast(temp, new);
