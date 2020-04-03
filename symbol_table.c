@@ -681,6 +681,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             printf("Line: %d - Incompatible datatype of variable %s\n", node->leaf_token->line_no, name);
         }
 
+        node->symbol_table_node = temp;
+
     }
 
     if((node->rule_num == 52 || node->rule_num == 42 || node->rule_num == 58 || node->rule_num == 69
@@ -692,6 +694,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         if(!temp) {
             printf("Line: %d - Variable %s not declared\n", node->leaf_token->line_no, name);
         }
+
+        node->symbol_table_node = temp;
     }
 
     if(node->rule_num == 59 && node->tag == 1) {

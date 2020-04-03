@@ -26,7 +26,7 @@ Lexeme: declare               Line No: 3    Token: DECLARE               Value: 
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statement             Leaf Node: No   Node Symbol: declareStmt         Rule Number: 100       
 
-Lexeme: A                     Line No: 3    Token: ID                    Value: -                Parent Node: idList                Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: a                     Line No: 3    Token: ID                    Value: -                Parent Node: idList                Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: idList              Rule Number: 62        
 
@@ -36,31 +36,9 @@ Lexeme: -                     Line No: -    Token: -                     Value: 
 
 Lexeme: :                     Line No: 3    Token: COLON                 Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: array                 Line No: 3    Token: ARRAY                 Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: boolean               Line No: 3    Token: BOOLEAN               Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: dataType2           Rule Number: 24        
-
-Lexeme: [                     Line No: 3    Token: SQBO                  Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: 1                     Line No: 3    Token: NUM                   Value: 1                Parent Node: Index                 Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: range2                Leaf Node: No   Node Symbol: Index               Rule Number: 57        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: dataType2             Leaf Node: No   Node Symbol: range2              Rule Number: 29        
-
-Lexeme: ..                    Line No: 3    Token: RANGEOP               Value: -                Parent Node: range2                Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: 15                    Line No: 3    Token: NUM                   Value: 15               Parent Node: Index                 Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: range2                Leaf Node: No   Node Symbol: Index               Rule Number: 57        
-
-Lexeme: ]                     Line No: 3    Token: SQBC                  Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: of                    Line No: 3    Token: OF                    Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: real                  Line No: 3    Token: REAL                  Value: -                Parent Node: type                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: dataType2             Leaf Node: No   Node Symbol: type                Rule Number: 26        
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: dataType2           Rule Number: 23        
 
 Lexeme: ;                     Line No: 3    Token: SEMICOL               Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
@@ -68,145 +46,15 @@ Lexeme: -                     Line No: -    Token: -                     Value: 
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: moduleDef             Leaf Node: No   Node Symbol: statements          Rule Number: 32        
 
-Lexeme: declare               Line No: 4    Token: DECLARE               Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statement             Leaf Node: No   Node Symbol: declareStmt         Rule Number: 100       
-
-Lexeme: k                     Line No: 4    Token: ID                    Value: -                Parent Node: idList                Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: idList              Rule Number: 62        
-
-Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: newX                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: idList                Leaf Node: No   Node Symbol: newX                Rule Number: 64        
-
-Lexeme: :                     Line No: 4    Token: COLON                 Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: integer               Line No: 4    Token: INTEGER               Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: dataType2           Rule Number: 21        
-
-Lexeme: ;                     Line No: 4    Token: SEMICOL               Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: statement           Rule Number: 37        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new3                  Leaf Node: No   Node Symbol: statements          Rule Number: 32        
-
-Lexeme: declare               Line No: 5    Token: DECLARE               Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statement             Leaf Node: No   Node Symbol: declareStmt         Rule Number: 100       
-
-Lexeme: s                     Line No: 5    Token: ID                    Value: -                Parent Node: idList                Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: idList              Rule Number: 62        
-
-Lexeme: E                     Line No: 5    Token: E                     Value: -                Parent Node: newX                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: idList                Leaf Node: No   Node Symbol: newX                Rule Number: 64        
-
-Lexeme: :                     Line No: 5    Token: COLON                 Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: real                  Line No: 5    Token: REAL                  Value: -                Parent Node: dataType2             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: declareStmt           Leaf Node: No   Node Symbol: dataType2           Rule Number: 22        
-
-Lexeme: ;                     Line No: 5    Token: SEMICOL               Value: -                Parent Node: declareStmt           Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: statement           Rule Number: 37        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new3                  Leaf Node: No   Node Symbol: statements          Rule Number: 32        
-
-Lexeme: a                     Line No: 6    Token: ID                    Value: -                Parent Node: assignmentStmt        Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: a                     Line No: 4    Token: ID                    Value: -                Parent Node: assignmentStmt        Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: simpleStmt            Leaf Node: No   Node Symbol: assignmentStmt      Rule Number: 52        
 
-Lexeme: :=                    Line No: 6    Token: ASSIGNOP              Value: -                Parent Node: lvalueIDstmt          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: :=                    Line No: 4    Token: ASSIGNOP              Value: -                Parent Node: lvalueIDstmt          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: whichStmt             Leaf Node: No   Node Symbol: lvalueIDstmt        Rule Number: 55        
 
-Lexeme: c                     Line No: 6    Token: ID                    Value: -                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 42        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: whichID               Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: var                   Leaf Node: No   Node Symbol: whichID             Rule Number: 49        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: term                Rule Number: 75        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: arithmeticExpr      Rule Number: 72        
-
-Lexeme: +                     Line No: 6    Token: PLUS                  Value: -                Parent Node: PlusMinus             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: PlusMinus           Rule Number: 80        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: new6                Rule Number: 73        
-
-Lexeme: d                     Line No: 6    Token: ID                    Value: -                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 42        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: whichID               Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: var                   Leaf Node: No   Node Symbol: whichID             Rule Number: 49        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: term                Rule Number: 75        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new6                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: new6                Rule Number: 74        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: AorBExpr              Leaf Node: No   Node Symbol: new8                Rule Number: 96        
-
-Lexeme: >=                    Line No: 6    Token: GE                    Value: -                Parent Node: relationalOP          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: relationalExpr        Leaf Node: No   Node Symbol: relationalOP        Rule Number: 87        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: relationalExpr      Rule Number: 98        
-
-Lexeme: e                     Line No: 6    Token: ID                    Value: -                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 42        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: whichID               Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: var                   Leaf Node: No   Node Symbol: whichID             Rule Number: 49        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: term                Rule Number: 75        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: relationalExpr        Leaf Node: No   Node Symbol: arithmeticExpr      Rule Number: 72        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new6                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: new6                Rule Number: 74        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: expression            Leaf Node: No   Node Symbol: AorBExpr            Rule Number: 71        
-
-Lexeme: AND                   Line No: 6    Token: AND                   Value: -                Parent Node: logicalOP             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: boolExpr              Leaf Node: No   Node Symbol: logicalOP           Rule Number: 90        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: AorBExpr              Leaf Node: No   Node Symbol: boolExpr            Rule Number: 94        
-
-Lexeme: 2                     Line No: 6    Token: NUM                   Value: 2                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: 4                     Line No: 4    Token: NUM                   Value: 4                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 43        
 
@@ -214,29 +62,69 @@ Lexeme: -                     Line No: -    Token: -                     Value: 
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: term                Rule Number: 75        
 
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: arithmeticExpr      Rule Number: 72        
 
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: new6                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: +                     Line No: 4    Token: PLUS                  Value: -                Parent Node: PlusMinus             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: PlusMinus           Rule Number: 80        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: new6                Rule Number: 73        
+
+Lexeme: 2                     Line No: 4    Token: NUM                   Value: 2                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 43        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: term                Rule Number: 75        
+
+Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
+
+Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: new6                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: new6                Rule Number: 74        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: AorBExpr              Leaf Node: No   Node Symbol: new8                Rule Number: 96        
+
+Lexeme: >                     Line No: 4    Token: GT                    Value: -                Parent Node: relationalOP          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: relationalExpr        Leaf Node: No   Node Symbol: relationalOP        Rule Number: 86        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: relationalExpr      Rule Number: 98        
+
+Lexeme: 3                     Line No: 4    Token: NUM                   Value: 3                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 43        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: term                Rule Number: 75        
+
+Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
+
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: relationalExpr        Leaf Node: No   Node Symbol: arithmeticExpr      Rule Number: 72        
+
+Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: new6                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: new6                Rule Number: 74        
 
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: boolExpr              Leaf Node: No   Node Symbol: new8                Rule Number: 96        
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: expression            Leaf Node: No   Node Symbol: AorBExpr            Rule Number: 71        
 
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: relationalExpr        Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: E                     Line No: 4    Token: E                     Value: -                Parent Node: boolExpr              Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: relationalExpr      Rule Number: 99        
-
-Lexeme: E                     Line No: 6    Token: E                     Value: -                Parent Node: boolExpr              Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: boolExpr              Leaf Node: No   Node Symbol: boolExpr            Rule Number: 95        
+Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: AorBExpr              Leaf Node: No   Node Symbol: boolExpr            Rule Number: 95        
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: lvalueIDstmt          Leaf Node: No   Node Symbol: expression          Rule Number: 66        
 
-Lexeme: ;                     Line No: 6    Token: SEMICOL               Value: -                Parent Node: lvalueIDstmt          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: ;                     Line No: 4    Token: SEMICOL               Value: -                Parent Node: lvalueIDstmt          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: assignmentStmt        Leaf Node: No   Node Symbol: whichStmt           Rule Number: 53        
 
@@ -246,105 +134,15 @@ Lexeme: -                     Line No: -    Token: -                     Value: 
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new3                  Leaf Node: No   Node Symbol: statements          Rule Number: 32        
 
-Lexeme: a                     Line No: 7    Token: ID                    Value: -                Parent Node: assignmentStmt        Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: simpleStmt            Leaf Node: No   Node Symbol: assignmentStmt      Rule Number: 52        
-
-Lexeme: [                     Line No: 7    Token: SQBO                  Value: -                Parent Node: lvalueArrStmt         Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: whichStmt             Leaf Node: No   Node Symbol: lvalueArrStmt       Rule Number: 56        
-
-Lexeme: 2                     Line No: 7    Token: NUM                   Value: 2                Parent Node: Index                 Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: lvalueArrStmt         Leaf Node: No   Node Symbol: Index               Rule Number: 57        
-
-Lexeme: ]                     Line No: 7    Token: SQBC                  Value: -                Parent Node: lvalueArrStmt         Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: :=                    Line No: 7    Token: ASSIGNOP              Value: -                Parent Node: lvalueArrStmt         Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: b                     Line No: 7    Token: ID                    Value: -                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 42        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: whichID               Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: var                   Leaf Node: No   Node Symbol: whichID             Rule Number: 49        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: term                Rule Number: 75        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: arithmeticExpr      Rule Number: 72        
-
-Lexeme: +                     Line No: 7    Token: PLUS                  Value: -                Parent Node: PlusMinus             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: PlusMinus           Rule Number: 80        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: arithmeticExpr        Leaf Node: No   Node Symbol: new6                Rule Number: 73        
-
-Lexeme: c                     Line No: 7    Token: ID                    Value: -                Parent Node: var                   Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: factor                Leaf Node: No   Node Symbol: var                 Rule Number: 42        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: whichID               Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: var                   Leaf Node: No   Node Symbol: whichID             Rule Number: 49        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: factor              Rule Number: 79        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: term                Rule Number: 75        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: new7                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: term                  Leaf Node: No   Node Symbol: new7                Rule Number: 77        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: new6                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new6                  Leaf Node: No   Node Symbol: new6                Rule Number: 74        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: AorBExpr              Leaf Node: No   Node Symbol: new8                Rule Number: 96        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: relationalExpr        Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new8                  Leaf Node: No   Node Symbol: relationalExpr      Rule Number: 99        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: expression            Leaf Node: No   Node Symbol: AorBExpr            Rule Number: 71        
-
-Lexeme: E                     Line No: 7    Token: E                     Value: -                Parent Node: boolExpr              Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: AorBExpr              Leaf Node: No   Node Symbol: boolExpr            Rule Number: 95        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: lvalueArrStmt         Leaf Node: No   Node Symbol: expression          Rule Number: 66        
-
-Lexeme: ;                     Line No: 7    Token: SEMICOL               Value: -                Parent Node: lvalueArrStmt         Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: assignmentStmt        Leaf Node: No   Node Symbol: whichStmt           Rule Number: 54        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statement             Leaf Node: No   Node Symbol: simpleStmt          Rule Number: 50        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: statement           Rule Number: 36        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: new3                  Leaf Node: No   Node Symbol: statements          Rule Number: 32        
-
-Lexeme: E                     Line No: 8    Token: E                     Value: -                Parent Node: new3                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: E                     Line No: 5    Token: E                     Value: -                Parent Node: new3                  Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: new3                Rule Number: 34        
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: new3                Rule Number: 33        
 
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: new3                Rule Number: 33        
+Lexeme: end                   Line No: 5    Token: END                   Value: -                Parent Node: moduleDef             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: new3                Rule Number: 33        
-
-Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: statements            Leaf Node: No   Node Symbol: new3                Rule Number: 33        
-
-Lexeme: end                   Line No: 8    Token: END                   Value: -                Parent Node: moduleDef             Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
-
-Lexeme: E                     Line No: 8    Token: E                     Value: -                Parent Node: otherModules          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
+Lexeme: E                     Line No: 5    Token: E                     Value: -                Parent Node: otherModules          Leaf Node: Yes  Node Symbol: -                   Rule Number: 0         
 
 Lexeme: -                     Line No: -    Token: -                     Value: -                Parent Node: program               Leaf Node: No   Node Symbol: otherModules        Rule Number: 6         
 

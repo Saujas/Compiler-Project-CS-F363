@@ -73,6 +73,7 @@ AST create_NT_node(Label label, int tag, int rule_num, AST parent, AST child, AS
     new_node->child = child;
     new_node->next = next;
     new_node->leaf_token = node;
+    new_node->symbol_table_node = NULL;
 
     return new_node;
 }

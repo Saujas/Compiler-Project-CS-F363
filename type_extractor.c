@@ -15,85 +15,6 @@ char * tc_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDecla
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
-int get_types(AST root) {
-    if(!root) {
-        return;
-    }
-    AST temp = root->child;
-    while(temp) {
-        get_types(temp);
-        temp = temp->next;
-    }
-    get_type_of_node(root);
-    return;
-} 
-
-int get_type_of_node(AST node) {
-    switch(node->rule_num) {
-        case 42:
-            if(node->tag == 1) {
-                if(node->child->symbol_table_node->datatype == 3)
-                    node->data_type = node->child->symbol_table_node->array_datatype;
-                else
-                    node->data_type = node->child->symbol_table_node->datatype;
-            }
-            break;
-        
-        case 43:
-        case 67:
-            if(node->tag == 0)
-                node->data_type = 0;
-            break;
-
-        case 44:
-        case 68:
-            if(node->tag == 0)
-                node->data_type = 1;
-            break;
-        
-        case 46:
-        case 47:
-        case 92:
-        case 93:
-            if(node->tag == 0)
-                node->data_type = 2;
-            break;
-
-        case 65:
-            if(node->tag == 1)
-                node->data_type = node->child->next->data_type;
-            break;
-
-        case 69:
-            if(node->tag == 0)
-                node->data_type = node->symbol_table_node->datatype;
-            break;
-        
-    }    
-}
-
-void type_checker(AST node) {
-    if(root == NULL) {
-        return;
-    }
-
-    type_check_node(root);
-    // print_ast(root->child);
-
-    if(root->child==NULL) {
-        return;
-    }
-    
-    root = root->child;
-
-    while(root) {
-        type_checker(root);
-        root = root->next;
-    }
-    
-    return;
-}
-
 int check_bound(AST index, AST var) {
     if(var->symbol_table_node->range[0].tag == 0 && var->symbol_table_node->range[1].tag == 0) {
         int id = index->leaf_token->val.num;
@@ -106,15 +27,36 @@ int check_bound(AST index, AST var) {
     return 1;
 }
 
-void type_check_node(AST node) {
+void type_checker(AST root) {
+    
+    if(root == NULL) {
+        return;
+    }
+
+    int error = type_check_node(root);
+
+    if(root->child==NULL) {
+        return;
+    }
+    
+    root = root->child;
+    while(root) {
+        type_checker(root);
+        root = root->next;
+    }
+
+    return;
+}
+
+int type_check_node(AST node) {
 
     int rule_num = node->rule_num;
     int flag = 0;
     
-    if (rule_num == 52) {
+    if (rule_num == 52 && node->tag == 1) {
 
         // ASSIGNMENT STATEMENT
-
+        // printf("%s\n", tc_string_map[node->label]);
         AST lhs = node->child;
         AST expression_node = node->child->next;
 
@@ -149,6 +91,135 @@ void type_check_node(AST node) {
             }
         }
 
+        int expression_type = extract_type(expression_node);
+        int lhs_type = get_id_type(lhs);
+        printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
+
+        if(expression_type != lhs_type) {
+            printf("Line: %d - Invalid types in assignment\n", lhs->leaf_token->line_no);
+            flag = 1;
+        }
 
     }
+
+    return flag;
+}
+
+int get_id_type(AST node) {
+    Symbol_Node* st = node->symbol_table_node;
+
+    // printf("%s\n", node->leaf_token->lexeme);
+
+    if(st == NULL) {
+        // variable not declared
+        return -1;
+    }
+    
+    if(st->datatype == 3) {
+        return st->array_datatype;
+    }
+
+    return st->datatype;
+}
+
+// 0: INT, 1: REAL, 2: BOOLEAN, -1: ERROR
+int extract_type(AST node) {
+    
+    if(node == NULL) {
+        return -1;
+    }
+
+    int error = 0;
+
+    if(node->tag == 1) {
+
+        if(node->label == EXPRESSION || node->label == RELATIONAL_EXPR ||
+        node->label == NEW8 || node->label == NEW7 || node->label == NEW6) {
+            return extract_type(node->child);
+        }
+
+        // INVALID NON TERMINAL WITHIN AN EXPRESSION
+        else return -1;
+    }
+
+    // if a terminal is encountered,
+    // it will either be an operator or a literal
+
+    char* name = node->leaf_token->lexeme;
+    tokens token = node->leaf_token->token;
+
+    if(token == PLUS || token == MINUS) {
+        AST n1 = node->next;
+        AST n2 = node->next->next;
+
+        int t1 = extract_type(n1), t2 = extract_type(n2);
+
+        if(n2 == NULL) {
+            if(t1 == 2) {
+                error = 1;
+            }
+            else
+                return t1;
+        }
+
+        if(t1 != t2 || t1 == 2 || t2 == 2) {
+            error = 1;
+        }
+        else
+            return t1;
+    }
+
+    if(token == GT || token == LT || token == GE || token == LE ||
+        token == EQ || token == NE || token == MUL || token == DIV) {
+        
+        AST n1 = node->next;
+        AST n2 = node->next->next;
+
+        int t1 = extract_type(n1), t2 = extract_type(n2);
+
+        if(t1 != t2 || t1 == 2 || t2 == 2) {
+            error = 1;
+        }
+
+        else return t1;
+    }
+
+    if(token == AND || token == OR) {
+        AST n1 = node->next;
+
+        AST n2 = node->next->next;
+
+        int t1 = extract_type(n1), t2 = extract_type(n2);
+
+        if( !(t1 == 2 && t2 == 2)) {
+            error = 1;
+        }
+
+        else return t1;
+    }
+
+    // if it is a literal
+
+    if(token == ID) {
+        int type = get_id_type(node);
+        node->data_type = type;
+
+        return type;
+    }
+    else {
+        if(token == NUM) {
+            return 0;
+        }
+        else if(token == RNUM)
+            return 1;
+        else if(token == TRUE || token == FALSE)
+            return 2;
+    }
+
+    if(error) {
+        printf("Line: %d - Invalid types in expression\n", node->leaf_token->line_no);
+        return -1;
+    }
+
+    return -1;
 }

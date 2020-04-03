@@ -4,5 +4,8 @@
 #include "ast_def.h"
 #include "label.h"
 
-int get_types(AST root);
-int get_type_of_node(AST node);
+int check_bound(AST index, AST var);
+int type_check_node(AST node);
+int get_id_type(AST node);
+int extract_type(AST node);
+void type_checker(AST root);

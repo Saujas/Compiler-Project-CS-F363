@@ -7,6 +7,7 @@
 #include "ast.h"
 #include "lexer.h"
 #include "symbol_table.h"
+#include "type_extractor.h"
 #include <time.h>
 
 /* Main function called on execting the program
@@ -46,7 +47,7 @@ int main(int argc, char* argv[]) {
         printf("2: For invoking only lexer\n");
         printf("3: For invoking both lexer and parser\n");
         printf("4: For printing total time for lexer and parser\n");
-        printf("5: For creating AST and symbol table\n");
+        printf("5: For creating AST and symbol table, type checking\n");
         scanf("%d", &choice);
 
         Node ** token_stream = NULL;
@@ -91,6 +92,8 @@ int main(int argc, char* argv[]) {
                 parse_tree_ptr = parser(argv[1], argv[2]);
                 AST root = generate_AST(*parse_tree_ptr);
                 create_symbol_table_tree(root);
+                printf("Type checker invoked\n");
+                type_checker(root);
                 break;
 
             default: printf("\nInvalid Choice\n\n");

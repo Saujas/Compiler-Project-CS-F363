@@ -1,8 +1,5 @@
 <<<driver program>>>
 start
-	declare A:array[1..15] of real;
-	declare k:integer;
-	declare s:real;
-	a := c + d >= e AND 2;
-	a[2] := b + c;
+	declare a:boolean;
+	a := 4 + 2 > 3;
 end
