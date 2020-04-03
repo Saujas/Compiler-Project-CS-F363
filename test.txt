@@ -1,7 +1,20 @@
 <<<driver program>>>
 start
 	declare a:boolean;
-	declare c, b:integer;
-	c := +(1+65);
-	a := ((b + 2 > b) AND a) OR (b - 6 <= b/2*5);
+	declare b, c:integer;
+	declare e: real;
+	declare d:array[1..3] of integer;
+	declare f:array[1..3] of integer;
+	c := f[3];
+	for(b in  1..15)
+	start
+		declare c:real;
+	end	
+	switch(a)
+		start
+			case 1: 
+				break;
+			case 2: 
+				break;
+		end
 end

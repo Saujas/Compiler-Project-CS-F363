@@ -1,5 +1,5 @@
-stage1exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o makefile
-	gcc -o stage1exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o
+stage1exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o makefile
+	gcc -o stage1exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o 
 
 parser.o: parser.h parser_def.h lexer.h lexer_def.h lookup_table.h stack.h parser.c
 	gcc -c -g parser.c
@@ -24,6 +24,9 @@ symbol_table.o: symbol_table.h symbol_table_def.h ast_def.h label.h symbol_table
 
 type_extractor.o: type_extractor.h symbol_table_def.h ast_def.h label.h type_extractor.c
 	gcc -c -g type_extractor.c
+
+semantic_analyzer.o: semantic_analyzer.h type_extractor.h symbol_table_def.h ast_def.h label.h semantic_analyzer.c
+	gcc -c -g semantic_analyzer.c
 
 driver.o: lexer.h lookup_table.h lexer_def.h ast.h symbol_table.h driver.c
 	gcc -c -g driver.c

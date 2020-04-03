@@ -1,10 +1,11 @@
 #include "type_extractor.h"
+#include "semantic_analyzer.h"
 
 char* tc_string_map[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
     "LVALUE_ARR_STMT", "MODULE_REUSE_STMT", "ID_LIST", "NEWX", "EXPRESSION", "NEW6", "NEW7", "NEW8", "RELATIONAL_EXPR", 
-    "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE", "IO_READ", "IO_WRITE"
+    "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE", "IO_READ", "IO_WRITE", "AST_DEFAULT"
 };
 
 char * tc_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
@@ -15,95 +16,6 @@ char * tc_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDecla
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default"};
 
-int check_bound(AST index, AST var) {
-    if(var->symbol_table_node->range[0].tag == 0 && var->symbol_table_node->range[1].tag == 0) {
-        int id = index->leaf_token->val.num;
-
-        if( id < var->symbol_table_node->range[0].range_pointer.value || id > var->symbol_table_node->range[1].range_pointer.value) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-void type_checker(AST root) {
-    
-    if(root == NULL) {
-        return;
-    }
-
-    int error = type_check_node(root);
-
-    if(root->child==NULL) {
-        return;
-    }
-    
-    root = root->child;
-    while(root) {
-        type_checker(root);
-        root = root->next;
-    }
-
-    return;
-}
-
-int type_check_node(AST node) {
-
-    int rule_num = node->rule_num;
-    int flag = 0;
-    
-    if (rule_num == 52 && node->tag == 1) {
-
-        // ASSIGNMENT STATEMENT
-        // printf("%s\n", tc_string_map[node->label]);
-        AST lhs = node->child;
-        AST expression_node = node->child->next;
-
-        if(node->child->next->label == LVALUE_ARR_STMT) {
-            
-            expression_node = node->child->next->child->next;
-
-            if(lhs->symbol_table_node->datatype != 3) {
-                printf("Line: %d - Variable %s not of array type\n", lhs->leaf_token->line_no, lhs->leaf_token->lexeme);
-                flag = 1;
-            }
-            else {
-                // Checking array type used on LHS of assignment statement
-                AST index = lhs->next->child;
-
-                // Checking bounds in case of static indexing
-                if(index->rule_num == 57) {
-                    int bound = check_bound(index, lhs);
-
-                    if(bound == 0) {
-                        printf("Line: %d - Array out of bounds error\n", lhs->leaf_token->line_no);
-                        flag = 1;
-                    }
-                }
-                // In case ID is used, check if ID is type integer
-                else if(index->rule_num == 58) {
-                    if(index->symbol_table_node->datatype != 0) {
-                        printf("Line: %d -  Array index type is not integer\n", index->leaf_token->line_no);
-                        flag = 1;
-                    }
-                }
-            }
-        }
-
-        int expression_type = extract_type(expression_node);
-        int lhs_type = get_id_type(lhs);
-        printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
-
-        if(expression_type != lhs_type) {
-            printf("Line: %d - Invalid types in assignment\n", lhs->leaf_token->line_no);
-            flag = 1;
-        }
-
-    }
-
-    return flag;
-}
 
 int get_id_type(AST node) {
     Symbol_Node* st = node->symbol_table_node;
@@ -135,6 +47,7 @@ int extract_type(AST node) {
 
         if(node->label == EXPRESSION || node->label == RELATIONAL_EXPR ||
         node->label == NEW8 || node->label == NEW7 || node->label == NEW6 || node->label == VAR) {
+            // printf("HI\n");
             return extract_type(node->child);
         }
 
@@ -219,6 +132,21 @@ int extract_type(AST node) {
 
     // if it is a literal
     if(token == ID) {
+        if(node->symbol_table_node && node->symbol_table_node->datatype == 3) {
+            AST temp1 = node->next;
+            if(!temp1)
+                return -1;
+            if(temp1->symbol_table_node && temp1->symbol_table_node->datatype != 0) {
+                printf("Line: %d - Invalid type of array index\n", node->leaf_token->line_no);
+                return -1;
+            }
+            else if(temp1->leaf_token && temp1->leaf_token->token == NUM) {
+                if(!check_bound(temp1, node)) {
+                    printf("Line: %d - Out of bound array index\n", node->leaf_token->line_no);
+                    return -1;
+                }
+            }
+        }
         int type = get_id_type(node);
         node->data_type = type;
 

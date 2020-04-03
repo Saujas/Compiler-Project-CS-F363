@@ -4,7 +4,7 @@ char* ast_string_map[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
     "LVALUE_ARR_STMT", "MODULE_REUSE_STMT", "ID_LIST", "NEWX", "EXPRESSION", "NEW6", "NEW7", "NEW8", "RELATIONAL_EXPR", 
-    "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE", "IO_READ", "IO_WRITE"
+    "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE", "IO_READ", "IO_WRITE", "AST_DEFAULT"
 };
 
 char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
@@ -197,7 +197,6 @@ void convert_to_AST_node(t_node* node) {
             break;
 
         case 9:
-        case 111:
             node->tree_node = node->child->sibling->sibling->tree_node;
             break;
 
@@ -614,6 +613,11 @@ void convert_to_AST_node(t_node* node) {
             child->next->next = node->child->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
+            link_parent(node->child);
+            break;
+
+        case 111:
+            node->tree_node = create_NT_node(AST_DEFAULT, 1, rule_num, parent, node->child->sibling->sibling->tree_node, sibling, NULL);
             link_parent(node->child);
             break;
 

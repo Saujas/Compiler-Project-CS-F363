@@ -8,6 +8,7 @@
 #include "lexer.h"
 #include "symbol_table.h"
 #include "type_extractor.h"
+#include "semantic_analyzer.h"
 #include <time.h>
 
 /* Main function called on execting the program
