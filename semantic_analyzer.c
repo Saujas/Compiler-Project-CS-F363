@@ -126,7 +126,7 @@ int type_check_node(AST node) {
             int expression_type = extract_type(expression_node);
             int lhs_type = get_id_type(lhs);
             
-            printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
+            // printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
 
             if(expression_type != lhs_type) {
                 printf("Line: %d - Invalid types in assignment\n", lhs->leaf_token->line_no);
@@ -226,7 +226,7 @@ int type_check_node(AST node) {
                     flag = 1;
                 }
                 else {
-                    printf("ALL GOOD\n");
+                    // printf("ALL GOOD\n");
                 }
             }
         }
@@ -234,7 +234,7 @@ int type_check_node(AST node) {
     //match ipplist and opplist of caller and called, formal and actual params
     // non recursion
     // opplist params must be assigned some values
-    if(node->rule_num == 59) {
+    if(node->rule_num == 59 && node->tag == 1) {
         AST fun_id;
         if(node->child->tag==0) {
             fun_id = node->child;
@@ -242,13 +242,215 @@ int type_check_node(AST node) {
         else {
             fun_id = node->child->next;
         }
+
+        Symbol_Table_Tree fun_tree = fun_id->current_scope;
+        
+        if(!fun_tree) {
+            flag = 1;
+            return flag;
+        }
+
+        // If function is not defined
+        if(fun_tree && fun_tree->is_defined != 1) {
+            flag = 1;
+            printf("Line: %d - Module used in call not defined\n", fun_id->leaf_token->line_no);
+            return flag;
+        }
+
+        Symbol_Table_Tree ip_list = fun_tree->input, op_list = fun_tree->output;
+
+        // printf("%s\n", fun_id->leaf_token->lexeme);
+
+        Symbol_Node*** ip_head, ***op_head;
+        ip_head = (Symbol_Node***) malloc(sizeof(Symbol_Node**));
+        op_head = (Symbol_Node***) malloc(sizeof(Symbol_Node**));
+
+        int ip_count = convert_to_list(ip_list, ip_head);
+        int op_count = convert_to_list(op_list, op_head);
+        // printf("%d %d\n", ip_count, op_count);
+
+        // checking input first
+        int ip_succ = 0;
+        AST act_ip = fun_id->next;
+
+        ip_succ = verify_types(act_ip, ip_head, ip_count, ip_count, 0);
+        if(!ip_succ) {
+            flag = 1;
+            printf("Line: %d - Input parameters do not match\n", fun_id->leaf_token->line_no);
+            return flag;
+        }
+
+        // checking output now
+        int op_succ = 0;
+        if(node->child->tag == 0 && op_count == 0) {
+            op_succ = 1;
+        }
+        else if(node->child->tag == 1) {
+            AST act_op = node->child;
+            op_succ = verify_types(act_op, op_head, op_count, op_count, 0);
+        }
+
+        if(!op_succ) {
+            flag = 1;
+            printf("Line: %d - Output parameters do not match\n", fun_id->leaf_token->line_no);
+            return flag;
+        }
+
+        AST fun_def;
+        int itr;
+        for(itr = 0; itr<ip_count; itr++) {
+            Symbol_Node* curr_ip = (*ip_head)[itr];
+            
+            if(curr_ip->param_order == 0) {
+                // printf("%s\n", curr_ip->node->leaf_token->lexeme);
+                // printf("%s\n", tc_string_map_copy[curr_ip->node->parent->next->label]);
+
+                AST parent = curr_ip->node->parent;
+                if(parent->next && (parent->next->tag == 1) && parent->next->label == OUTPUT_PLIST)
+                    fun_def = parent->next->next;
+                else
+                    fun_def = parent->next;
+
+                break;
+            }
+        }
+
+        int op_assign_error = 0;
+        for(itr = 0; itr<op_count; itr++) {
+            Symbol_Node* curr_op = (*op_head)[itr];
+            int current = 0;
+            check_if_output_modified(curr_op, fun_def, &current);
+            if(!current) {
+                op_assign_error = 1;
+                break;
+            }
+        }
+
+        if(op_assign_error) {
+            flag = 1;
+            printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
+            return flag;
+        }
+
+        printf("Line: %d - Successful Function Call\n", fun_id->leaf_token->line_no);
     }
+
+    // also need to check whether all functions have been defined
+
     return flag;
 }
 
+int convert_to_list(Symbol_Table_Tree st, Symbol_Node*** head) {
+    int i, count = 0;
+    Symbol_Table* table = st->table;
 
+    for(i=0; i<table->number_of_slots; i++) {
+        count += table->slots[i]->count;
+    }
 
+    *head = (Symbol_Node**) malloc(sizeof(Symbol_Node*) * count);
+    int c = 0;
+    
+    for(i=0; i<table->number_of_slots; i++) {
+        Symbol_List* temp = table->slots[i]->head;
 
+        while(temp) {
+            (*head)[c] = temp->symbol;
+            c++;
+            temp = temp->next;
+        }
+    }
+
+    return count;
+}
+
+int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
+    int error;
+    // No inputs
+    if(nt == NULL && count == 0) {
+        return 1;
+    }
+    else if(nt == NULL && count > 0) {
+        // Expected input, but got none
+        return 0;
+    }
+    else if(nt != NULL && count == 0) {
+        // Did not expect input, but got input
+        return 0;
+    }
+    else {
+        AST ip = nt->child;
+        if(!(ip->symbol_table_node)) {
+            return 0;
+        }
+        int i;
+        for(i=0; i<total; i++) {
+            Symbol_Node* temp = (*head)[i];
+            if(temp->param_order == curr) {
+                // match type
+                if(ip->symbol_table_node->datatype != temp->datatype) {
+                    return 0;
+                }
+                else if(ip->symbol_table_node->datatype == 3) {
+                    if(ip->symbol_table_node->array_datatype != temp->array_datatype) {
+                        return 0;
+                    }
+                    else {
+                        if(ip->symbol_table_node->range[0].tag == 0 && ip->symbol_table_node->range[0].range_pointer.value != temp->range[0].range_pointer.value) {
+                            return 0;
+                        }
+                        if(ip->symbol_table_node->range[1].tag == 1 && ip->symbol_table_node->range[1].range_pointer.value != temp->range[1].range_pointer.value) {
+                            return 0;
+                        }
+                    }
+                }
+
+                return verify_types(ip->next, head, total, count - 1, curr + 1);
+            }
+            continue;
+        }
+        return 0;
+    }
+}
+
+void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
+    
+    if(node == NULL || (*current) == 1) {
+        return;
+    }
+
+    if(node->rule_num == 52 && node->tag == 1) {
+        AST id = node->child;
+        AST index = NULL;
+        // printf("%d %s %s\n", id->leaf_token->line_no, sym->node->leaf_token->lexeme, id->leaf_token->lexeme);
+        if(id->next && id->next->label == LVALUE_ARR_STMT && id->next->child) {
+            index = id->next->child;
+        }
+
+        // *current = compare_list_node(head, id, index);
+
+        if(!index) {
+            if(strcmp(id->leaf_token->lexeme, sym->node->leaf_token->lexeme) == 0) {
+                *current = 1;
+            }
+        }
+
+        // printf("%d\n", *current);
+
+        if((*current) == 1) {
+            return;
+        }
+    }
+
+    AST temp = node->child;
+
+    while(temp) {
+        check_if_output_modified(sym, temp, current);
+        temp = temp->next;
+    }
+
+    return;
+}
 
 void check_if_modified(AST_list** head, AST node, int* current) {
     
@@ -265,7 +467,7 @@ void check_if_modified(AST_list** head, AST node, int* current) {
         }
 
         *current = compare_list_node(head, id, index);
-        printf("%d\n", *current);
+        // printf("%d\n", *current);
 
         if((*current) == 1) {
             return;

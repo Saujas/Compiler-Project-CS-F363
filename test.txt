@@ -1,15 +1,15 @@
+declare module square;
 <<<driver program>>>
 start
-	declare v_1_2_3:integer;
-	get_value(v_1_2_3);
+	declare v_1_2_3:array[2..3] of integer;
 	declare result_:integer;
 	[result_]:=use module square with parameters v_1_2_3;
-	print(result);
+	print(result_);
 end
 
 <<module square>>
-takes input [x:integer];
+takes input [x:array[1..3] of integer];
 returns [value:integer];
 start
-	value:= x*x;
+	value:= x[2]*x[4];
 end

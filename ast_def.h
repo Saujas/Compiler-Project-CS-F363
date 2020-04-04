@@ -13,8 +13,6 @@ typedef struct ast_node {
     Label label;
     int tag;
     int rule_num;
-    int data_type;
-    int inh_data_type;
     
     struct ast_node* parent;
     struct ast_node* next;

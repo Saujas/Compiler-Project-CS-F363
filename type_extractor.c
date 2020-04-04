@@ -47,7 +47,6 @@ int extract_type(AST node) {
 
         if(node->label == EXPRESSION || node->label == RELATIONAL_EXPR ||
         node->label == NEW8 || node->label == NEW7 || node->label == NEW6 || node->label == VAR) {
-            // printf("HI\n");
             return extract_type(node->child);
         }
 
@@ -148,7 +147,6 @@ int extract_type(AST node) {
             }
         }
         int type = get_id_type(node);
-        node->data_type = type;
         
         return type;
     }

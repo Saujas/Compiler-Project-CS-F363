@@ -36,7 +36,7 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
 
 /* Main function of parser which calls all other functions starting with lexical analyser
 */
-t_node** parser(char* filename, char* output_fname) {
+t_node** parser(char* filename, char* output_fname, int *has_parsed) {
     
     Node ** token_stream;
     lookup_table *table;
@@ -63,6 +63,7 @@ t_node** parser(char* filename, char* output_fname) {
     create_parse_table();
 
     int parsed = parse_tokens(token_stream, tokens_parsed);
+    *has_parsed = parsed;
     if(parsed)
         printf("\n\tInput code is syntactically correct\n");
     else

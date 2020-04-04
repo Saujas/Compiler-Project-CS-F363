@@ -18,6 +18,7 @@ int main(int argc, char* argv[]) {
     int choice;
     int flag = 0;
     int tokens;
+    int parsed = 0;
 
     /*Checking if execution is done properly, passing appropriate arguments
     */
@@ -73,12 +74,12 @@ int main(int argc, char* argv[]) {
 
             case 3: //Call lexer and parser, and print both lexical and syntactic errors if any
                 printf("\n");
-                parser(argv[1], argv[2]);
+                parser(argv[1], argv[2], &parsed);
                 break;
 
             case 4: //Call lexer and parser, and print the total time taken until parse tree is generated
                 start_time = clock();
-                parser(argv[1], argv[2]);
+                parser(argv[1], argv[2], &parsed);
                 end_time = clock();
                 total_CPU_time = (double)(end_time - start_time);
                 total_CPU_time_in_seconds = total_CPU_time/CLOCKS_PER_SEC;
@@ -90,12 +91,16 @@ int main(int argc, char* argv[]) {
 
             case 5:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2]);
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed);
+                if(!parsed) {
+                    break;
+                }
                 AST root = generate_AST(*parse_tree_ptr);
                 create_symbol_table_tree(root);
                 //print_ast(root);
-                printf("Type checker invoked\n");
+                printf("Semantic checker invoked\n");
                 type_checker(root);
+                printf("Type checking successful\n\n");
                 break;
 
             default: printf("\nInvalid Choice\n\n");

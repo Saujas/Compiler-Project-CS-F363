@@ -301,7 +301,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
     if(!node)
         return;
 
-    node->current_scope = current;
+    // Module call's current scope doesn't have to be changed
+    if(!(node->tag == 0 && node->rule_num == 59)) {
+        node->current_scope = current;
+    }
     // printf("%d\n", node->rule_num);
     
     Symbol_Table_Tree new = current;
@@ -427,6 +430,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             // exit(-1);
         }
         else {
+            // Storing function's symbol table in its call (in id)
+            temp_node->current_scope = temp;
             temp->is_called = 1;
         }
     }
@@ -711,8 +716,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                 
                 while((temp2->rule_num == 62 || temp2->rule_num == 63) && (temp2->tag == 1)) {
                     char* name = temp2->child->leaf_token->lexeme;
+                    
+                    temp2->child->symbol_table_node = search_symbol_table(name, current);
 
-                    if(search_symbol_table(name, current) == NULL) {
+                    if(temp2->child->symbol_table_node == NULL) {
                         printf("Line: %d - Variable %s not declared\n", temp2->child->leaf_token->line_no, name);
                     }
 
