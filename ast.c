@@ -111,6 +111,7 @@ void print_ast(AST root) {
 
     print_ast_node(root);
     // print_ast(root->child);
+    
 
     if(root->child==NULL) {
         return;
@@ -136,6 +137,10 @@ void print_ast_node(AST node) {
         if(node->label == IO_READ || node->label == IO_WRITE) {
             printf("    %s", ast_string_map[node->label]);
         }
+        /*if(node->symbol_table_node && node->symbol_table_node->usage!=1) {
+            printf("%d %s",node->symbol_table_node->param_order,  node->symbol_table_node->node->leaf_token->lexeme);
+
+        }*/
         printf("\n");
     }
 }

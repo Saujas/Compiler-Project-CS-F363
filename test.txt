@@ -1,16 +1,15 @@
 <<<driver program>>>
 start
+	declare v_1_2_3:integer;
+	get_value(v_1_2_3);
+	declare result_:integer;
+	[result_]:=use module square with parameters v_1_2_3;
+	print(result);
+end
 
-	declare i, k, tempvar:integer;
-	declare arr, arr1:array[2..4] of integer;
-	while(i <= arr[i])
-	start
-		declare arr2:integer;
-		get_value(tempvar);
-		arr1[i]:=tempvar;
-		while(arr2 < 2)
-			i:=0;
-			arr2:=1;
-		end
-	end
+<<module square>>
+takes input [x:integer];
+returns [value:integer];
+start
+	value:= x*x;
 end

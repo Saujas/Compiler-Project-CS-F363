@@ -93,6 +93,7 @@ int main(int argc, char* argv[]) {
                 parse_tree_ptr = parser(argv[1], argv[2]);
                 AST root = generate_AST(*parse_tree_ptr);
                 create_symbol_table_tree(root);
+                //print_ast(root);
                 printf("Type checker invoked\n");
                 type_checker(root);
                 break;

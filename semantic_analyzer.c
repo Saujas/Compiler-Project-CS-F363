@@ -231,9 +231,24 @@ int type_check_node(AST node) {
             }
         }
     }
-
+    //match ipplist and opplist of caller and called, formal and actual params
+    // non recursion
+    // opplist params must be assigned some values
+    if(node->rule_num == 59) {
+        AST fun_id;
+        if(node->child->tag==0) {
+            fun_id = node->child;
+        }
+        else {
+            fun_id = node->child->next;
+        }
+    }
     return flag;
 }
+
+
+
+
 
 void check_if_modified(AST_list** head, AST node, int* current) {
     

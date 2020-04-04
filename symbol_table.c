@@ -449,6 +449,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
     if(node->rule_num == 11 && node->tag == 1) {
         int datatype;
         int array_datatype;
+        int param_order = 0;
         Node* type = NULL;
         AST temp = node;
         Symbol_Node* symbol_node;
@@ -500,8 +501,11 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
                 else
                     printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
             }
-            if(flag)
+            if(flag) {
+                symbol_node->param_order = param_order;
+                param_order++;
                 insert_symbol(current->input->table, temp->child->leaf_token->lexeme, symbol_node);
+            }
             temp = temp->child->next->next;
         }
     }
@@ -511,6 +515,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
         int datatype;
         Node* type = NULL;
         AST temp = node;
+        int param_order = 0;
         Symbol_Node* symbol_node;
         while(temp) {
             type = temp->child->next->leaf_token;
@@ -525,6 +530,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current) {
             }
             if(search_current_scope(temp->child->leaf_token->lexeme, current->output)==NULL) {
                 symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, NULL, 1, NULL, -1);
+                symbol_node->param_order = param_order;
+                param_order++;
                 insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
             }
             else

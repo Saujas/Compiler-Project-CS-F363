@@ -28,6 +28,7 @@ struct symbol_node {
     int assigned;
     int width;
     int offset;
+    int param_order;
     void* memory;
     int usage;
     Range range[2];
