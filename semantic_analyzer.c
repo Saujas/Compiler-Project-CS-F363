@@ -63,12 +63,15 @@ int type_check_node(AST node) {
         if(node->child->next->label == LVALUE_ARR_STMT) {
             
             expression_node = node->child->next->child->next;
-
-            if(lhs->symbol_table_node->datatype != 3) {
+            
+            if(!lhs->symbol_table_node) {
+                flag = 1;
+            }
+            else if(lhs->symbol_table_node && lhs->symbol_table_node->datatype != 3) {
                 printf("Line: %d - Variable %s not of array type\n", lhs->leaf_token->line_no, lhs->leaf_token->lexeme);
                 flag = 1;
             }
-            else {
+            else if(lhs->symbol_table_node && lhs->symbol_table_node->datatype == 3) {
                 // Checking array type used on LHS of assignment statement
                 AST index = lhs->next->child;
 
@@ -83,14 +86,18 @@ int type_check_node(AST node) {
                 }
                 // In case ID is used, check if ID is type integer
                 else if(index->rule_num == 58) {
-                    if(index->symbol_table_node->datatype != 0) {
+                    if(index->symbol_table_node && index->symbol_table_node->datatype != 0) {
                         printf("Line: %d -  Array index type is not integer\n", index->leaf_token->line_no);
+                        flag = 1;
+                    }
+                    else if(!index->symbol_table_node) {
                         flag = 1;
                     }
                 }
             }
         }
-        if(lhs->symbol_table_node->datatype == 3) {
+
+        if(lhs->symbol_table_node && lhs->symbol_table_node->datatype == 3 && lhs->next->label != LVALUE_ARR_STMT) {
             if(expression_node && expression_node->child && expression_node->child->symbol_table_node && expression_node->child->symbol_table_node->datatype == 3) {
                 if(expression_node->child->symbol_table_node->array_datatype != lhs->symbol_table_node->array_datatype) {
                     printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
@@ -119,7 +126,6 @@ int type_check_node(AST node) {
             int expression_type = extract_type(expression_node);
             int lhs_type = get_id_type(lhs);
             
-
             printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
 
             if(expression_type != lhs_type) {
@@ -164,7 +170,7 @@ int type_check_node(AST node) {
                 flag = 1;
             }
         }
-        else if(node->child->symbol_table_node->datatype == 0) {
+        else if(node->child->symbol_table_node && node->child->symbol_table_node->datatype == 0) {
             int check = 0;
             AST temp1 = node->child->next->child->next;
             while(temp1) {
@@ -185,5 +191,176 @@ int type_check_node(AST node) {
         }
     }
 
+    // WHILE LOOP SEMANTICS
+    if(node->rule_num == 102) {
+        int type = extract_type(node->child);
+        
+        if(type != 2) {
+            printf("Line: - Incompatible expression used in while construct\n");
+            flag = 1;
+        }
+        else {
+            AST_list** id_used = (AST_list **)malloc(sizeof(AST_list *));
+            check_identifier(node->child, id_used);
+            // print_identifier(*id_used);
+
+            if((*id_used) == NULL) {
+                printf("Line: - No identifier used in while construct\n");
+                flag = 1;
+            }
+            
+            if(!flag) {
+                int is_redeclared = check_if_redeclared_in_scope(id_used);
+                if(is_redeclared) {
+                    printf("Line: - Identifier used in while construct cannot be redeclared\n");
+                    flag = 1;
+                }
+            }
+
+            if(!flag) {
+                int is_modified = 0;
+                check_if_modified(id_used, node, &is_modified);
+
+                if(!is_modified) {
+                    printf("No variable modified\n");
+                    flag = 1;
+                }
+                else {
+                    printf("ALL GOOD\n");
+                }
+            }
+        }
+    }
+
     return flag;
+}
+
+void check_if_modified(AST_list** head, AST node, int* current) {
+    
+    if(node == NULL)
+        return;
+
+    if(node->rule_num == 52 && node->tag == 1) {
+        
+        AST id = node->child;
+        AST index = NULL;
+
+        if(id->next && id->next->label == LVALUE_ARR_STMT && id->next->child) {
+            index = id->next->child;
+        }
+
+        *current = compare_list_node(head, id, index);
+
+        if((*current) == 1) {
+            return;
+        }
+
+
+    }
+
+    AST temp = node->child;
+
+    while(temp) {
+        check_if_modified(head, temp, current);
+        temp = temp->next;
+    }
+
+    return;
+
+}
+
+int compare_list_node(AST_list** head, AST id, AST index) {
+    
+    AST_list* temp = *head;
+
+    if(id->symbol_table_node && id->symbol_table_node->datatype != 3) {
+        while(temp) {
+            // printf("%s %s\n", id->leaf_token->lexeme, temp->node->leaf_token->lexeme);
+            if( strcmp(id->leaf_token->lexeme, temp->node->leaf_token->lexeme) == 0) {
+                return 1;
+            }
+            temp = temp->next;
+        }
+    }
+
+    else {
+        while(temp) {
+            if(strcmp(id->leaf_token->lexeme, temp->node->leaf_token->lexeme) == 0 && strcmp(index->leaf_token->lexeme, temp->index->leaf_token->lexeme) == 0) {
+                return 1;
+            }
+            temp = temp->next;
+        }
+    }
+
+    return 0;
+}
+
+int check_if_redeclared_in_scope(AST_list** head) {
+    int is_redeclared = 0;
+
+    AST_list* temp = *head;
+
+    while(temp) {
+        is_redeclared = search_current_scope(temp->node->leaf_token->lexeme, temp->node->current_scope) ? 1 : is_redeclared;
+        temp = temp->next;
+    }
+
+    return is_redeclared;
+}
+
+void check_identifier(AST node, AST_list** head) {
+    if(node == NULL)
+        return;
+
+    if(node->tag == 0) {
+
+        if(node->symbol_table_node && node->symbol_table_node->datatype == 3) {
+            AST index = node->next;
+            // add node, index
+            add_identifier(node, index, head);
+        }
+        else if(node->symbol_table_node) {
+            // add node, NULL
+            add_identifier(node, NULL, head);
+        }
+    }
+
+    AST temp = node->child;
+
+    while(temp) {
+        check_identifier(temp, head);
+        temp = temp->next;
+    }
+
+    return;
+}
+
+void add_identifier(AST node, AST index, AST_list** head) {
+    
+    AST_list* n = (AST_list*) malloc(sizeof(AST_list));
+    n->index = index;
+    n->next = NULL;
+    n->node = node;
+
+    if(head == NULL) {
+        *head = n;
+        return;
+    }
+    else {
+        n->next = *head;
+        *head = n;
+    }
+
+    return;
+}
+
+void print_identifier(AST_list* head) {
+    AST_list* temp = head;
+
+    while(temp) {
+        printf("%s\n", temp->node->leaf_token->lexeme);
+        temp = temp->next;
+    }
+
+    return;
 }

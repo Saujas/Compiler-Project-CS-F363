@@ -1,20 +1,15 @@
 <<<driver program>>>
 start
-	declare a:boolean;
-	declare b, c:integer;
-	declare e: real;
-	declare d:array[1..3] of integer;
-	declare f:array[1..3] of integer;
-	c := f[3];
-	for(b in  1..15)
+
+	declare i, k:integer;
+	declare arr:array[2..4] of integer;
+	while(i <= arr[i])
 	start
-		declare c:real;
-	end	
-	switch(a)
-		start
-			case 1: 
-				break;
-			case 2: 
-				break;
-		end
+		declare arr2:integer;
+		get_value(tempvar);
+		arr1[i]:=tempvar;
+		i:=0;
+		arr[i]:=i+1;
+	end
+
 end

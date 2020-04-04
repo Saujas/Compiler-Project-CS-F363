@@ -104,7 +104,7 @@ int extract_type(AST node) {
 
         int t1 = extract_type(n1), t2 = extract_type(n2);
         
-        if(t1 != t2 || t1 == 2 || t2 == 2) {
+        if(t1 != t2 || t1 == 2 || t2 == 2 || t1 == -1 || t2 == -1) {
             error = 1;
         }
 
@@ -149,7 +149,7 @@ int extract_type(AST node) {
         }
         int type = get_id_type(node);
         node->data_type = type;
-
+        
         return type;
     }
     else {

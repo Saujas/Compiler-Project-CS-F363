@@ -31,4 +31,10 @@ typedef struct ast_node {
 
 typedef AST_Node* AST;
 
+typedef struct list_AST {
+    AST node;
+    AST index;
+    struct list_AST* next;
+} AST_list;
+
 #endif
