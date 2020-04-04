@@ -1,15 +1,16 @@
 <<<driver program>>>
 start
 
-	declare i, k:integer;
-	declare arr:array[2..4] of integer;
+	declare i, k, tempvar:integer;
+	declare arr, arr1:array[2..4] of integer;
 	while(i <= arr[i])
 	start
 		declare arr2:integer;
 		get_value(tempvar);
 		arr1[i]:=tempvar;
-		i:=0;
-		arr[i]:=i+1;
+		while(arr2 < 2)
+			i:=0;
+			arr2:=1;
+		end
 	end
-
 end

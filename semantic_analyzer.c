@@ -237,7 +237,7 @@ int type_check_node(AST node) {
 
 void check_if_modified(AST_list** head, AST node, int* current) {
     
-    if(node == NULL)
+    if(node == NULL || (*current) == 1)
         return;
 
     if(node->rule_num == 52 && node->tag == 1) {
@@ -250,6 +250,7 @@ void check_if_modified(AST_list** head, AST node, int* current) {
         }
 
         *current = compare_list_node(head, id, index);
+        printf("%d\n", *current);
 
         if((*current) == 1) {
             return;
@@ -275,8 +276,8 @@ int compare_list_node(AST_list** head, AST id, AST index) {
 
     if(id->symbol_table_node && id->symbol_table_node->datatype != 3) {
         while(temp) {
-            // printf("%s %s\n", id->leaf_token->lexeme, temp->node->leaf_token->lexeme);
-            if( strcmp(id->leaf_token->lexeme, temp->node->leaf_token->lexeme) == 0) {
+            // printf("%d: %s %s\n", id->leaf_token->line_no, id->leaf_token->lexeme, temp->node->leaf_token->lexeme);
+            if( strcmp(id->leaf_token->lexeme, temp->node->leaf_token->lexeme) == 0 && (id->symbol_table_node->node->current_scope == temp->node->symbol_table_node->node->current_scope)) {
                 return 1;
             }
             temp = temp->next;
@@ -285,7 +286,9 @@ int compare_list_node(AST_list** head, AST id, AST index) {
 
     else {
         while(temp) {
-            if(strcmp(id->leaf_token->lexeme, temp->node->leaf_token->lexeme) == 0 && strcmp(index->leaf_token->lexeme, temp->index->leaf_token->lexeme) == 0) {
+            if(strcmp(id->leaf_token->lexeme, temp->node->leaf_token->lexeme) == 0 && strcmp(index->leaf_token->lexeme, temp->index->leaf_token->lexeme) == 0 && 
+            (id->symbol_table_node->node->current_scope == temp->node->symbol_table_node->node->current_scope) && 
+            (index->symbol_table_node->node->current_scope == temp->index->symbol_table_node->node->current_scope)) {
                 return 1;
             }
             temp = temp->next;
