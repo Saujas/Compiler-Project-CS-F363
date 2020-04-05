@@ -99,8 +99,18 @@ int main(int argc, char* argv[]) {
                 create_symbol_table_tree(root);
                 //print_ast(root);
                 printf("Semantic checker invoked\n");
-                type_checker(root);
-                printf("Type checking successful\n\n");
+                ErrorList* err = initialize_errors();
+                printf("Type checking completed\n");
+                type_checker(root, err);
+                sort_errors(err);
+                //printf("1");
+                if((err->head) != NULL) {
+                    printf("Semantic error occurred\n\n");
+                    print_errors(err);
+                }
+                else {
+                    printf("No semantic errors found\n\n");
+                }
                 break;
 
             default: printf("\nInvalid Choice\n\n");
