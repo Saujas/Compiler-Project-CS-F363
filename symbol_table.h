@@ -6,7 +6,7 @@
 #include "parser_def.h"
 #include "lexer_def.h"
 #include "ast_def.h"
-#include "semantic_analyzer.h"
+#include "semantic_analyzer_def.h"
 
 int check_if_defined(Symbol_Table_Tree current, char* lexeme);
 int check_if_declared(Symbol_Table_Tree current, char* lexeme);

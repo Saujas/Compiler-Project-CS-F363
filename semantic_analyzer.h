@@ -1,6 +1,4 @@
-#include "type_extractor.h"
 #include "semantic_analyzer_def.h"
-
 
 int check_bound(AST index, AST var);
 int type_check_node(AST node, ErrorList* err);

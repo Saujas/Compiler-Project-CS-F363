@@ -1,5 +1,6 @@
 #include "symbol_table.h"
-//#include "semantic_analyzer_def.h"
+#include "semantic_analyzer.h"
+
 char* ast_string_map_copy[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
@@ -438,13 +439,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         }
         
         if(!declared) {
-            //printf("henlo frnz\n");
             //printf("Line %d - %s Incorrect Function Call, Module not found\n", temp_node->leaf_token->line_no, name);
-             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: INCORRECT FUNCTION CALL, MODULE NOT FOUND");
-                        //printf("%s hello\n", str);
 
             add_sem_error(err,str,temp_node->leaf_token->line_no);
+            temp_node->current_scope = NULL;
             //printf("%s\n", str);
             // exit(-1);
         }

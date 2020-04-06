@@ -1,5 +1,6 @@
 #include "semantic_analyzer.h"
 #include "symbol_table.h"
+#include "type_extractor.h"
 
 char* tc_string_map_copy[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
@@ -202,8 +203,8 @@ int type_check_node(AST node, ErrorList* err) {
             if(temp1->label == NUMERIC_CASES) {
                 //printf("Line: %d - Switch with boolean variable can have only true and false cases\n", node->child->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE CAN HAVE ONLY TRUE AND FALSE CASES");
-            add_sem_error(err,str,node->child->leaf_token->line_no);
+                strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE CAN HAVE ONLY TRUE AND FALSE CASES");
+                add_sem_error(err,str,node->child->leaf_token->line_no);
                 flag = 1;
             }
         }
@@ -220,8 +221,8 @@ int type_check_node(AST node, ErrorList* err) {
             if(!check) {
                 //printf("Line: %d - Switch with integer variable must have default\n", node->child->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE MUST HAVE DEFAULT ");
-            add_sem_error(err,str,node->child->leaf_token->line_no);
+                strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE MUST HAVE DEFAULT ");
+                add_sem_error(err,str,node->child->leaf_token->line_no);
                 flag = 1;
             }
         }
@@ -253,8 +254,8 @@ int type_check_node(AST node, ErrorList* err) {
             if((*id_used) == NULL) {
                 //printf("Line: - No identifier used in while construct\n");
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: NO IDENTIFIER USED IN WHILE CONSTRUCT");
-            add_sem_error(err,str,-1);
+                strcpy(str,"ERROR: NO IDENTIFIER USED IN WHILE CONSTRUCT");
+                add_sem_error(err,str,-1);
                 flag = 1;
             }
             
@@ -263,8 +264,8 @@ int type_check_node(AST node, ErrorList* err) {
                 if(is_redeclared) {
                     //printf("Line: - Identifier used in while construct cannot be redeclared\n");
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: IDENTIFIER USED IN WHILE CONSTRUCT CANNOT BE REDECLARED");
-            add_sem_error(err,str,-1);
+                    strcpy(str,"ERROR: IDENTIFIER USED IN WHILE CONSTRUCT CANNOT BE REDECLARED");
+                    add_sem_error(err,str,-1);
                     flag = 1;
                 }
             }
@@ -274,7 +275,9 @@ int type_check_node(AST node, ErrorList* err) {
                 check_if_modified(id_used, node, &is_modified);
 
                 if(!is_modified) {
-                    printf("No variable modified\n");
+                    char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                    strcpy(str,"ERROR: NO VARIABLE IN WHILE CONDITION MODIFIED");
+                    add_sem_error(err,str,-1);
                     flag = 1;
                 }
                 else {
@@ -298,7 +301,6 @@ int type_check_node(AST node, ErrorList* err) {
         Symbol_Table_Tree fun_tree = fun_id->current_scope;
         
         if(!fun_tree) {
-            //printf("helo frenz\n");
             flag = 1;
             return flag;
         }
@@ -390,14 +392,14 @@ int type_check_node(AST node, ErrorList* err) {
 
         if(op_assign_error) {
             flag = 1;
-            printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
+            // printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: ALL OUTPUTS NOT ASSIGNED VALUE IN MODULE");
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
 
-        printf("Line: %d - Successful Function Call\n", fun_id->leaf_token->line_no);
+        // printf("Line: %d - Successful Function Call\n", fun_id->leaf_token->line_no);
     }
 
     // also need to check whether all functions have been defined

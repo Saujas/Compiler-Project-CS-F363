@@ -1,7 +1,7 @@
 #include "type_extractor.h"
 #include "semantic_analyzer.h"
 #include "symbol_table.h"
-//#include "semantic_analyzer_def.h"
+
 char* tc_string_map[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
