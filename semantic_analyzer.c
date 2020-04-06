@@ -310,7 +310,16 @@ int type_check_node(AST node, ErrorList* err) {
             flag = 1;
             //printf("Line: %d - Module used in call not defined\n", fun_id->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: MODULE USED  IN CALL NOT DEFINED");
+            strcpy(str,"ERROR: MODULE USED IN CALL NOT DEFINED");
+            add_sem_error(err,str,fun_id->leaf_token->line_no);
+            return flag;
+        }
+
+        // If recursive call
+        if(strcmp(fun_id->leaf_token->lexeme, node->current_scope->name)==0) {
+            flag = 1;
+            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str,"ERROR: MODULE IS RECURSIVELY CALLED");
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
@@ -466,7 +475,7 @@ int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
                         if(ip->symbol_table_node->range[0].tag == 0 && ip->symbol_table_node->range[0].range_pointer.value != temp->range[0].range_pointer.value) {
                             return 0;
                         }
-                        if(ip->symbol_table_node->range[1].tag == 1 && ip->symbol_table_node->range[1].range_pointer.value != temp->range[1].range_pointer.value) {
+                        if(ip->symbol_table_node->range[1].tag == 0 && ip->symbol_table_node->range[1].range_pointer.value != temp->range[1].range_pointer.value) {
                             return 0;
                         }
                     }
