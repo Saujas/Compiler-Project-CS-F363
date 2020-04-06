@@ -1,6 +1,7 @@
 #include "type_extractor.h"
 #include "semantic_analyzer.h"
-
+#include "symbol_table.h"
+//#include "semantic_analyzer_def.h"
 char* tc_string_map[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
@@ -35,7 +36,7 @@ int get_id_type(AST node) {
 }
 
 // 0: INT, 1: REAL, 2: BOOLEAN, -1: ERROR
-int extract_type(AST node) {
+int extract_type(AST node,ErrorList* err) {
     
     if(node == NULL) {
         return -1;
@@ -47,7 +48,7 @@ int extract_type(AST node) {
 
         if(node->label == EXPRESSION || node->label == RELATIONAL_EXPR ||
         node->label == NEW8 || node->label == NEW7 || node->label == NEW6 || node->label == VAR) {
-            return extract_type(node->child);
+            return extract_type(node->child, err);
         }
 
         // INVALID NON TERMINAL WITHIN AN EXPRESSION
@@ -64,7 +65,7 @@ int extract_type(AST node) {
         AST n1 = node->next;
         AST n2 = node->next->next;
 
-        int t1 = extract_type(n1), t2 = extract_type(n2);
+        int t1 = extract_type(n1, err), t2 = extract_type(n2, err);
 
         if(n2 == NULL) {
             if(t1 == 2) {
@@ -86,7 +87,7 @@ int extract_type(AST node) {
         AST n1 = node->next;
         AST n2 = node->next->next;
 
-        int t1 = extract_type(n1), t2 = extract_type(n2);
+        int t1 = extract_type(n1, err), t2 = extract_type(n2, err);
         
         if(t1 != t2 || t1 == 2 || t2 == 2) {
             error = 1;
@@ -101,7 +102,7 @@ int extract_type(AST node) {
         AST n1 = node->next;
         AST n2 = node->next->next;
 
-        int t1 = extract_type(n1), t2 = extract_type(n2);
+        int t1 = extract_type(n1, err), t2 = extract_type(n2, err);
         
         if(t1 != t2 || t1 == 2 || t2 == 2 || t1 == -1 || t2 == -1) {
             error = 1;
@@ -115,7 +116,7 @@ int extract_type(AST node) {
 
         AST n2 = node->next->next;
 
-        int t1 = extract_type(n1), t2 = extract_type(n2);
+        int t1 = extract_type(n1, err), t2 = extract_type(n2, err);
 
         if( !(t1 == 2 && t2 == 2)) {
             error = 1;
@@ -125,7 +126,10 @@ int extract_type(AST node) {
     }
 
     if(error) {
-        printf("Line: %d - Invalid types in expression\n", node->leaf_token->line_no);
+        //printf("Line: %d - Invalid types in expression\n", node->leaf_token->line_no);
+       /* char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str,"ERROR: INVALID TYPES IN EXPRESSION");
+            add_sem_error(err,str,node->leaf_token->line_no);*/
         return -1;
     }
 
@@ -136,12 +140,18 @@ int extract_type(AST node) {
             if(!temp1)
                 return -1;
             if(temp1->symbol_table_node && temp1->symbol_table_node->datatype != 0) {
-                printf("Line: %d - Invalid type of array index\n", node->leaf_token->line_no);
+                //printf("Line: %d - Invalid type of array index\n", node->leaf_token->line_no);
+               /* char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str,"ERROR: INVALID TYPE OF ARRAY INDEX");
+            add_sem_error(err,str,node->leaf_token->line_no);*/
                 return -1;
             }
             else if(temp1->leaf_token && temp1->leaf_token->token == NUM) {
                 if(!check_bound(temp1, node)) {
-                    printf("Line: %d - Out of bound array index\n", node->leaf_token->line_no);
+                    //printf("Line: %d - Out of bound array index\n", node->leaf_token->line_no);
+                    /*char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str,"ERROR: ARRAY INDEX OUT OF BOUNDS");
+            add_sem_error(err,str,node->leaf_token->line_no);*/
                     return -1;
                 }
             }

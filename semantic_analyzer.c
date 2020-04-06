@@ -1,4 +1,5 @@
 #include "semantic_analyzer.h"
+#include "symbol_table.h"
 
 char* tc_string_map_copy[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
@@ -144,7 +145,7 @@ int type_check_node(AST node, ErrorList* err) {
         }
         else {
 
-            int expression_type = extract_type(expression_node);
+            int expression_type = extract_type(expression_node, err);
             int lhs_type = get_id_type(lhs);
             
             // printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
@@ -235,7 +236,7 @@ int type_check_node(AST node, ErrorList* err) {
 
     // WHILE LOOP SEMANTICS
     if(node->rule_num == 102) {
-        int type = extract_type(node->child);
+        int type = extract_type(node->child, err);
         
         if(type != 2) {
             //printf("Line: - Incompatible expression used in while construct\n");
@@ -297,6 +298,7 @@ int type_check_node(AST node, ErrorList* err) {
         Symbol_Table_Tree fun_tree = fun_id->current_scope;
         
         if(!fun_tree) {
+            //printf("helo frenz\n");
             flag = 1;
             return flag;
         }

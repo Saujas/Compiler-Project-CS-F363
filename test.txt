@@ -1,9 +1,9 @@
-**declare module square;
+**declare module square1;**
 <<<driver program>>>
 start
 	declare v_1_2_3:array[2..3] of integer;
 	declare v:integer;
-	v:=p;
+	v1:=p;
 	v_1_2_3[9]:=c;
 	declare result_:integer;
 	[result_]:=use module square1 with parameters v_1_2_3;
@@ -14,12 +14,12 @@ takes input [x:array[1..3] of integer];
 returns [value:integer];
 start
 	value:= x[1];
-end**
+end
 
-declare module square;
+**declare module square;
 <<<driver program>>>
 start
-	declare v_1_2_3:array[2..3] of integer;
+	declare v_1_2_3:array[1..3] of integer;
 	declare result_:integer;
 	[result_]:=use module square with parameters v_1_2_3;
 	print(result_);
@@ -29,5 +29,5 @@ end
 takes input [x:array[1..3] of integer];
 returns [value:integer];
 start
-	value:= x[2]*x[4];
-end
+	value:= x[2]*x[2];
+end**

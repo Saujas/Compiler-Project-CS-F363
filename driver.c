@@ -96,11 +96,12 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 AST root = generate_AST(*parse_tree_ptr);
-                create_symbol_table_tree(root);
-                //print_ast(root);
-                printf("Semantic checker invoked\n");
                 ErrorList* err = initialize_errors();
-                printf("Type checking completed\n");
+                create_symbol_table_tree(root, err);
+                //print_ast(root);
+                //printf("Semantic checker invoked\n");
+                
+                //printf("Type checking completed\n");
                 type_checker(root, err);
                 sort_errors(err);
                 //printf("1");
