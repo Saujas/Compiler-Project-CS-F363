@@ -29,7 +29,6 @@ struct symbol_node {
     int width;
     int offset;
     int param_order;
-    void* memory;
     int usage;
     Range range[2];
     int array_datatype;
@@ -60,6 +59,8 @@ typedef struct symbol_table Symbol_Table;
 
 struct symbol_table_tree_node {
     Symbol_Table* table;
+
+    int last_offset;
 
     struct symbol_table_tree_node* parent;
     struct symbol_table_tree_node* child;

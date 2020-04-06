@@ -55,6 +55,7 @@ int type_check_node(AST node, ErrorList* err) {
     int rule_num = node->rule_num;
     int flag = 0;
     
+    // ASSIGNMENT STATEMENTS
     if (rule_num == 52 && node->tag == 1) {
 
         // ASSIGNMENT STATEMENT
@@ -162,6 +163,7 @@ int type_check_node(AST node, ErrorList* err) {
 
     }
 
+    // IO READ STATEMENT
     if(node->rule_num == 40 && node->tag == 0) {
         if(!search_symbol_table(node->leaf_token->lexeme, node->current_scope))
             flag = 1;
@@ -171,6 +173,29 @@ int type_check_node(AST node, ErrorList* err) {
             strcpy(str,"ERROR: INCOMPATIBLE DATA TYPE OF VARIABLE");
             add_sem_error(err,str,node->leaf_token->line_no);
             flag = 1;
+        }
+    }
+
+    // IO WRITE STATEMENT
+    if(node->rule_num == 42 && node->label == IO_WRITE && node->tag == 0) {
+        if(node->symbol_table_node == NULL) {
+            flag = 1;
+            return flag;
+        }
+
+        if(node->symbol_table_node->datatype == 3 && node->next) {
+            if((node->next->leaf_token->token == ID) && node->next->symbol_table_node == NULL) {
+                flag = 1;
+                return flag;
+            }
+
+            else if(node->next->leaf_token->token == NUM && !check_bound(node->next, node)) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str, "ERROR: INVALID INDEX USED IN ARRAY");
+                add_sem_error(err, str, node->leaf_token->line_no);
+                flag = 1;
+                return flag;
+            }
         }
     }
 

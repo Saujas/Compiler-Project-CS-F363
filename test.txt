@@ -1,56 +1,34 @@
-declare module readArr;
-**the following function computes the sum of first n elements of the array**
-<<module arraySum>>
-takes input[list:array[1..15] of    real, n:integer];
-returns  [sum:real];
-start
-	declare index:integer;
-	declare t:boolean;
-	sum:=0.0;
-	for(index in  1..15)
-	start
-		t:= index<=n;
-		switch(t)
-		start
-			case true: print(list[index]);
-				   sum:=sum+list[index];
-				   break;
-			case false: print(sum);
-				    print(index);
-				    **prints the values of sum and index  15-n times**
-				    break;
-		end
-		** no need to increment the value of index as it will be taken care by the semantic rules associated with for construct, but an increment statement does not make its syntax incorrect**
-	end
-	print(sum);
-end
+** This testcase demonstrates correctness of module structure with declaration and simple statements**
+declare module square;
 <<<driver program>>>
 start
-	declare A:array[1..15] of real;
-	declare k:integer;
-	declare s:real;
-	get_value(k);
-	use module readArr with parameters A,k;
-	[s]:= use module arraySum with parameters A,k;
-	print(s);
+	declare v_1_2_3:integer;
+	get_value(v_1_2_3);
+	declare result_, a, b:integer;
+	declare c: real;
+	declare g: boolean;
+	declare arr, arr2:array[2..4] of integer;
+	declare arr3, arr4:array[a..b] of real;
+	[result_]:=use module square with parameters v_1_2_3;
+	print(result_);
 end
 
-**The following module reads k  values one by one**
-** the array elements are populated with the read values**
-**The array variable is not returned as the translation will**
-**use the same locations for array elements**
-
-<<module readArr>>
-takes input [arr1:array[1..15] of real,k:integer];
+<<module square>>
+takes input [x:integer];
+returns [value:integer];
 start
-	declare tempvar:real;
-	declare i:integer;
-	i:=1;
-	while(i<=k)
-	start
-		get_value(tempvar);
-		arr1[i]:=tempvar;
-		i:=i+1;
-		** the semantics of while needs an increment and will be taken care of at the second phase**
-	end
+	declare y: integer;
+	declare x: integer;
+	declare x: real;
+	value:= x*x;
 end
+
+**notice that this test case does not declare the module before the driver module, still it is syntactically correct as moduleDeclarations is optional. Testing whether a module is declared before its use is a matter of semantic analysis**
+
+** test the correctness of all lexemes and parse tree created
+and print the following message on successful compilation on the console
+      " Input source code is syntactically correct.........."
+**
+
+**make sure to produce only relevant output of your compiler code...
+Also remove all unnecessary printf statements and make the code more professional before submitting**

@@ -123,7 +123,7 @@ void print_ast(AST root) {
         print_ast(root);
         root = root->next;
     }
-    printf("\n");
+    // printf("\n");
 
     return;
 }
