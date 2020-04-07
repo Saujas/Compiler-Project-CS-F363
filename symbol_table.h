@@ -22,3 +22,4 @@ void traverse_ast(AST node, Symbol_Table_Tree current, ErrorList* Err);
 void print_symbol_tables(Symbol_Table_Tree tree);
 void print_slots(Symbol_Table* table);
 void print_symbols(Slots_List* list);
+Symbol_Table_Tree get_parent_scope(Symbol_Table_Tree current);

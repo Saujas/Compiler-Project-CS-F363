@@ -80,7 +80,6 @@ Symbol_Node* search_current_scope(char* id, Symbol_Table_Tree table_tree_node) {
     if(table_tree_node->is_function)
         return search_current_scope(id, table_tree_node->output);
 
-    
     return NULL;
 }
 
@@ -88,7 +87,8 @@ Symbol_Node* search_current_scope(char* id, Symbol_Table_Tree table_tree_node) {
 void insert_symbol(Symbol_Table* symbol_table, char* key, Symbol_Node* node) {
     int hash_value = hash_symbol_table(key, symbol_table->number_of_slots);
     Symbol_List* new = (Symbol_List*) malloc(sizeof(Symbol_List));
-    node->node->symbol_table_node = node;
+    if(node->node)
+        node->node->symbol_table_node = node;
     new->symbol = node;
     new->next = NULL;
     Slots_List* temp = symbol_table->slots[hash_value];
@@ -299,6 +299,17 @@ Symbol_Node* make_symbol_node(AST node, int datatype, int assigned, int width, i
     return symbol_node;
 }
 
+Symbol_Table_Tree get_parent_scope(Symbol_Table_Tree current) {
+    
+    Symbol_Table_Tree parent_module = current;
+
+    while(parent_module->parent && parent_module->parent->parent != NULL) {
+        parent_module = parent_module->parent;
+    }
+
+    return parent_module;
+}
+
 void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     if(!node)
         return;
@@ -321,11 +332,13 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     
     Symbol_Table_Tree new = current;
 
-    Symbol_Table_Tree parent_module = current;
+    // Symbol_Table_Tree parent_module = current;
 
-    while(parent_module->parent && parent_module->parent->parent != NULL) {
-        parent_module = parent_module->parent;
-    }
+    // while(parent_module->parent && parent_module->parent->parent != NULL) {
+    //     parent_module = parent_module->parent;
+    // }
+
+    Symbol_Table_Tree parent_module = get_parent_scope(current);
 
     // Module defintions, not driver module
     if(node->tag == 1 && node->rule_num == 8) {
@@ -498,6 +511,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         while(temp) {
             flag = 0;
             type = temp->child->next->leaf_token;
+            int offset = 0, width = 0;
+
             if(type != NULL) {
                 if(strcmp(type->lexeme, "integer")==0) {
                     datatype = 0;
@@ -509,13 +524,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                     datatype = 2;
                 }
 
-                // int offset = parent_module->last_offset;
-                // int width = data_width[datatype];
-                // parent_module->last_offset += width;
+                offset = parent_module->last_offset;
+                width = data_width[datatype];
                 // printf("Hi\n");
                 if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
                     // printf("Hi\n");
-                    symbol_node = make_symbol_node(temp->child, datatype, 0, 0, 0, 1, NULL, -1);
+                    symbol_node = make_symbol_node(temp->child, datatype, 0, width, offset, 1, NULL, -1);
                     flag = 1;
                 }
                 else{
@@ -523,6 +537,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                     strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
                     add_sem_error(err,str,temp->child->leaf_token->line_no);
+                    flag = 0;
                 }
             }
             else {
@@ -546,9 +561,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 int val1 = range[0].range_pointer.value, val2 = range[1].range_pointer.value, width = 0, offset = 0;
 
                 if(val1 > 0 && val2 > val1) {
-                    // width = data_width[array_datatype] * (val2 - val1 + 1);
-                    // offset = parent_module->last_offset;
-                    // parent_module->last_offset += width;
+                    width = data_width[array_datatype] * (val2 - val1 + 1);
+                    offset = parent_module->last_offset;
+                    flag = 1;
                 }
                 else {
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
@@ -565,12 +580,15 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                     //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                     strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
-                    add_sem_error(err,str,temp->child->leaf_token->line_no);}
+                    add_sem_error(err,str,temp->child->leaf_token->line_no);
+                    flag = 0;
+                }
             }
             if(flag) {
                 symbol_node->param_order = param_order;
                 param_order++;
                 insert_symbol(current->input->table, temp->child->leaf_token->lexeme, symbol_node);
+                parent_module->last_offset += width;
             }
             temp = temp->child->next->next;
         }

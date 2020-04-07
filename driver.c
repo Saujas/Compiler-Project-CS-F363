@@ -9,6 +9,7 @@
 #include "symbol_table.h"
 #include "type_extractor.h"
 #include "semantic_analyzer.h"
+#include "intermediate_code.h"
 #include <time.h>
 
 /* Main function called on execting the program
@@ -108,6 +109,7 @@ int main(int argc, char* argv[]) {
                 }
                 else {
                     printf("No semantic errors found\n\n");
+                    generate_ir(root);
                 }
                 break;
 

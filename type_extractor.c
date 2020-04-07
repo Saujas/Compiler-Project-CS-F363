@@ -128,7 +128,7 @@ int extract_type(AST node, ErrorList* err) {
     if(error) {
         //printf("Line: %d - Invalid types in expression\n", node->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"abra ka dabraERROR: INVALID TYPES IN EXPRESSION");
+            strcpy(str,"ID TYPES IN EXPRESSION");
             add_sem_error(err,str,node->leaf_token->line_no);
         return -1;
     }
@@ -142,7 +142,7 @@ int extract_type(AST node, ErrorList* err) {
             if(temp1->symbol_table_node && temp1->symbol_table_node->datatype != 0) {
                 //printf("Line: %d - Invalid type of array index\n", node->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"abra ka dabraERROR: INVALID TYPE OF ARRAY INDEX");
+                strcpy(str,"ERROR: INVALID TYPE OF ARRAY INDEX");
                 add_sem_error(err,str,node->leaf_token->line_no);
                 return -1;
             }
@@ -150,7 +150,7 @@ int extract_type(AST node, ErrorList* err) {
                 if(!check_bound(temp1, node)) {
                     //printf("Line: %d - Out of bound array index\n", node->leaf_token->line_no);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"abra ka dabraERROR: ARRAY INDEX OUT OF BOUNDS");
+                    strcpy(str,"ERROR: ARRAY INDEX OUT OF BOUNDS");
                     add_sem_error(err,str,node->leaf_token->line_no);
                     return -1;
                 }
