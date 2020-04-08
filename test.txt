@@ -1,9 +1,13 @@
 <<<driver program>>>
 start
-	declare v_1_2_3, a, c, d, x, y:integer;
-	declare b:real;
+	declare a, b, x, c: integer;
+	declare arr:array [2..4] of integer;
+	declare y: boolean;
 
-	declare arr1, arr2:array[2..4] of integer;
-	declare j:boolean;
-	j := a + c > a;
+	a := b;
+	
+	for (b in 2..4)
+	start
+		a := a+1;
+	end
 end

@@ -3,7 +3,7 @@
 
 char* operator_string_map[OPERATOR_SIZE] = {
     "COPY", "ADD", "SUB", "MUL", "DIV", "MEM_READ", "MEM_WRITE", "GT",
-    "GE", "LT", "LE", "EQ", "NE", "AND", "OR"
+    "GE", "LT", "LE", "EQ", "NE", "AND", "OR", "LABEL", "IF_TRUE", "IF_FALSE", "GOTO"
 };
 
 int temp_var;
@@ -49,6 +49,25 @@ void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_node, in
     symbol->width = width;
     symbol->offset = parent_node->last_offset;
     parent_node->last_offset += width;
+}
+
+char* create_label() {
+    char* l = (char*) malloc(sizeof(char)*5);
+    int i;
+    for(i=0; i<5; i++) {
+        l[i] = '\0';
+    }
+
+    l[0] = 'L';
+    
+    char str2[10];
+    sprintf(str2, "%d", label);
+    for(i=0; i<3; i++) {
+        l[i+1] = str2[i];
+    }
+
+    label += 1;
+    return l;
 }
 
 Temporary create_temporary() {
@@ -116,6 +135,11 @@ void generate_ir_util(AST node, tuple_list* list) {
         return;
     }
 
+    int processed = process_node(node, list);
+    if(processed) {
+        return;
+    }
+
     AST child = node->child;
 
     while(child) {
@@ -123,11 +147,10 @@ void generate_ir_util(AST node, tuple_list* list) {
         child = child->next;
     }
 
-    process_node(node, list);
     return;
 }
 
-void process_node(AST node, tuple_list* list) {
+int process_node(AST node, tuple_list* list) {
 
     oper op;
     
@@ -148,11 +171,75 @@ void process_node(AST node, tuple_list* list) {
             // Symbol_Node* result = (Symbol_Node*) malloc(sizeof(Symbol_Node));
 
             // add_temp_symboltable(node, result, new_temp);
-            char *empty = "";
-            Tuple new_tup = make_tuple(op, node_t->name, empty, node->child->leaf_token->lexeme, node_t->symbol, NULL, node3);
+            Tuple new_tup = make_tuple(op, node_t->name, "", node->child->leaf_token->lexeme, node_t->symbol, NULL, node3);
             add_tuple(list, new_tup);
         }
+        else {
+            AST lhs = node->child, index = node->child->next->child;
+            Symbol_Table_Tree parent_scope = get_parent_scope(lhs->current_scope);
+            Temporary temp0 = evaluate_array(lhs, index, list, parent_scope);
+
+            Temporary temp1 = evaluate_expression(index->next, list, parent_scope);
+
+            Tuple new_tuple0 = make_tuple(MEM_WRITE, temp1->name, "", temp0->name, temp1->symbol, NULL, temp0->symbol);
+            add_tuple(list, new_tuple0);
+        }
+
+        return 1;
     }
+
+    if(node->rule_num == 101 && node->tag == 1) {
+        AST itr = node->child, ll = itr->next->child, ul = itr->next->child->next;
+        Symbol_Table_Tree parent_scope = get_parent_scope(itr->current_scope);
+
+        Tuple label_tup;
+        char* label1 = create_label();
+        char* label2 = create_label();
+        char* label3 = create_label();
+        // printf("labels:%s %s %s\n", label1, label2, label3);
+        Tuple new_tup = make_tuple(COPY, ll->leaf_token->lexeme, "", itr->leaf_token->lexeme, NULL, NULL, itr->symbol_table_node);
+        add_tuple(list, new_tup);
+
+        label_tup = make_tuple(LABEL, "", "", label1, NULL, NULL, NULL);
+        add_tuple(list, label_tup);
+        // IF
+
+        Temporary new_temp = create_temporary();
+        add_temp_symboltable(new_temp->symbol, parent_scope, 1);
+        Tuple new_tup1 = make_tuple(LESS_EQUAL, itr->leaf_token->lexeme, ul->leaf_token->lexeme, new_temp->name, itr->symbol_table_node, ul->symbol_table_node, new_temp->symbol);
+        add_tuple(list, new_tup1);
+        
+        Tuple new_tup2 = make_tuple(IF_TRUE, "", "", label2, NULL, NULL, NULL);
+        add_tuple(list, new_tup2);
+        Tuple new_tup3 = make_tuple(IF_FALSE, "", "", label3, NULL, NULL, NULL);
+        add_tuple(list, new_tup3);
+
+        label_tup = make_tuple(LABEL, "", "", label2, NULL, NULL, NULL);
+        add_tuple(list, label_tup);
+        // INSIDE FOR
+
+        generate_ir_util(itr->next->next, list);
+
+        Temporary temp0 = create_temporary();
+        add_temp_symboltable(temp0->symbol, parent_scope, 2);
+
+        Tuple new_tup4 = make_tuple(ADDITION, itr->leaf_token->lexeme, "1", temp0->name, itr->symbol_table_node, NULL, temp0->symbol);
+        add_tuple(list, new_tup4);
+
+        Tuple new_tup5 = make_tuple(COPY, temp0->name, "", itr->leaf_token->lexeme, temp0->symbol, NULL, itr->symbol_table_node);
+        add_tuple(list, new_tup5);
+
+        Tuple new_tup6 = make_tuple(GOTO, label1, "", "", NULL, NULL, NULL);
+        add_tuple(list, new_tup6);
+
+        // OUTSIDE FOR
+        label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
+        add_tuple(list, label_tup);
+        
+        return 1;
+    }
+
+    return 0;
 }
 
 Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree parent_scope) {
@@ -210,7 +297,21 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
             */
 
            if(node->child->next && node->child->next->tag == 0) {
-               return evaluate_array(node->child, list, parent_scope);
+                Temporary temp0 = evaluate_array(node->child, node->child->next, list, parent_scope);
+                int width = 0;
+                if(node->child->symbol_table_node->array_datatype == 0)
+                    width = 2;
+                else if(node->child->symbol_table_node->array_datatype == 1)
+                    width = 4;
+                else if(node->child->symbol_table_node->array_datatype == 2)
+                    width = 1;
+
+                Temporary temp1 = create_temporary();
+                add_temp_symboltable(temp1->symbol, parent_scope, width);
+                Tuple new_tup = make_tuple(MEM_READ, temp0->name, "", temp1->name, temp0->symbol, NULL, temp1->symbol);
+                
+                add_tuple(list, new_tup);
+                return temp1;
            }
            else {
                // to be completed
@@ -263,19 +364,51 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
     }
 
     if(node->label == NEW6 || node->label == NEW7 || node->label == RELATIONAL_EXPR || node->label == NEW8) {
-        Temporary lhs = evaluate_expression(node->child->next, list, parent_scope);
-        Temporary rhs = evaluate_expression(node->child->next->next, list, parent_scope);
-
-        Temporary node_t = create_temporary();
+        
+        Symbol_Node* arg1 = NULL, *arg2 = NULL;
+        AST node1 = NULL, node2 = NULL;
         int width = 0;
+        Temporary lhs, rhs;
+        
+        if(node->child->next->tag == 1 && node->child->next->label == VAR && node->child->next->child->symbol_table_node->datatype !=3) {
+            node1 = node->child->next->child;
+            arg1 = node1->symbol_table_node;
+            width = arg1->width;
+        }
+        else if(node->child->next->tag == 0) {
+            node1 = node->child->next;
+            if(node1->leaf_token->token == NUM)
+                width = 2;
+            else if(node1->leaf_token->token == RNUM)
+                width = 4;
+            else if(node1->leaf_token->token == TRUE || node1->leaf_token->token == FALSE)
+                width = 1;
+        }
+        else {
+            lhs = evaluate_expression(node->child->next, list, parent_scope);
+            arg1 = lhs->symbol;
+            width = arg1->width;
+        }
+
+        if(node->child->next->next->tag == 1 && node->child->next->next->label == VAR && node->child->next->next->child->symbol_table_node->datatype !=3) {
+            node2 = node->child->next->next->child;
+            arg2 = node2->symbol_table_node;
+        }
+        else if(node->child->next->next->tag == 0) {
+            node2 = node->child->next->next;
+        }
+        else {
+            rhs = evaluate_expression(node->child->next->next, list, parent_scope);
+            arg2 = rhs->symbol;
+        }
+        
+        Temporary node_t = create_temporary();
         if(node->label == RELATIONAL_EXPR || node->label == NEW8) {
             width = 1;
         }
-        else {
-            width = lhs->symbol->width;
-        }
-        add_temp_symboltable(node_t->symbol, parent_scope, width);
 
+        add_temp_symboltable(node_t->symbol, parent_scope, width);
+        
         tokens sign = node->child->leaf_token->token;
         oper op;
         if(sign == PLUS)
@@ -302,8 +435,21 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
             op = BOOLEAN_AND;
         else if(sign == OR)
             op = BOOLEAN_OR;
-
-        Tuple new_tuple = make_tuple(op, lhs->name, rhs->name, node_t->name, lhs->symbol, rhs->symbol, node_t->symbol);
+        
+        Tuple new_tuple;
+        if(node1==NULL && node2==NULL) {
+            new_tuple = make_tuple(op, lhs->name, rhs->name, node_t->name, arg1, arg2, node_t->symbol);
+        }
+        else if(node1==NULL && node2 != NULL) {
+            new_tuple = make_tuple(op, lhs->name, node2->leaf_token->lexeme, node_t->name, arg1, arg2, node_t->symbol);
+        }
+        else if(node1!=NULL && node2==NULL) {
+            new_tuple = make_tuple(op, node1->leaf_token->lexeme, rhs->name, node_t->name, arg1, arg2, node_t->symbol);
+        }
+        else if(node1 != NULL && node2!=NULL) {
+            new_tuple = make_tuple(op, node1->leaf_token->lexeme, node2->leaf_token->lexeme, node_t->name, arg1, arg2, node_t->symbol);
+        }
+        
         add_tuple(list, new_tuple);
 
         return node_t;
@@ -314,8 +460,7 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
     return test_node;
 }
 
-Temporary evaluate_array(AST node, tuple_list* list, Symbol_Table_Tree parent_scope) {
-    AST index = node->next;
+Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tree parent_scope) {
 
     int width = 0;
     if(node->symbol_table_node->array_datatype == 0)
@@ -327,6 +472,9 @@ Temporary evaluate_array(AST node, tuple_list* list, Symbol_Table_Tree parent_sc
 
     char* str_width = (char*) malloc(sizeof(char) * 2);
     sprintf(str_width, "%d", width);
+    
+    Temporary temp0 = create_temporary();
+    add_temp_symboltable(temp0->symbol, parent_scope, 2);
 
     Temporary temp1 = create_temporary();
     add_temp_symboltable(temp1->symbol, parent_scope, 2);
@@ -335,20 +483,28 @@ Temporary evaluate_array(AST node, tuple_list* list, Symbol_Table_Tree parent_sc
     if(index->leaf_token->token == ID) {
         arg1 = index->symbol_table_node;
     }
+    
+    // subtract current index from lower index
+    Tuple new_tup0;
+    if(node->symbol_table_node->range[0].tag == 0) {
+        char* li = (char*) malloc(sizeof(char)*4);
+        sprintf(li, "%d", node->symbol_table_node->range[0].range_pointer.value);
+        new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, li, temp0->name, arg1, NULL, temp0->symbol);
+    }
+    else if(node->symbol_table_node->range[1].tag == 0) {
+        new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, node->symbol_table_node->range[1].range_pointer.id->node->leaf_token->lexeme, temp0->name, arg1, 
+        node->symbol_table_node->range[1].range_pointer.id, temp0->symbol);
+    }
 
-    Tuple new_tup1 = make_tuple(MULTIPLY, index->leaf_token->lexeme, str_width, temp1->name, arg1, NULL, temp1->symbol);
+    Tuple new_tup1 = make_tuple(MULTIPLY, temp0->name, str_width, temp1->name, temp0->symbol, NULL, temp1->symbol);
 
     Temporary temp2 = create_temporary();
     add_temp_symboltable(temp2->symbol, parent_scope, 2);
     Tuple new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
 
-    Temporary temp3 = create_temporary();
-    add_temp_symboltable(temp3->symbol, parent_scope, width);
-    Tuple new_tup3 = make_tuple(MEM_READ, temp2->name, "", temp3->name, temp2->symbol, NULL, temp3->symbol);
-
+    add_tuple(list, new_tup0);
     add_tuple(list, new_tup1);
     add_tuple(list, new_tup2);
-    add_tuple(list, new_tup3);
 
-    return temp3;
+    return temp2;
 }
