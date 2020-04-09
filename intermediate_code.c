@@ -421,6 +421,120 @@ int process_node(AST node, tuple_list* list) {
                 return 1;
 
             }
+            else {
+                Symbol_Table_Tree parent_scope = get_parent_scope(node->child->current_scope);
+                int flag1;
+                int flag2;
+
+                Tuple label_tup;
+                char* label1 = create_label();
+                char* label2 = create_label();
+                char* label3 = create_label();
+
+                Symbol_Node* ll_sym = NULL;
+                Symbol_Node* ul_sym = NULL;
+                char* ll;
+                char* ul;
+                Symbol_Node* sym_node = node->child->symbol_table_node;
+                // int datatype = sym_node->array_datatype;
+                // int width;
+                // int arr[3] = {2, 4, 1};
+                // width = arr[datatype];
+
+                Temporary itr = create_temporary();
+                add_temp_symboltable(itr->symbol, parent_scope, 2);
+
+                if(sym_node->range[0].tag == 1) {
+                    ll_sym = sym_node->range[0].range_pointer.id;
+                    flag1 = 1;
+                }
+                else {
+                    ll = (char*) malloc(sizeof(char) * 3);
+                    sprintf(ll, "%d", sym_node->range[0].range_pointer.value);
+                    flag1 = 0;
+                }
+
+                if(sym_node->range[1].tag == 1) {
+                    ul_sym = sym_node->range[1].range_pointer.id;
+                    flag2 = 1;
+                }
+                else {
+                    ul = (char*) malloc(sizeof(char) * 3);
+                    sprintf(ul, "%d", sym_node->range[1].range_pointer.value);
+                    flag2 = 0;
+                }
+
+                // printf("labels:%s %s %s\n", label1, label2, label3);
+
+                if(flag1) {                    
+                    Tuple new_tup = make_tuple(COPY, ll_sym->node->leaf_token->lexeme, "", itr->name, ll_sym, NULL, itr->symbol);
+                    add_tuple(list, new_tup);
+                }
+                else {
+                    Tuple new_tup = make_tuple(COPY, ll, "", itr->name, NULL, NULL, itr->symbol);
+                    add_tuple(list, new_tup);
+                }
+
+                label_tup = make_tuple(LABEL, "", "", label1, NULL, NULL, NULL);
+                add_tuple(list, label_tup);
+                // IF
+
+                Temporary new_temp = create_temporary();
+                add_temp_symboltable(new_temp->symbol, parent_scope, 1);
+
+                if(flag2) {
+                    Tuple new_tup1 = make_tuple(LESS_EQUAL, itr->name, ul_sym->node->leaf_token->lexeme, new_temp->name, itr->symbol, ul_sym, new_temp->symbol);
+                    add_tuple(list, new_tup1);
+                }
+                else {
+                    Tuple new_tup1 = make_tuple(LESS_EQUAL, itr->name, ul, new_temp->name, itr->symbol, NULL, new_temp->symbol);
+                    add_tuple(list, new_tup1);
+                }
+                
+                Tuple new_tup2 = make_tuple(IF_TRUE, new_temp->name, "", label2, new_temp->symbol, NULL, NULL);
+                add_tuple(list, new_tup2);
+                Tuple new_tup3 = make_tuple(IF_FALSE, new_temp->name, "", label3, new_temp->symbol, NULL, NULL);
+                add_tuple(list, new_tup3);
+
+                label_tup = make_tuple(LABEL, "", "", label2, NULL, NULL, NULL);
+                add_tuple(list, label_tup);
+                
+                AST iterator = (AST) malloc(sizeof(AST_Node));
+                iterator->leaf_token = (Node*) malloc(sizeof(Node));
+                // iterator->leaf_token->lexeme = (char*) malloc(sizeof(char)*(strlen(itr->name)));
+                
+                strcpy(iterator->leaf_token->lexeme, itr->name);
+                iterator->leaf_token->token = ID;
+                iterator->symbol_table_node = itr->symbol;
+
+                // printf("%s\n", iterator->leaf_token->lexeme);
+                
+
+                Temporary temp_arr = evaluate_array(node->child, iterator, list, parent_scope);
+                // printf("HI\n");
+                Tuple new_tup4 = make_tuple(WRITE, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
+                add_tuple(list, new_tup4);
+
+                
+
+                Temporary temp0 = create_temporary();
+                add_temp_symboltable(temp0->symbol, parent_scope, 2);
+
+                Tuple new_tup5 = make_tuple(ADDITION, itr->name, "1", temp0->name, itr->symbol, NULL, temp0->symbol);
+                add_tuple(list, new_tup5);
+
+                Tuple new_tup6 = make_tuple(COPY, temp0->name, "", itr->name, temp0->symbol, NULL, itr->symbol);
+                add_tuple(list, new_tup6);
+
+                Tuple new_tup7 = make_tuple(GOTO, label1, "", "", NULL, NULL, NULL);
+                add_tuple(list, new_tup7);
+
+                // OUTSIDE FOR
+                label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
+                add_tuple(list, label_tup);
+                
+                return 1;
+            }
         }
     }
 
@@ -676,20 +790,21 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
         sprintf(li, "%d", node->symbol_table_node->range[0].range_pointer.value);
         new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, li, temp0->name, arg1, NULL, temp0->symbol);
     }
-    else if(node->symbol_table_node->range[1].tag == 0) {
-        new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, node->symbol_table_node->range[1].range_pointer.id->node->leaf_token->lexeme, temp0->name, arg1, 
-        node->symbol_table_node->range[1].range_pointer.id, temp0->symbol);
+    else if(node->symbol_table_node->range[0].tag == 1) {
+        new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, node->symbol_table_node->range[0].range_pointer.id->node->leaf_token->lexeme, temp0->name, arg1, 
+        node->symbol_table_node->range[0].range_pointer.id, temp0->symbol);
     }
+    
 
     Tuple new_tup1 = make_tuple(MULTIPLY, temp0->name, str_width, temp1->name, temp0->symbol, NULL, temp1->symbol);
 
     Temporary temp2 = create_temporary();
     add_temp_symboltable(temp2->symbol, parent_scope, 2);
     Tuple new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
-
+    // printf("HI\n");
     add_tuple(list, new_tup0);
     add_tuple(list, new_tup1);
     add_tuple(list, new_tup2);
-
+    // printf("HI\n");
     return temp2;
 }
