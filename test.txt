@@ -5,9 +5,17 @@ start
 	declare y: boolean;
 
 	a := b;
-	
-	for (b in 2..4)
-	start
-		a := a+1;
-	end
+
+	switch(a)
+		start
+			case 2: 
+				a := a+1;
+				break;
+			case 3:
+				b := b+1;
+				break;
+			default:
+				a:=a+1;
+				break;
+		end
 end
