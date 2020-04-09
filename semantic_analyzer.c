@@ -177,31 +177,41 @@ int type_check_node(AST node, ErrorList* err) {
     }
 
     // IO WRITE STATEMENT
-    if(node->rule_num == 42 && node->label == IO_WRITE && node->tag == 0) {
-        if(node->symbol_table_node == NULL) {
+    if(node->rule_num == 42 && node->label == IO_WRITE && node->tag == 1) {
+        if(node->child->symbol_table_node == NULL) {
             flag = 1;
             return flag;
         }
 
-        if(node->symbol_table_node->datatype == 3 && node->next) {
-            if((node->next->leaf_token->token == ID) && node->next->symbol_table_node == NULL) {
+        if(node->child->symbol_table_node->datatype == 3 && node->child->next) {
+            if((node->child->next->leaf_token->token == ID) && node->child->next->symbol_table_node == NULL) {
                 flag = 1;
                 return flag;
             }
 
-            else if(node->next->leaf_token->token == NUM && !check_bound(node->next, node)) {
+            else if(node->child->next->leaf_token->token == NUM && !check_bound(node->child->next, node->child)) {
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                 strcpy(str, "ERROR: INVALID INDEX USED IN ARRAY");
-                add_sem_error(err, str, node->leaf_token->line_no);
+                add_sem_error(err, str, node->child->leaf_token->line_no);
                 flag = 1;
                 return flag;
             }
+        }
+
+        else if(node->child->symbol_table_node->datatype != 3 && node->child->next) {
+            printf("HI\n");
+            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str, "ERROR: NON ARRAY VARIABLE CANNOT HAVE INDEX");
+            add_sem_error(err, str, node->child->leaf_token->line_no);
+            flag = 1;
+            return flag;
         }
     }
 
     if(node->rule_num == 101 && node->tag == 1) {
         if(!search_symbol_table(node->child->leaf_token->lexeme, node->current_scope))
             flag = 1;
+
         else if(node->child->symbol_table_node && node->child->symbol_table_node->datatype != 0) {
             //printf("Line: %d - Incompatible datatype in For loop variable %s\n", node->child->leaf_token->line_no, node->child->leaf_token->lexeme);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
@@ -216,6 +226,21 @@ int type_check_node(AST node, ErrorList* err) {
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: FOR LOOP VARIABLE DECLARED AGAIN");
             add_sem_error(err,str,temp1->node->leaf_token->line_no);
+            flag = 1;
+        }
+
+        AST_list** id_used = (AST_list **)malloc(sizeof(AST_list *));
+        
+        add_identifier(node->child, NULL, id_used);
+        int current = 0;
+        int line_num = 0;
+        
+        check_if_modified(id_used, node->child->next->next, &current, &line_num);
+        
+        if(current) {
+            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str,"ERROR: FOR LOOP VARIABLE CANNOT BE ASSIGNED A VALUE INSIDE FOR");
+            add_sem_error(err,str,line_num);
             flag = 1;
         }
     }
@@ -297,7 +322,8 @@ int type_check_node(AST node, ErrorList* err) {
 
             if(!flag) {
                 int is_modified = 0;
-                check_if_modified(id_used, node, &is_modified);
+                int line_num = 0;
+                check_if_modified(id_used, node, &is_modified, &line_num);
 
                 if(!is_modified) {
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
@@ -414,12 +440,14 @@ int type_check_node(AST node, ErrorList* err) {
         }
 
         int op_assign_error = 0;
+        int line_num;
         for(itr = 0; itr<op_count; itr++) {
             Symbol_Node* curr_op = (*op_head)[itr];
             int current = 0;
             check_if_output_modified(curr_op, fun_def, &current);
             if(!current) {
                 op_assign_error = 1;
+                line_num = curr_op->node->leaf_token->line_no;
                 break;
             }
         }
@@ -429,7 +457,7 @@ int type_check_node(AST node, ErrorList* err) {
             // printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: ALL OUTPUTS NOT ASSIGNED VALUE IN MODULE");
-            add_sem_error(err,str,fun_id->leaf_token->line_no);
+            add_sem_error(err,str,line_num);
             return flag;
         }
 
@@ -543,6 +571,28 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
         }
     }
 
+    else if(node->rule_num == 40 && node->tag == 0) {
+        if(strcmp(node->leaf_token->lexeme, sym->node->leaf_token->lexeme) == 0) {
+            *current = 1;
+        }
+        if((*current) == 1)
+            return;
+    }
+
+    else if(node->rule_num == 59 && node->tag == 1) {
+        if(node->child->symbol_table_node == NULL) {
+            AST temp = node->child;
+            while(temp) {
+                if(strcmp(temp->child->leaf_token->lexeme, sym->node->leaf_token->lexeme)==0) {
+                    *current = 1;
+                }
+                if((*current)==1)
+                    return;
+                temp = temp->child->next;
+            }
+        }
+    }
+
     AST temp = node->child;
 
     while(temp) {
@@ -553,7 +603,7 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
     return;
 }
 
-void check_if_modified(AST_list** head, AST node, int* current) {
+void check_if_modified(AST_list** head, AST node, int* current, int *line_no) {
     
     if(node == NULL || (*current) == 1)
         return;
@@ -571,16 +621,39 @@ void check_if_modified(AST_list** head, AST node, int* current) {
         // printf("%d\n", *current);
 
         if((*current) == 1) {
+            *line_no = id->leaf_token->line_no;
             return;
         }
 
 
     }
 
+    else if(node->rule_num == 40 && node->tag == 0) {
+        *current = compare_list_node(head, node, NULL);
+        if((*current) == 1) {
+            *line_no = node->leaf_token->line_no;
+            return;
+        }
+    }
+
+    else if(node->rule_num == 59 && node->tag == 1) {
+        if(node->child->symbol_table_node == NULL) {
+            AST temp = node->child;
+            while(temp) {
+                *current = compare_list_node(head, temp->child, NULL);
+                if((*current)==1) {
+                    *line_no = temp->child->leaf_token->line_no;
+                    return;
+                }
+                temp = temp->child->next;
+            }
+        }
+    }
+
     AST temp = node->child;
 
     while(temp) {
-        check_if_modified(head, temp, current);
+        check_if_modified(head, temp, current, line_no);
         temp = temp->next;
     }
 

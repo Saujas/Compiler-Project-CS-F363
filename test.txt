@@ -1,21 +1,35 @@
+declare module mod;
 <<<driver program>>>
 start
-	declare a, b, x, c: integer;
+	declare a, b, x, c, index: integer;
 	declare arr:array [2..4] of integer;
 	declare y: boolean;
 
+	get_value(b);
 	a := b;
+	print(true);
+	print(2.3);
+	print(arr[4]);
 
-	switch(a)
-		start
-			case 2: 
-				a := a+1;
-				break;
-			case 3:
-				b := b+1;
-				break;
-			default:
-				a:=a+1;
-				break;
-		end
+	for(index in  1..15)
+	start
+		[b] := use module mod with parameters index;
+	end
+
+end
+
+<<module mod1>>
+takes input[a:integer];
+returns [s:integer];
+start
+	s:=1;
+end
+
+
+<<module mod>>
+takes input[a:integer];
+returns [s:integer];
+start
+	declare b:integer;
+	[s] := use module mod1 with parameters a;
 end

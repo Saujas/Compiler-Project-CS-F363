@@ -3,7 +3,8 @@
 
 char* operator_string_map[OPERATOR_SIZE] = {
     "COPY", "ADD", "SUB", "MUL", "DIV", "MEM_READ", "MEM_WRITE", "GT",
-    "GE", "LT", "LE", "EQ", "NE", "AND", "OR", "LABEL", "IF_TRUE", "IF_FALSE", "GOTO"
+    "GE", "LT", "LE", "EQ", "NE", "AND", "OR", "LABEL", "IF_TRUE", "IF_FALSE", "GOTO",
+    "READ", "WRITE",
 };
 
 int temp_var;
@@ -357,6 +358,69 @@ int process_node(AST node, tuple_list* list) {
             add_tuple(list, new_tup);
 
             return 1;
+        }
+    }
+
+    if(node->rule_num == 40 && node->tag == 0) {
+        AST id = node;
+        Symbol_Table_Tree parent_scope = get_parent_scope(id->current_scope);
+
+        Temporary t = create_temporary();
+        add_temp_symboltable(t->symbol, parent_scope, id->symbol_table_node->width);
+
+        Tuple new_tup = make_tuple(READ, "", "", t->name, NULL, NULL, t->symbol);
+        add_tuple(list, new_tup);
+
+        Tuple new_tup1 = make_tuple(COPY, t->name, "", id->leaf_token->lexeme, t->symbol, NULL, id->symbol_table_node);
+        add_tuple(list, new_tup1);
+
+        return 1;
+    }
+
+    if(node->label == IO_WRITE) {
+        if(node->rule_num == 46 || node->rule_num == 47 || node->rule_num == 43 || node->rule_num == 44 || ((node->rule_num == 42)&&(node->child->symbol_table_node->datatype != 3))) {
+            Symbol_Table_Tree parent_scope = get_parent_scope(node->current_scope);
+            AST temp = node;
+            Symbol_Node* sym = NULL;
+
+            int width;
+            if(node->rule_num == 42) {
+                width = node->child->symbol_table_node->width;
+                temp = node->child;
+                sym = temp->symbol_table_node;
+            }
+            else if(node->rule_num == 43)
+                width = 2;
+            else if(node->rule_num == 44)
+                width = 4;
+            else
+                width = 1;
+            
+            // Temporary t = create_temporary();
+            // add_temp_symboltable(t->symbol, parent_scope, width);
+            
+
+            // Tuple new_tup = make_tuple(COPY, temp->leaf_token->lexeme, "", t->name, sym, NULL, t->symbol);
+            // add_tuple(list, new_tup);
+
+            Tuple new_tup1 = make_tuple(WRITE, "", "", temp->leaf_token->lexeme, NULL, NULL, sym);
+            add_tuple(list, new_tup1);
+
+            return 1;
+        }
+
+        else if(node->rule_num == 42 && node->child->symbol_table_node->datatype == 3) {
+            Symbol_Table_Tree parent_scope = get_parent_scope(node->current_scope);
+            if(node->child->next) {
+
+                Temporary t1 = evaluate_array(node->child, node->child->next, list, parent_scope);
+
+                Tuple new_tup1 = make_tuple(WRITE, "", "", t1->name, NULL, NULL, t1->symbol);
+                add_tuple(list, new_tup1);
+
+                return 1;
+
+            }
         }
     }
 

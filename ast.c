@@ -148,6 +148,11 @@ void print_ast_node(AST node) {
 void convert_to_AST_node(t_node* node) {
     int rule_num = node->rule_num;
     // printf("HELLO %d: %s\n", rule_num, ast_non_terminals_string_map[node->node.internal]);
+    // printf("HI\n");
+    // if(node->tag==1)
+    //     printf("%s\n", ast_non_terminals_string_map[node->node.internal]);
+    // else
+    //     printf("%s\n", node->node.leaf.lexeme);
 
     Label label;
     int tag;
@@ -207,7 +212,7 @@ void convert_to_AST_node(t_node* node) {
 
         case 41:
             node->tree_node = node->child->sibling->sibling->tree_node;
-            node->tree_node->child->label = IO_WRITE;
+            node->tree_node->label = IO_WRITE;
             break;
 
         case 17:

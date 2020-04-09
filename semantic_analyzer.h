@@ -8,7 +8,7 @@ void add_identifier(AST node, AST index, AST_list** head);
 void check_identifier(AST node, AST_list** head);
 int check_if_redeclared_in_scope(AST_list** head);
 int compare_list_node(AST_list** head, AST id, AST index);
-void check_if_modified(AST_list** head, AST node, int* current);
+void check_if_modified(AST_list** head, AST node, int* current, int* line_no);
 int convert_to_list(Symbol_Table_Tree st, Symbol_Node*** head);
 int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr);
 void check_if_output_modified(Symbol_Node* sym, AST node, int* current);
