@@ -11,12 +11,12 @@
 #include "lexer_def.h"
 #include "parser_def.h"
 
-#define OPERATOR_SIZE 21
+#define OPERATOR_SIZE 26
 
 typedef enum {
     COPY, ADDITION, SUBTRACTION, MULTIPLY, DIVIDE, MEM_READ, MEM_WRITE, GREATER, GREATER_EQUAL,
     LESS, LESS_EQUAL, EQUAL, NOT_EQUAL, BOOLEAN_AND, BOOLEAN_OR, LABEL, IF_TRUE, IF_FALSE, GOTO,
-    READ, WRITE,
+    READ, WRITE, EXIT, RETURN, PARAM_OP, PARAM, CALL
 } oper;
 
 typedef struct tup {

@@ -110,7 +110,8 @@ int type_check_node(AST node, ErrorList* err) {
         }
 
         if(lhs->symbol_table_node && lhs->symbol_table_node->datatype == 3 && lhs->next->label != LVALUE_ARR_STMT) {
-            if(expression_node && expression_node->child && expression_node->child->symbol_table_node && expression_node->child->symbol_table_node->datatype == 3) {
+            if(expression_node && expression_node->child &&  expression_node->child->next == NULL && 
+            expression_node->child->symbol_table_node && expression_node->child->symbol_table_node->datatype == 3) {
                 if(expression_node->child->symbol_table_node->array_datatype != lhs->symbol_table_node->array_datatype) {
                     //printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
@@ -167,7 +168,7 @@ int type_check_node(AST node, ErrorList* err) {
     if(node->rule_num == 40 && node->tag == 0) {
         if(!search_symbol_table(node->leaf_token->lexeme, node->current_scope))
             flag = 1;
-        else if((node->symbol_table_node->datatype == 3) || (node->symbol_table_node->datatype == 2)) {
+        else if((node->symbol_table_node->datatype == 2)) {
            // printf("Line: %d - Incompatible datatype of variable %s\n", node->leaf_token->line_no, node->leaf_token->lexeme);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: INCOMPATIBLE DATA TYPE OF VARIABLE");

@@ -13,6 +13,7 @@ void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_scope, i
 
 Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree parent_scope);
 Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tree parent_scope);
+char* get_limit(AST node, int id);
 
 void print_tuple(Tuple t);
 void print_tuple_list(tuple_list* list);
