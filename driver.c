@@ -10,6 +10,7 @@
 #include "type_extractor.h"
 #include "semantic_analyzer.h"
 #include "intermediate_code.h"
+#include "code_gen.h"
 #include <time.h>
 
 /* Main function called on execting the program
@@ -51,11 +52,16 @@ int main(int argc, char* argv[]) {
         printf("3: For invoking both lexer and parser\n");
         printf("4: For printing total time for lexer and parser\n");
         printf("5: For creating AST and symbol table, type checking\n");
+        printf("6: Generate Code\n");
         scanf("%d", &choice);
 
         Node ** token_stream = NULL;
         lookup_table *table = NULL;
         t_node** parse_tree_ptr;
+        AST root;
+        ErrorList* err;
+        Symbol_Table_Tree tree;
+        tuple_list* list;
 
         switch(choice) {
             case 0: //Program exit
@@ -96,9 +102,9 @@ int main(int argc, char* argv[]) {
                 if(!parsed) {
                     break;
                 }
-                AST root = generate_AST(*parse_tree_ptr);
-                ErrorList* err = initialize_errors();
-                Symbol_Table_Tree tree = create_symbol_table_tree(root, err);
+                root = generate_AST(*parse_tree_ptr);
+                err = initialize_errors();
+                tree = create_symbol_table_tree(root, err);
                 
                 type_checker(root, err, tree);
                 sort_errors(err);
@@ -111,6 +117,30 @@ int main(int argc, char* argv[]) {
                     printf("No semantic errors found\n\n");
                     generate_ir(root);
                 }
+                break;
+
+            case 6:
+                printf("\n");
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed);
+                if(!parsed) {
+                    break;
+                }
+                
+                root = generate_AST(*parse_tree_ptr);
+                err = initialize_errors();
+                tree = create_symbol_table_tree(root, err);
+                
+                type_checker(root, err, tree);
+                sort_errors(err);
+
+                if((err->head) != NULL) {
+                    printf("Semantic error occurred\n\n");
+                }
+                else {
+                    printf("No semantic errors found\n\n");
+                    list = generate_ir(root);
+                }
+                generate_code(list, "program.asm");
                 break;
 
             default: printf("\nInvalid Choice\n\n");

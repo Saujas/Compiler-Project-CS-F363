@@ -1,5 +1,5 @@
-stage1exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o makefile
-	gcc -o stage1exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o
+stage1exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o code_gen.o makefile
+	gcc -o stage1exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o code_gen.o
 
 parser.o: parser.h parser_def.h lexer.h lexer_def.h lookup_table.h stack.h parser.c
 	gcc -c -g parser.c
@@ -31,7 +31,10 @@ semantic_analyzer.o: semantic_analyzer.h type_extractor.h symbol_table_def.h ast
 intermediate_code.o: intermediate_code_def.h intermediate_code.h symbol_table_def.h lexer_def.h ast_def.h parser_def.h intermediate_code.c
 	gcc -c -g intermediate_code.c
 
-driver.o: lexer.h lookup_table.h lexer_def.h ast.h symbol_table.h driver.c
+code_gen.o: code_gen.h intermediate_code_def.h symbol_table_def.h ast_def.h code_gen.c
+	gcc -c -g code_gen.c
+
+driver.o: lexer.h lookup_table.h lexer_def.h ast.h symbol_table.h intermediate_code.h code_gen.h driver.c
 	gcc -c -g driver.c
 
 clean:
@@ -39,3 +42,7 @@ clean:
 
 run:
 	./stage1exe $(input_file) $(output_file)
+
+everything:
+	nasm -f elf64 program.asm -o program.o && ld -s -o program program.o
+
