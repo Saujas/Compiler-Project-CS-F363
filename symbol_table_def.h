@@ -76,6 +76,10 @@ struct symbol_table_tree_node {
 
     Label label;
     char* name;
+
+    int start;
+    int end;
+    int level;
     
 };
 

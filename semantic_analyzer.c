@@ -287,7 +287,7 @@ int type_check_node(AST node, ErrorList* err) {
     }
 
     
-    // WHILE statement
+    // SWITCH statement
     if(node->rule_num == 103 && node->tag == 1) {
         if(!search_symbol_table(node->child->leaf_token->lexeme, node->current_scope))
             flag = 1;
@@ -297,7 +297,7 @@ int type_check_node(AST node, ErrorList* err) {
                 //printf("Line: %d - Switch with boolean variable can have only true and false cases\n", node->child->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                 strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE CAN HAVE ONLY TRUE AND FALSE CASES");
-                add_sem_error(err,str,node->child->leaf_token->line_no);
+                add_sem_error(err,str,temp1->child->leaf_token->line_no);
                 flag = 1;
             }
         }
@@ -315,7 +315,7 @@ int type_check_node(AST node, ErrorList* err) {
                 //printf("Line: %d - Switch with integer variable must have default\n", node->child->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                 strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE MUST HAVE DEFAULT ");
-                add_sem_error(err,str,node->child->leaf_token->line_no);
+                add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
                 flag = 1;
             }
         }
@@ -336,7 +336,7 @@ int type_check_node(AST node, ErrorList* err) {
             //printf("Line: - Incompatible expression used in while construct\n");
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: INCOMPATIBLE EXRESSION USED IN WHILE CONSTRUCT");
-            add_sem_error(err,str,-1);
+            add_sem_error(err,str, (node->child->next->next->leaf_token->line_no) - 1);
             flag = 1;
         }
         else {
@@ -348,17 +348,18 @@ int type_check_node(AST node, ErrorList* err) {
                 //printf("Line: - No identifier used in while construct\n");
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                 strcpy(str,"ERROR: NO IDENTIFIER USED IN WHILE CONSTRUCT");
-                add_sem_error(err,str,-1);
+                add_sem_error(err,str,(node->child->next->next->leaf_token->line_no) - 1);
                 flag = 1;
             }
             
             if(!flag) {
-                int is_redeclared = check_if_redeclared_in_scope(id_used);
+                int line_num = 0;
+                int is_redeclared = check_if_redeclared_in_scope(id_used, &line_num);
                 if(is_redeclared) {
                     //printf("Line: - Identifier used in while construct cannot be redeclared\n");
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                     strcpy(str,"ERROR: IDENTIFIER USED IN WHILE CONSTRUCT CANNOT BE REDECLARED");
-                    add_sem_error(err,str,-1);
+                    add_sem_error(err,str,line_num);
                     flag = 1;
                 }
             }
@@ -371,7 +372,7 @@ int type_check_node(AST node, ErrorList* err) {
                 if(!is_modified) {
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                     strcpy(str,"ERROR: NO VARIABLE IN WHILE CONDITION MODIFIED");
-                    add_sem_error(err,str,-1);
+                    add_sem_error(err,str, node->child->next->next->next->leaf_token->line_no);
                     flag = 1;
                 }
                 else {
@@ -520,14 +521,14 @@ int type_check_node(AST node, ErrorList* err) {
             return flag;
 
         Symbol_Table_Tree op_list = temp->child->current_scope->output;
-        printf("%s %s %d\n", op_list->name, node->child->leaf_token->lexeme, node->child->leaf_token->line_no);
+        // printf("%s %s %d\n", op_list->name, node->child->leaf_token->lexeme, node->child->leaf_token->line_no);
 
 
         Symbol_Node ***op_head;
         op_head = (Symbol_Node***) malloc(sizeof(Symbol_Node**));
 
         int op_count = convert_to_list(op_list, op_head);
-        printf("%d\n", op_count);
+        // printf("%d\n", op_count);
         AST fun_def = node->child->next->next->next;
 
         int op_assign_error = 0;
@@ -538,7 +539,7 @@ int type_check_node(AST node, ErrorList* err) {
             check_if_output_modified(curr_op, fun_def, &current);
             if(!current) {
                 op_assign_error = 1;
-                line_num = curr_op->node->leaf_token->line_no;
+                line_num = node->child->next->next->next->next->next->leaf_token->line_no;
                 // printf("%d\n", line_num);
                 break;
             }
@@ -784,13 +785,17 @@ int compare_list_node(AST_list** head, AST id, AST index) {
     return 0;
 }
 
-int check_if_redeclared_in_scope(AST_list** head) {
+int check_if_redeclared_in_scope(AST_list** head, int *line_num) {
     int is_redeclared = 0;
 
     AST_list* temp = *head;
 
     while(temp) {
         is_redeclared = search_current_scope(temp->node->leaf_token->lexeme, temp->node->current_scope) ? 1 : is_redeclared;
+        if(is_redeclared == 1) {
+            *line_num = temp->node->leaf_token->line_no;
+            break;
+        }
         temp = temp->next;
     }
 

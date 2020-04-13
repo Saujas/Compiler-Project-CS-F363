@@ -114,7 +114,7 @@ Symbol_Table* create_symbol_table(int slots) {
     return symbol_table;
 }
 
-Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label label, char* name, int is_function) {
+Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label label, char* name, int is_function, int start, int end, int level) {
     Symbol_Table_Tree node = (Symbol_Table_Tree) malloc(sizeof(struct symbol_table_tree_node));
     node->parent = parent;
     node->child = NULL;
@@ -125,6 +125,9 @@ Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label la
     node->is_defined = 0;
     node->is_called = 0;
     node->is_function = is_function;
+    node->start = start;
+    node->end = end;
+    node->level = level;
     node->input = NULL;
     node->output = NULL;
     node->table = create_symbol_table(SYMBOL_TABLE_SLOTS);
@@ -208,7 +211,7 @@ int check_if_called(Symbol_Table_Tree current, char* lexeme) {
 
 Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err) {
     
-    Symbol_Table_Tree tree = make_symbol_table_tree_node(NULL, AST_PROGRAM, "main", 0);
+    Symbol_Table_Tree tree = make_symbol_table_tree_node(NULL, AST_PROGRAM, "main", 0, 0, 0, -1);
     traverse_ast(root, tree, err);
     printf("**\nAST traversed\n**");
 
@@ -223,12 +226,21 @@ void print_symbol_tables(Symbol_Table_Tree tree) {
     printf("\nIn scope:\n");
     printf("Label: %s\n", ast_string_map_copy[tree->label]);
     printf("Name: %s\n", tree->name);
+    printf("Scope start: %d\n", tree->start);
+    printf("Scope end: %d\n", tree->end);
+    printf("Nested level: %d\n\n", tree->level);
     // if(tree->parent)
     //     printf("Parent: %s\n\n", tree->parent->name);
     if(tree->is_function && tree->is_defined) {
         printf("In input_plist:\n");
+        printf("Scope start: %d\n", tree->input->start);
+        printf("Scope end: %d\n", tree->input->end);
+        printf("Nested level: %d\n", tree->input->level);
         print_slots(tree->input->table);
         printf("In output_plist:\n");
+        printf("Scope start: %d\n", tree->output->start);
+        printf("Scope end: %d\n", tree->output->end);
+        printf("Nested level: %d\n", tree->output->level);
         print_slots(tree->output->table);
         printf("In function:\n");
     }
@@ -312,12 +324,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     if(!node)
         return;
 
-    if(node->tag == 1) {
-        printf("%s\n", ast_string_map_copy[node->label]);
-    }
-    else {
-        printf("%s %d\n", node->leaf_token->lexeme, node->leaf_token->line_no);
-    }
+    // if(node->tag == 1) {
+    //     printf("%s\n", ast_string_map_copy[node->label]);
+    // }
+    // else {
+    //     printf("%s %d\n", node->leaf_token->lexeme, node->leaf_token->line_no);
+    // }
 
     // Width: 2 for INT, 4: REAL, 1: BOOLEAN, 2: ARRAY OFFSET
     int data_width[4] = {2, 4, 1, 2};
@@ -344,6 +356,16 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         int declared = check_if_declared(current, name);
         int defined = check_if_defined(current, name);
         int called = check_if_called(current, name);
+        int start, end;
+        AST temp1 = node->child->next->next;
+        if(temp1->label == OUTPUT_PLIST) {
+            start = temp1->next->next->leaf_token->line_no;
+            end = temp1->next->next->next->leaf_token->line_no;
+        }
+        else {
+            start = temp1->next->leaf_token->line_no;
+            end = temp1->next->next->leaf_token->line_no;
+        }
         
         if(defined) {
             //printf("Line %d - %s Module already defined\n", node->child->leaf_token->line_no, name);
@@ -381,9 +403,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         }
 
         else if( !declared && !defined) {
-            new = make_symbol_table_tree_node(current, AST_MODULE, name, 1);
-            new->input = make_symbol_table_tree_node(current, INPUT_PLIST, name, 0);
-            new->output = make_symbol_table_tree_node(current, OUTPUT_PLIST, name, 0);
+            new = make_symbol_table_tree_node(current, AST_MODULE, name, 1, start, end, 1);
+            new->input = make_symbol_table_tree_node(current, INPUT_PLIST, name, 0, start, end, 0);
+            new->output = make_symbol_table_tree_node(current, OUTPUT_PLIST, name, 0, start, end, 0);
             new->is_defined = 1;
             // new->is_declared = 1;
         }
@@ -399,6 +421,15 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 }
                 temp = temp->sibling;
             }
+            new->start = start;
+            new->end = end;
+            new->level = 1;
+            new->input->start = start;
+            new->input->end = end;
+            new->input->level = 0;
+            new->output->start = start;
+            new->output->end = end;
+            new->output->level = 0;
         }
 
     }
@@ -407,6 +438,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     if(node->rule_num == 7) {
         char * name = "AST_DRIVER";
         int defined = check_if_defined(current, name);
+        int start = node->child->next->leaf_token->line_no;
+        int end = node->child->next->next->leaf_token->line_no;
         
         if(defined) {
             // error
@@ -418,7 +451,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             return;
         }
         else {
-            new = make_symbol_table_tree_node(current, AST_DRIVER, "AST_DRIVER", 0);
+            new = make_symbol_table_tree_node(current, AST_DRIVER, "AST_DRIVER", 0, start, end, 1);
             new->is_defined = 1;
             new->is_declared = 1;
         }
@@ -439,9 +472,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         }
 
         else {
-            new = make_symbol_table_tree_node(current, MODULE_DECLARATION, name, 1);
-            new->input = make_symbol_table_tree_node(current, INPUT_PLIST, name, 0);
-            new->output = make_symbol_table_tree_node(current, OUTPUT_PLIST, name, 0);
+            new = make_symbol_table_tree_node(current, MODULE_DECLARATION, name, 1, 0, 0, 0);
+            new->input = make_symbol_table_tree_node(current, INPUT_PLIST, name, 0, 0, 0, 0);
+            new->output = make_symbol_table_tree_node(current, OUTPUT_PLIST, name, 0, 0, 0, 0);
             new->is_declared = 1;
             new->is_defined = 0;
         }
@@ -494,21 +527,30 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
     // New for loop
     if(node->rule_num == 101 && node->tag == 1) {
-        new = make_symbol_table_tree_node(current, AST_FOR, "FOR", 0);
+        int start = node->child->next->next->next->leaf_token->line_no;
+        int end = node->child->next->next->next->next->leaf_token->line_no;
+        int level = current->level + 1;
+        new = make_symbol_table_tree_node(current, AST_FOR, "FOR", 0, start, end, level);
         new->is_declared = -1;
         new->is_defined = -1;
     }
     
     // New while loop
     if(node->rule_num == 102 && node->tag == 1) {
-        new = make_symbol_table_tree_node(current, AST_WHILE, "WHILE", 0);
+        int start = node->child->next->next->leaf_token->line_no;
+        int end = node->child->next->next->next->leaf_token->line_no;
+        int level = current->level + 1;
+        new = make_symbol_table_tree_node(current, AST_WHILE, "WHILE", 0, start, end, level);
         new->is_declared = -2;
         new->is_defined = -2;
     }
 
     // New switch scope
     if(node->rule_num == 103 && node->tag == 1) {
-        new = make_symbol_table_tree_node(current, CONDITIONAL_STMT, "SWITCH", 0);
+        int start = node->child->next->next->leaf_token->line_no;
+        int end = node->child->next->next->next->leaf_token->line_no;
+        int level = current->level + 1;
+        new = make_symbol_table_tree_node(current, CONDITIONAL_STMT, "SWITCH", 0, start, end, level);
         new->is_declared = -3;
         new->is_defined = -3;
     }
