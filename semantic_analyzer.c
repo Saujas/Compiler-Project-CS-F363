@@ -248,6 +248,7 @@ int type_check_node(AST node, ErrorList* err) {
         }
     }
 
+    // FOR Statement
     if(node->rule_num == 101 && node->tag == 1) {
         if(!search_symbol_table(node->child->leaf_token->lexeme, node->current_scope))
             flag = 1;
@@ -285,6 +286,8 @@ int type_check_node(AST node, ErrorList* err) {
         }
     }
 
+    
+    // WHILE statement
     if(node->rule_num == 103 && node->tag == 1) {
         if(!search_symbol_table(node->child->leaf_token->lexeme, node->current_scope))
             flag = 1;
@@ -463,28 +466,72 @@ int type_check_node(AST node, ErrorList* err) {
             return flag;
         }
 
-        AST fun_def;
-        int itr;
-        for(itr = 0; itr<ip_count; itr++) {
-            Symbol_Node* curr_ip = (*ip_head)[itr];
+        // AST fun_def;
+        // int itr;
+        // for(itr = 0; itr<ip_count; itr++) {
+        //     Symbol_Node* curr_ip = (*ip_head)[itr];
             
-            if(curr_ip->param_order == 0) {
-                // printf("%s\n", curr_ip->node->leaf_token->lexeme);
-                // printf("%s\n", tc_string_map_copy[curr_ip->node->parent->next->label]);
+        //     if(curr_ip->param_order == 0) {
+        //         // printf("%s\n", curr_ip->node->leaf_token->lexeme);
+        //         // printf("%s\n", tc_string_map_copy[curr_ip->node->parent->next->label]);
 
-                AST parent = curr_ip->node->parent;
-                if(parent->next && (parent->next->tag == 1) && parent->next->label == OUTPUT_PLIST)
-                    fun_def = parent->next->next;
-                else
-                    fun_def = parent->next;
+        //         AST parent = curr_ip->node->parent;
+        //         if(parent->next && (parent->next->tag == 1) && parent->next->label == OUTPUT_PLIST)
+        //             fun_def = parent->next->next;
+        //         else
+        //             fun_def = parent->next;
 
-                break;
-            }
-        }
+        //         break;
+        //     }
+        // }
         
 
+        // int op_assign_error = 0;
+        // int line_num;
+        // for(itr = 0; itr<op_count; itr++) {
+        //     Symbol_Node* curr_op = (*op_head)[itr];
+        //     int current = 0;
+        //     check_if_output_modified(curr_op, fun_def, &current);
+        //     if(!current) {
+        //         op_assign_error = 1;
+        //         line_num = curr_op->node->leaf_token->line_no;
+        //         // printf("%d\n", line_num);
+        //         break;
+        //     }
+        // }
+        
+
+        // if(op_assign_error) {
+        //     flag = 1;
+        //     // printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
+        //     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+        //     strcpy(str,"ERROR: ALL OUTPUTS NOT ASSIGNED VALUE IN MODULE");
+        //     add_sem_error(err,str,line_num);
+        //     return flag;
+        // }
+
+        // printf("Line: %d - Successful Function Call\n", fun_id->leaf_token->line_no);
+    }
+
+    // Function defintion semantics
+    if(node->rule_num == 8 && node->tag == 1) {
+        AST temp = node->child->next->next;
+        if(temp->tag !=1 || temp->label != OUTPUT_PLIST)
+            return flag;
+
+        Symbol_Table_Tree op_list = temp->child->current_scope->output;
+        printf("%s %s %d\n", op_list->name, node->child->leaf_token->lexeme, node->child->leaf_token->line_no);
+
+
+        Symbol_Node ***op_head;
+        op_head = (Symbol_Node***) malloc(sizeof(Symbol_Node**));
+
+        int op_count = convert_to_list(op_list, op_head);
+        printf("%d\n", op_count);
+        AST fun_def = node->child->next->next->next;
+
         int op_assign_error = 0;
-        int line_num;
+        int line_num, itr;
         for(itr = 0; itr<op_count; itr++) {
             Symbol_Node* curr_op = (*op_head)[itr];
             int current = 0;
@@ -506,8 +553,7 @@ int type_check_node(AST node, ErrorList* err) {
             add_sem_error(err,str,line_num);
             return flag;
         }
-
-        // printf("Line: %d - Successful Function Call\n", fun_id->leaf_token->line_no);
+        
     }
 
     // also need to check whether all functions have been defined
