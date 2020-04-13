@@ -124,7 +124,6 @@ Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label la
     node->is_declared = 0;
     node->is_defined = 0;
     node->is_called = 0;
-    node->is_redundant = 0;
     node->is_function = is_function;
     node->input = NULL;
     node->output = NULL;
@@ -313,12 +312,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     if(!node)
         return;
 
-    // if(node->tag == 1) {
-    //     printf("%s\n", ast_string_map_copy[node->label]);
-    // }
-    // else {
-    //     printf("%s\n", node->leaf_token->lexeme);
-    // }
+    if(node->tag == 1) {
+        printf("%s\n", ast_string_map_copy[node->label]);
+    }
+    else {
+        printf("%s %d\n", node->leaf_token->lexeme, node->leaf_token->line_no);
+    }
 
     // Width: 2 for INT, 4: REAL, 1: BOOLEAN, 2: ARRAY OFFSET
     int data_width[4] = {2, 4, 1, 2};
@@ -347,23 +346,23 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         int called = check_if_called(current, name);
         
         if(defined) {
-            //error;
             //printf("Line %d - %s Module already defined\n", node->child->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: MODULE ALREADY DEFINED");
             add_sem_error(err,str,node->child->leaf_token->line_no);
             // exit(-1);
+            return;
         }
 
         else if(declared && (!called) && (!defined)) {
-            Symbol_Table_Tree temp = current->child;
-            while(temp) {
-                if((strcmp(temp->name, name)==0)) {
-                    temp->is_redundant=1;
-                    break;
-                }
-                temp = temp->sibling;
-            }
+            // Symbol_Table_Tree temp = current->child;
+            // while(temp) {
+            //     if((strcmp(temp->name, name)==0)) {
+            //         temp->is_redundant=1;
+            //         break;
+            //     }
+            //     temp = temp->sibling;
+            // }
             //printf("Line %d - Redundant declaration found for module %s\n", node->child->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: REDUNDANT DECLARATION FOUND FOR MODULE");
@@ -416,6 +415,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             strcpy(str,"ERROR: DRIVER MODULE ALREADY DEFINED");
             add_sem_error(err,str,-1);
             // exit(-1);
+            return;
         }
         else {
             new = make_symbol_table_tree_node(current, AST_DRIVER, "AST_DRIVER", 0);
@@ -522,6 +522,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         AST temp = node;
         Symbol_Node* symbol_node;
         int flag = 0;
+
         while(temp) {
             flag = 0;
             type = temp->child->next->leaf_token;
@@ -540,13 +541,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
                 offset = parent_module->last_offset;
                 width = data_width[datatype];
-                // printf("Hi\n");
+                
                 if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
-                    // printf("Hi\n");
                     symbol_node = make_symbol_node(temp->child, datatype, 0, width, offset, 1, NULL, -1);
                     flag = 1;
                 }
-                else{
+                else {
                     //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                     strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");

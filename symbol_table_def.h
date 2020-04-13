@@ -73,7 +73,6 @@ struct symbol_table_tree_node {
     int is_defined;
     int is_declared;
     int is_called;
-    int is_redundant;
 
     Label label;
     char* name;

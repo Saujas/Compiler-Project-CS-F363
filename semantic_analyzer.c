@@ -31,10 +31,14 @@ int check_bound(AST index, AST var) {
 
 int is_valid_function(AST node, Symbol_Table_Tree root) {
     char* id = node->leaf_token->lexeme;
+    
+    if(node->current_scope == NULL)
+        return 0;
+    
     Symbol_Table_Tree temp = root->child;
     while(temp) {
         if((strcmp(temp->name, id)==0)) {  
-            if(temp->is_redundant==1) {
+            if(temp->is_defined==0) {
                 return 0;
             }
             else {
