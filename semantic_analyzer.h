@@ -2,7 +2,7 @@
 
 int check_bound(AST index, AST var);
 int type_check_node(AST node, ErrorList* err);
-void type_checker(AST root, ErrorList* err);
+void type_checker(AST root, ErrorList* err, Symbol_Table_Tree tree);
 void print_identifier(AST_list* head);
 void add_identifier(AST node, AST index, AST_list** head);
 void check_identifier(AST node, AST_list** head);

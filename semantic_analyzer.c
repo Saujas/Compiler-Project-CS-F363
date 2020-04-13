@@ -29,13 +29,34 @@ int check_bound(AST index, AST var) {
     return 1;
 }
 
-void type_checker(AST root, ErrorList* err) {
+int is_valid_function(AST node, Symbol_Table_Tree root) {
+    char* id = node->leaf_token->lexeme;
+    Symbol_Table_Tree temp = root->child;
+    while(temp) {
+        if((strcmp(temp->name, id)==0)) {  
+            if(temp->is_redundant==1) {
+                return 0;
+            }
+            else {
+                return 1;   
+            }
+        }
+        temp = temp->sibling;
+    }
+    return 1;
+}
+
+void type_checker(AST root, ErrorList* err, Symbol_Table_Tree tree) {
     
     if(root == NULL) {
         return;
     }
 
-    int error = type_check_node(root, err);
+    int error;    
+    if(root->rule_num==8 && root->tag==1 && !(is_valid_function(root->child, tree))) {
+        return;
+    }
+    error = type_check_node(root, err);
 
     if(root->child==NULL) {
         return;
@@ -43,7 +64,7 @@ void type_checker(AST root, ErrorList* err) {
     
     root = root->child;
     while(root) {
-        type_checker(root, err);
+        type_checker(root, err, tree);
         root = root->next;
     }
 
@@ -51,9 +72,12 @@ void type_checker(AST root, ErrorList* err) {
 }
 
 int type_check_node(AST node, ErrorList* err) {
+    // if(node->tag == 0)
+    //     printf("%d\n", node->leaf_token->line_no);
 
     int rule_num = node->rule_num;
     int flag = 0;
+
     
     // ASSIGNMENT STATEMENTS
     if (rule_num == 52 && node->tag == 1) {
@@ -112,27 +136,35 @@ int type_check_node(AST node, ErrorList* err) {
         if(lhs->symbol_table_node && lhs->symbol_table_node->datatype == 3 && lhs->next->label != LVALUE_ARR_STMT) {
             if(expression_node && expression_node->child &&  expression_node->child->next == NULL && 
             expression_node->child->symbol_table_node && expression_node->child->symbol_table_node->datatype == 3) {
+                
                 if(expression_node->child->symbol_table_node->array_datatype != lhs->symbol_table_node->array_datatype) {
+                    // printf("HII1\n");
                     //printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                    // printf("QQQQQ %d %d %d\n", lhs->leaf_token->line_no, lhs->symbol_table_node->array_datatype, expression_node->child->symbol_table_node->array_datatype);
+                    strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
                     add_sem_error(err,str,lhs->leaf_token->line_no);
                     flag = 1;
                 }
-                else if(lhs->symbol_table_node->range[0].tag == 0 && expression_node->child->symbol_table_node->range[0].tag == 0) {
+                if(lhs->symbol_table_node->range[0].tag == 0 && expression_node->child->symbol_table_node->range[0].tag == 0) {
+                    // printf("HII2\n");
+                    // printf("%d %d\n", lhs->symbol_table_node->range[1].tag, expression_node->child->symbol_table_node->range[1].tag);
                     if(lhs->symbol_table_node->range[0].range_pointer.value != expression_node->child->symbol_table_node->range[0].range_pointer.value) {
                        // printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                        // printf("RRRRR%d\n", lhs->leaf_token->line_no);
+                        strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
                         add_sem_error(err,str,lhs->leaf_token->line_no);
                         flag = 1;
                     }
                 }
-                else if(lhs->symbol_table_node->range[1].tag == 0 && expression_node->child->symbol_table_node->range[1].tag == 0) {
+                if(lhs->symbol_table_node->range[1].tag == 0 && expression_node->child->symbol_table_node->range[1].tag == 0) {
+                    // printf("HII3\n");
                     if(lhs->symbol_table_node->range[1].range_pointer.value != expression_node->child->symbol_table_node->range[1].range_pointer.value) {
                         //printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                        // printf("EEEEE%d\n", lhs->leaf_token->line_no);
+                        strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
                         add_sem_error(err,str,lhs->leaf_token->line_no);
                         flag = 1;
                     }
@@ -141,7 +173,8 @@ int type_check_node(AST node, ErrorList* err) {
             else {
                 //printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                // printf("WWWWW%d\n", lhs->leaf_token->line_no);
+                strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
                 add_sem_error(err,str,lhs->leaf_token->line_no);
                 flag = 1;
             }
@@ -150,8 +183,9 @@ int type_check_node(AST node, ErrorList* err) {
 
             int expression_type = extract_type(expression_node, err);
             int lhs_type = get_id_type(lhs);
-            
-            // printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
+
+            // if(lhs->leaf_token->line_no == 131)
+            //     printf("%s: %d %d\n", lhs->leaf_token->lexeme, lhs_type, expression_type);
 
             if(expression_type != lhs_type) {
                // printf("Line: %d - Invalid types in assignment\n", lhs->leaf_token->line_no);
@@ -161,6 +195,7 @@ int type_check_node(AST node, ErrorList* err) {
                 flag = 1;
             }
         }
+        // printf("HIIIII\n");
 
     }
 
@@ -349,6 +384,7 @@ int type_check_node(AST node, ErrorList* err) {
         else {
             fun_id = node->child->next;
         }
+        
 
         Symbol_Table_Tree fun_tree = fun_id->current_scope;
         
@@ -375,6 +411,7 @@ int type_check_node(AST node, ErrorList* err) {
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
+        
 
         Symbol_Table_Tree ip_list = fun_tree->input, op_list = fun_tree->output;
 
@@ -401,6 +438,7 @@ int type_check_node(AST node, ErrorList* err) {
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
+        
 
         // checking output now
         int op_succ = 0;
@@ -439,6 +477,7 @@ int type_check_node(AST node, ErrorList* err) {
                 break;
             }
         }
+        
 
         int op_assign_error = 0;
         int line_num;
@@ -449,9 +488,11 @@ int type_check_node(AST node, ErrorList* err) {
             if(!current) {
                 op_assign_error = 1;
                 line_num = curr_op->node->leaf_token->line_no;
+                // printf("%d\n", line_num);
                 break;
             }
         }
+        
 
         if(op_assign_error) {
             flag = 1;
@@ -544,6 +585,9 @@ int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
 }
 
 void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
+    // if(sym->node->leaf_token->line_no == 60) {
+        // printf("%s %d\n", sym->node->leaf_token->lexeme, sym->node->leaf_token->line_no);
+    // }
     
     if(node == NULL || (*current) == 1) {
         return;
@@ -581,7 +625,7 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
     }
 
     else if(node->rule_num == 59 && node->tag == 1) {
-        if(node->child->symbol_table_node == NULL) {
+        if(node->child->tag == 1 && node->child->symbol_table_node == NULL) {
             AST temp = node->child;
             while(temp) {
                 if(strcmp(temp->child->leaf_token->lexeme, sym->node->leaf_token->lexeme)==0) {

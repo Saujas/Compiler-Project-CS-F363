@@ -2,6 +2,7 @@
 *.d
 
 .vscode/
+parsetreeOutFile.txt
 
 # Object files
 *.o

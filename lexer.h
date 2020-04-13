@@ -11,7 +11,7 @@
 */
 FILE* open_file(char* filename);
 int string_flush(char *str);
-int get_stream(FILE* fp);
+int get_stream(FILE* fp, int offset);
 Node* create_node();
 int add_error(char ch);
 Node* get_next_token(FILE* fp, lookup_table table);

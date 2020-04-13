@@ -7,7 +7,7 @@
 
 /* Constants used throughout the FILE 
 */
-#define MAX_BUFFER_LENGTH 200
+#define MAX_BUFFER_LENGTH 2000
 #define MAX_ID_LENGTH 20
 #define MAX_LEX_ERROR_SIZE 100
 #define MAX_RNUM_LENGTH 3 + DBL_MANT_DIG - DBL_MIN_EXP
@@ -67,18 +67,20 @@ int string_flush(char *str) {
 /* The function for reading from the file into the buffer defined at the top, with a max of 
    MAX_BUFFER_LENGTH characters
 */
-int get_stream(FILE* fp) {
+int get_stream(FILE* fp, int offset) {
     if(fp == NULL) {
         printf("Invalid file pointer\n");
         exit(0);
     }
 
     string_flush(buffer);
+    fseek(fp, offset, SEEK_CUR);
 
     int char_read = fread(buffer, (size_t)sizeof(char), (size_t)(sizeof(buffer)), fp);
 
     // printf("Number of characters read are: %d\n", char_read);
     // printf("%s\n", buffer);
+    // printf("%ld\n", strlen(buffer));
     
     return char_read;
 }
@@ -113,8 +115,8 @@ Node* get_next_token(FILE* fp, lookup_table table) {
     while(1) {
         /* This if statement is to check whether the buffer has been read, and whether to read the rest of the file
         */
-        if (sizeof(buffer)==pointer) {
-            if(!get_stream(fp)) {
+        if (sizeof(buffer)==pointer+5 && ((fgetc(fp))!=EOF)) {
+            if(!get_stream(fp, -6)) {
                 printf("Error in reading file\n");
                 exit(0);
             }
@@ -970,7 +972,7 @@ int lexical_analyzer(char* filename, Node*** token_stream, lookup_table ** table
     id_length = 0;
     number_index = 0;
 
-    if(!get_stream(fp)) {
+    if(!get_stream(fp, 0)) {
         printf("Error in reading file\n");
         exit(0);
     }

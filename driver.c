@@ -98,9 +98,9 @@ int main(int argc, char* argv[]) {
                 }
                 AST root = generate_AST(*parse_tree_ptr);
                 ErrorList* err = initialize_errors();
-                create_symbol_table_tree(root, err);
+                Symbol_Table_Tree tree = create_symbol_table_tree(root, err);
                 
-                type_checker(root, err);
+                type_checker(root, err, tree);
                 sort_errors(err);
                 //printf("1");
                 if((err->head) != NULL) {

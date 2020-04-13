@@ -64,10 +64,6 @@ Symbol_Node* search_current_scope(char* id, Symbol_Table_Tree table_tree_node) {
     Symbol_Table* table = table_tree_node->table;
     int h = hash_symbol_table(id, table->number_of_slots);
     Symbol_List* temp = table->slots[h]->head;
-    
-    if(!temp) {
-        return NULL;
-    }
 
     while(temp) {
         if( strcmp(temp->symbol->node->leaf_token->lexeme, id) == 0) {
@@ -77,8 +73,9 @@ Symbol_Node* search_current_scope(char* id, Symbol_Table_Tree table_tree_node) {
         temp = temp->next;
     }
 
-    if(table_tree_node->is_function)
+    if(table_tree_node->is_function) {
         return search_current_scope(id, table_tree_node->output);
+    }
 
     return NULL;
 }
@@ -127,6 +124,7 @@ Symbol_Table_Tree make_symbol_table_tree_node(Symbol_Table_Tree parent, Label la
     node->is_declared = 0;
     node->is_defined = 0;
     node->is_called = 0;
+    node->is_redundant = 0;
     node->is_function = is_function;
     node->input = NULL;
     node->output = NULL;
@@ -210,6 +208,7 @@ int check_if_called(Symbol_Table_Tree current, char* lexeme) {
 }
 
 Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err) {
+    
     Symbol_Table_Tree tree = make_symbol_table_tree_node(NULL, AST_PROGRAM, "main", 0);
     traverse_ast(root, tree, err);
     printf("**\nAST traversed\n**");
@@ -357,6 +356,14 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         }
 
         else if(declared && (!called) && (!defined)) {
+            Symbol_Table_Tree temp = current->child;
+            while(temp) {
+                if((strcmp(temp->name, name)==0)) {
+                    temp->is_redundant=1;
+                    break;
+                }
+                temp = temp->sibling;
+            }
             //printf("Line %d - Redundant declaration found for module %s\n", node->child->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: REDUNDANT DECLARATION FOUND FOR MODULE");
@@ -498,6 +505,13 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         new->is_declared = -2;
         new->is_defined = -2;
     }
+
+    // New switch scope
+    if(node->rule_num == 103 && node->tag == 1) {
+        new = make_symbol_table_tree_node(current, CONDITIONAL_STMT, "SWITCH", 0);
+        new->is_declared = -3;
+        new->is_defined = -3;
+    }
     
     // INPUT PLIST
     if(node->rule_num == 11 && node->tag == 1) {
@@ -545,8 +559,11 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 if(strcmp(temp->child->next->child->next->leaf_token->lexeme, "integer")==0) {
                     array_datatype = 0;
                 }
-                else {
+                else if(strcmp(temp->child->next->child->next->leaf_token->lexeme, "real")==0){
                     array_datatype = 1;
+                }
+                else {
+                    array_datatype = 2;
                 }
                 AST range1 = temp->child->next->child->child;
                 AST range2 = range1->next;
@@ -693,8 +710,11 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             if(strcmp(temp->child->next->child->next->leaf_token->lexeme, "integer")==0) {
                 array_datatype = 0;
             }
-            else {
+            else if(strcmp(temp->child->next->child->next->leaf_token->lexeme, "real")==0){
                 array_datatype = 1;
+            }
+            else {
+                array_datatype = 2;
             }
             AST range1 = temp->child->next->child->child;
             AST range2 = range1->next;

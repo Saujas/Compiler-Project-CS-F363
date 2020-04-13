@@ -128,7 +128,7 @@ int extract_type(AST node, ErrorList* err) {
     if(error) {
         //printf("Line: %d - Invalid types in expression\n", node->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ID TYPES IN EXPRESSION");
+            strcpy(str,"ERROR: INVALID TYPES IN EXPRESSION");
             add_sem_error(err,str,node->leaf_token->line_no);
         return -1;
     }
