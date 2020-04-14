@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
                     printf("No semantic errors found\n\n");
                     list = generate_ir(root);
                 }
-                generate_code(list, "program.asm");
+                generate_code(list, tree, "program.asm");
                 break;
 
             default: printf("\nInvalid Choice\n\n");

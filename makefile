@@ -44,5 +44,4 @@ run:
 	./stage1exe $(input_file) $(output_file)
 
 everything:
-	nasm -f elf64 program.asm -o program.o && ld -s -o program program.o
-
+	nasm -f elf64 program.asm -o program.o && gcc -no-pie -o program program.o -lc

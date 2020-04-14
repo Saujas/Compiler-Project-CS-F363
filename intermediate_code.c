@@ -4,7 +4,7 @@
 char* operator_string_map[OPERATOR_SIZE] = {
     "COPY", "ADD", "SUB", "MUL", "DIV", "MEM_READ", "MEM_WRITE", "GT",
     "GE", "LT", "LE", "EQ", "NE", "AND", "OR", "LABEL", "IF_TRUE", "IF_FALSE", "GOTO",
-    "READ", "WRITE", "exit", "return", "param_op", "param", "call"
+    "READ", "WRITE", "exit", "return", "param_op", "param", "call", "function"
 };
 
 int temp_var;
@@ -47,6 +47,17 @@ void add_tuple(tuple_list* list, Tuple t) {
 }
 
 void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_node, int width) {
+
+    if(width == 1) {
+        symbol->datatype = 2;
+    }
+    if(width == 2) {
+        symbol->datatype = 0;
+    }
+    if(width == 8) {
+        symbol->datatype = 1;
+    }
+
     symbol->width = width;
     symbol->offset = parent_node->last_offset;
     parent_node->last_offset += width;
@@ -161,7 +172,7 @@ int process_node(AST node, tuple_list* list) {
 
     // AST_DRIVER
     if(node->rule_num == 7 && node->tag == 1) {
-        Tuple new_tup = make_tuple(LABEL, "", "", "main", NULL, NULL, NULL);
+        Tuple new_tup = make_tuple(FUN_LABEL, "", "", "main", NULL, NULL, NULL);
         add_tuple(list, new_tup);
 
         generate_ir_util(node->child, list);
@@ -174,7 +185,7 @@ int process_node(AST node, tuple_list* list) {
 
     // AST MODULE
     if(node->rule_num == 8 && node->tag == 1) {
-        Tuple new_tup = make_tuple(LABEL, "", "", node->child->leaf_token->lexeme, NULL, NULL, NULL);
+        Tuple new_tup = make_tuple(FUN_LABEL, "", "", node->child->leaf_token->lexeme, NULL, NULL, NULL);
         add_tuple(list, new_tup);
         
         AST temp = node->child->next->next;
@@ -282,7 +293,7 @@ int process_node(AST node, tuple_list* list) {
 
             Temporary t0 = evaluate_array(rhs, iterator2, list, parent_scope);
             Temporary t1 = create_temporary();
-            int width[3] = {2, 4, 1};
+            int width[3] = {2, 8, 1};
             add_temp_symboltable(t1->symbol, parent_scope, width[rhs->symbol_table_node->array_datatype]);
             Tuple new_tup8 = make_tuple(MEM_READ, t0->name, "", t1->name, t0->symbol, NULL, t1->symbol);
             add_tuple(list, new_tup8);
@@ -632,7 +643,7 @@ int process_node(AST node, tuple_list* list) {
             else if(node->rule_num == 43)
                 width = 2;
             else if(node->rule_num == 44)
-                width = 4;
+                width = 8;
             else
                 width = 1;
             
@@ -822,11 +833,11 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
     if(node->tag == 0) {
         Temporary node_t = create_temporary();
 
-        int width = 0;
+        int width = 1;
         if(node->leaf_token->token == NUM)
             width = 2;
         else if(node->leaf_token->token == RNUM)
-            width = 4;
+            width = 8;
 
         add_temp_symboltable(node_t->symbol, parent_scope, width);
 
@@ -873,7 +884,7 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
                 if(node->child->symbol_table_node->array_datatype == 0)
                     width = 2;
                 else if(node->child->symbol_table_node->array_datatype == 1)
-                    width = 4;
+                    width = 8;
                 else if(node->child->symbol_table_node->array_datatype == 2)
                     width = 1;
 
@@ -901,7 +912,7 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
                 width = 2;
             }
             else if(node->child->next->leaf_token->token == RNUM) {
-                width = 4;
+                width = 8;
             }
             else if(node->child->next->leaf_token->token == ID) {
                 width = node->child->next->symbol_table_node->width;
@@ -948,7 +959,7 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
             if(node1->leaf_token->token == NUM)
                 width = 2;
             else if(node1->leaf_token->token == RNUM)
-                width = 4;
+                width = 8;
             else if(node1->leaf_token->token == TRUE || node1->leaf_token->token == FALSE)
                 width = 1;
         }
@@ -1049,7 +1060,7 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
     if(node->symbol_table_node->array_datatype == 0)
         width = 2;
     else if(node->symbol_table_node->array_datatype == 1)
-        width = 4;
+        width = 8;
     else if(node->symbol_table_node->array_datatype == 2)
         width = 1;
 

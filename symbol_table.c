@@ -331,8 +331,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     //     printf("%s %d\n", node->leaf_token->lexeme, node->leaf_token->line_no);
     // }
 
-    // Width: 2 for INT, 4: REAL, 1: BOOLEAN, 2: ARRAY OFFSET
-    int data_width[4] = {2, 4, 1, 2};
+    // Width: 2 for INT, 8: REAL, 1: BOOLEAN, 8: ARRAY OFFSET
+    int data_width[4] = {2, 8, 1, 8};
 
     // Module call's current scope doesn't have to be changed
     if(!(node->tag == 0 && node->rule_num == 59)) {

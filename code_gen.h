@@ -8,6 +8,7 @@
 #include "symbol_table_def.h"
 #include "ast_def.h"
 
-int generate_code(tuple_list* list, char* filename);
+int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename);
 int generate_tuple_code(tuple* tup, FILE* fp);
+int initialize_bss(tuple_list* list, Symbol_Table_Tree tree, FILE* fp);
 void print_args(struct tup* tup);
