@@ -1,19 +1,7 @@
 <<<driver program>>>
 start
-	declare a, b:integer;
-	b := 3;
-	a := b;	
+	declare a:integer;
+	a := 2;
+	a := a / 2;
 	print(a);
-	print(b);
-	declare c:boolean;
-	c := false;
-	print(c);
-
-	declare d, e:real;
-	d := 2.43;
-	e := d;
-	print(e);
-
-	print(23122.65444);
-	print(true);
 end
