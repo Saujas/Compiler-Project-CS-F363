@@ -334,12 +334,21 @@ void convert_to_AST_node(t_node* node) {
             label = AST_DRIVER;
             tag = 1;
             temp = node->child->sibling->sibling->sibling->sibling;
-            child = temp->tree_node;
-            child->next = create_leaf_node(temp->child, -1, 30);
-            temp->child->tree_node = child->next;
+            if(temp->tree_node) {
+                child = temp->tree_node;
+                child->next = create_leaf_node(temp->child, -1, 30);
+                temp->child->tree_node = child->next;
 
-            child->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
-            temp->child->sibling->sibling->tree_node = child->next->next;
+                child->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
+                temp->child->sibling->sibling->tree_node = child->next->next;
+            }
+            else {
+                child = create_leaf_node(temp->child, -1, 30);
+                temp->child->tree_node = child;
+
+                child->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
+                temp->child->sibling->sibling->tree_node = child->next;
+            }
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
@@ -347,37 +356,56 @@ void convert_to_AST_node(t_node* node) {
 
         case 8:
             label = AST_MODULE;
+            
             tag = 1;
             child = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
             node->child->sibling->sibling->tree_node = child;
  
             temp = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling;
             child->next = temp->tree_node;
-            
-            temp2 = temp;
+
             temp = temp->sibling->sibling->sibling;
+            
 
             if(temp->tree_node != NULL) {
                 child->next->next = temp->tree_node;
-                
-                temp2 = temp;
                 temp = temp->sibling;
-                child->next->next->next = temp->tree_node;
+                if(temp->tree_node) {
+                    child->next->next->next = temp->tree_node;
 
-                child->next->next->next->next = create_leaf_node(temp->child, -1, 30);
-                temp->child->tree_node = child->next->next->next->next;
+                    child->next->next->next->next = create_leaf_node(temp->child, -1, 30);
+                    temp->child->tree_node = child->next->next->next->next;
 
-                child->next->next->next->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
-                temp->child->sibling->sibling->tree_node = child->next->next->next->next->next;
+                    child->next->next->next->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
+                    temp->child->sibling->sibling->tree_node = child->next->next->next->next->next;
+                }
+                else {
+
+                    child->next->next->next = create_leaf_node(temp->child, -1, 30);
+                    temp->child->tree_node = child->next->next->next;
+
+                    child->next->next->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
+                    temp->child->sibling->sibling->tree_node = child->next->next->next->next;
+                }
             }
             else {
                 temp = temp->sibling;
-                child->next->next = temp->tree_node;
-                child->next->next->next = create_leaf_node(temp->child, -1, 30);
-                temp->child->tree_node = child->next->next->next;
 
-                child->next->next->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
-                temp->child->sibling->sibling->tree_node = child->next->next->next->next;
+                if(temp->tree_node) {
+                    child->next->next = temp->tree_node;
+                    child->next->next->next = create_leaf_node(temp->child, -1, 30);
+                    temp->child->tree_node = child->next->next->next;
+
+                    child->next->next->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
+                    temp->child->sibling->sibling->tree_node = child->next->next->next->next;
+                }
+                else {
+                    child->next->next = create_leaf_node(temp->child, -1, 30);
+                    temp->child->tree_node = child->next->next;
+
+                    child->next->next->next = create_leaf_node(temp->child->sibling->sibling, -1, 30);
+                    temp->child->sibling->sibling->tree_node = child->next->next->next;
+                }
             }
             
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
@@ -549,15 +577,25 @@ void convert_to_AST_node(t_node* node) {
             child = create_leaf_node(temp, -1, rule_num);
             temp->tree_node = child;
             child->next = temp->sibling->sibling->tree_node;
-            child->next->next = temp->sibling->sibling->sibling->sibling->sibling->tree_node;
-
             temp = temp->sibling->sibling->sibling->sibling;
-            
-            child->next->next->next = create_leaf_node(temp, -1, 1010);
-            temp->tree_node = child->next->next->next;
 
-            child->next->next->next->next = create_leaf_node(temp->sibling->sibling, -1, 1010);
-            temp->sibling->sibling->tree_node = child->next->next->next->next;
+            if(temp->sibling->tree_node) {
+                child->next->next = temp->sibling->tree_node;            
+                
+                child->next->next->next = create_leaf_node(temp, -1, 1010);
+                temp->tree_node = child->next->next->next;
+
+                child->next->next->next->next = create_leaf_node(temp->sibling->sibling, -1, 1010);
+                temp->sibling->sibling->tree_node = child->next->next->next->next;
+            }
+
+            else {
+                child->next->next = create_leaf_node(temp, -1, 1010);
+                temp->tree_node = child->next->next;
+
+                child->next->next->next = create_leaf_node(temp->sibling->sibling, -1, 1010);
+                temp->sibling->sibling->tree_node = child->next->next->next;
+            }
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
@@ -570,15 +608,24 @@ void convert_to_AST_node(t_node* node) {
             temp = node->child->sibling->sibling;
 
             child = temp->tree_node;
-            child->next = temp->sibling->sibling->sibling->tree_node;
-
             temp = temp->sibling->sibling;
 
-            child->next->next = create_leaf_node(temp, -1, 1020);
-            temp->tree_node = child->next->next;
+            if(temp->sibling->tree_node) {
+                child->next = temp->sibling->tree_node;
 
-            child->next->next->next = create_leaf_node(temp->sibling->sibling, -1, 1020);
-            temp->sibling->sibling->tree_node = child->next->next->next;
+                child->next->next = create_leaf_node(temp, -1, 1020);
+                temp->tree_node = child->next->next;
+
+                child->next->next->next = create_leaf_node(temp->sibling->sibling, -1, 1020);
+                temp->sibling->sibling->tree_node = child->next->next->next;
+            }
+            else {
+                child->next = create_leaf_node(temp, -1, 1020);
+                temp->tree_node = child->next;
+
+                child->next->next = create_leaf_node(temp->sibling->sibling, -1, 1020);
+                temp->sibling->sibling->tree_node = child->next->next;
+            }
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
@@ -748,3 +795,5 @@ t_node* get_switch_end_node(t_node* temp) {
     }
     return ans;
 }
+
+

@@ -101,7 +101,9 @@ int type_check_node(AST node, ErrorList* err) {
             else if(lhs->symbol_table_node && lhs->symbol_table_node->datatype != 3) {
                 //printf("Line: %d - Variable %s not of array type\n", lhs->leaf_token->line_no, lhs->leaf_token->lexeme);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR:VARIABLE NOT OF ARRAY TYPE");
+                strcpy(str,"ERROR:VARIABLE: ");
+                strcat(str, lhs->leaf_token->lexeme);
+                strcat(str, " USED AS ARRAY IS NOT OF ARRAY TYPE");
                 add_sem_error(err,str,lhs->leaf_token->line_no);
                 flag = 1;
             }
@@ -116,7 +118,9 @@ int type_check_node(AST node, ErrorList* err) {
                     if(bound == 0) {
                         //printf("Line: %d - Array out of bounds error\n", lhs->leaf_token->line_no);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: ARRAY INDEX OUT OF BOUNDS");
+                        strcpy(str,"ERROR: ELEMENT OF ARRAY: ");
+                        strcat(str, lhs->leaf_token->lexeme);
+                        strcat(str, " IS OUT OF BOUNDS");
                         add_sem_error(err,str,lhs->leaf_token->line_no);
                         flag = 1;
                     }
@@ -126,7 +130,9 @@ int type_check_node(AST node, ErrorList* err) {
                     if(index->symbol_table_node && index->symbol_table_node->datatype != 0) {
                         //printf("Line: %d -  Array index type is not integer\n", index->leaf_token->line_no);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: ARRAY INDEX IS NOT INTEGER");
+                        strcpy(str,"ERROR: INDEX OF ARRAY: ");
+                        strcat(str, lhs->leaf_token->lexeme);
+                        strcat(str, " IS NOT AN INTEGER");
                         add_sem_error(err,str,index->leaf_token->line_no);
                         flag = 1;
                     }
@@ -157,7 +163,7 @@ int type_check_node(AST node, ErrorList* err) {
                        // printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                         // printf("RRRRR%d\n", lhs->leaf_token->line_no);
-                        strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                        strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE AND BOUNDS ONLY");
                         add_sem_error(err,str,lhs->leaf_token->line_no);
                         flag = 1;
                     }
@@ -168,17 +174,30 @@ int type_check_node(AST node, ErrorList* err) {
                         //printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                         // printf("EEEEE%d\n", lhs->leaf_token->line_no);
-                        strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                        strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE AND BOUNDS ONLY");
                         add_sem_error(err,str,lhs->leaf_token->line_no);
                         flag = 1;
                     }
                 }
             }
+            else if(expression_node && expression_node->child &&  expression_node->child->next == NULL && 
+            expression_node->child->symbol_table_node && expression_node->child->symbol_table_node->datatype != 3) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                // printf("WWWWW%d\n", lhs->leaf_token->line_no);
+                strcpy(str,"ERROR: VARIABLES: ");
+                strcat(str, lhs->leaf_token->lexeme);
+                strcat(str, " and ");
+                strcat(str, expression_node->child->leaf_token->lexeme);
+                strcat(str, " ARE OF DIFFERENT TYPES");
+                add_sem_error(err,str,lhs->leaf_token->line_no);
+                flag = 1;
+            }
             else {
                 //printf("Line: %d - Array can be assigned to array with same type only\n", lhs->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                 // printf("WWWWW%d\n", lhs->leaf_token->line_no);
-                strcpy(str,"ERROR: ARRAY CAN BE ASSIGNED TO ARRAY WITH SAME TYPE ONLY");
+                strcpy(str,"ERROR: ONLY AN ARRAY WITH SAME TYPE AND BOUNDS CAN BE ASSIGNED TO ARRAY ");
+                strcat(str, lhs->leaf_token->lexeme);
                 add_sem_error(err,str,lhs->leaf_token->line_no);
                 flag = 1;
             }
@@ -194,7 +213,8 @@ int type_check_node(AST node, ErrorList* err) {
             if(expression_type != lhs_type) {
                // printf("Line: %d - Invalid types in assignment\n", lhs->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: INVALID TYPES IN ASSIGNMENT");
+                strcpy(str,"ERROR: INVALID TYPE IN ASSIGNMENT TO VARIABLE: ");
+                strcat(str, lhs->leaf_token->lexeme);
                 add_sem_error(err,str,lhs->leaf_token->line_no);
                 flag = 1;
             }
@@ -210,7 +230,9 @@ int type_check_node(AST node, ErrorList* err) {
         else if((node->symbol_table_node->datatype == 2)) {
            // printf("Line: %d - Incompatible datatype of variable %s\n", node->leaf_token->line_no, node->leaf_token->lexeme);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: INCOMPATIBLE DATA TYPE OF VARIABLE");
+            strcpy(str,"ERROR: DATA TYPE OF VARIABLE: ");
+            strcat(str, node->leaf_token->lexeme);
+            strcat(str, " BEING READ IS BOOLEAN");
             add_sem_error(err,str,node->leaf_token->line_no);
             flag = 1;
         }
@@ -231,7 +253,9 @@ int type_check_node(AST node, ErrorList* err) {
 
             else if(node->child->next->leaf_token->token == NUM && !check_bound(node->child->next, node->child)) {
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str, "ERROR: INVALID INDEX USED IN ARRAY");
+                strcpy(str, "ERROR: ELEMENT OF ARRAY: ");
+                strcat(str, node->child->leaf_token->lexeme);
+                strcat(str, " IS OUT OF BOUNDS");
                 add_sem_error(err, str, node->child->leaf_token->line_no);
                 flag = 1;
                 return flag;
@@ -241,7 +265,9 @@ int type_check_node(AST node, ErrorList* err) {
         else if(node->child->symbol_table_node->datatype != 3 && node->child->next) {
             printf("HI\n");
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str, "ERROR: NON ARRAY VARIABLE CANNOT HAVE INDEX");
+            strcpy(str, "ERROR: NON ARRAY VARIABLE: ");
+            strcat(str, node->child->leaf_token->lexeme);
+            strcat(str, " CANNOT HAVE INDEX");
             add_sem_error(err, str, node->child->leaf_token->line_no);
             flag = 1;
             return flag;
@@ -256,7 +282,9 @@ int type_check_node(AST node, ErrorList* err) {
         else if(node->child->symbol_table_node && node->child->symbol_table_node->datatype != 0) {
             //printf("Line: %d - Incompatible datatype in For loop variable %s\n", node->child->leaf_token->line_no, node->child->leaf_token->lexeme);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: INCOMPATIBLE DATA TYPE IN FOR LOOP VARIABLE");
+            strcpy(str,"ERROR: FOR LOOP VARIABLE: ");
+            strcat(str, node->child->leaf_token->lexeme);
+            strcat(str, " HAS TO HAVE INTEGER DATATYPE");
             add_sem_error(err,str,node->child->leaf_token->line_no);
             flag = 1;
         }
@@ -265,7 +293,9 @@ int type_check_node(AST node, ErrorList* err) {
         if(temp1) {
             //printf("Line: %d - For loop variable is declared again\n", temp1->node->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: FOR LOOP VARIABLE DECLARED AGAIN");
+            strcpy(str,"ERROR: VARIABLE: ");
+            strcat(str, node->child->leaf_token->lexeme);
+            strcat(str, " USED AS FOR LOOP VARIABLE IS DECLARED AGAIN");
             add_sem_error(err,str,temp1->node->leaf_token->line_no);
             flag = 1;
         }
@@ -276,11 +306,14 @@ int type_check_node(AST node, ErrorList* err) {
         int current = 0;
         int line_num = 0;
         
-        check_if_modified(id_used, node->child->next->next, &current, &line_num);
+        if(node->child->next->next->label == STATEMENTS)
+            check_if_modified(id_used, node->child->next->next, &current, &line_num);
         
         if(current) {
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: FOR LOOP VARIABLE CANNOT BE ASSIGNED A VALUE INSIDE FOR");
+            strcpy(str,"ERROR: FOR LOOP VARIABLE: ");
+            strcat(str, node->child->leaf_token->lexeme);
+            strcat(str, " CANNOT BE ASSIGNED A VALUE INSIDE FOR");
             add_sem_error(err,str,line_num);
             flag = 1;
         }
@@ -296,7 +329,9 @@ int type_check_node(AST node, ErrorList* err) {
             if(temp1->label == NUMERIC_CASES) {
                 //printf("Line: %d - Switch with boolean variable can have only true and false cases\n", node->child->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE CAN HAVE ONLY TRUE AND FALSE CASES");
+                strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE: ");
+                strcat(str, node->child->leaf_token->lexeme);
+                strcat(str, " CAN HAVE ONLY TRUE AND FALSE CASES");
                 add_sem_error(err,str,temp1->child->leaf_token->line_no);
                 flag = 1;
             }
@@ -314,7 +349,9 @@ int type_check_node(AST node, ErrorList* err) {
             if(!check) {
                 //printf("Line: %d - Switch with integer variable must have default\n", node->child->leaf_token->line_no);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE MUST HAVE DEFAULT ");
+                strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE:  ");
+                strcat(str, node->child->leaf_token->lexeme);
+                strcat(str, " MUST HAVE DEFAULT");
                 add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
                 flag = 1;
             }
@@ -322,7 +359,9 @@ int type_check_node(AST node, ErrorList* err) {
         else {
            // printf("Line: %d - Switch must have integer or boolean variable only\n", node->child->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: SWITCH MUST HAVE INTEGER OR BOOLEAN VARIABLE ONLY");
+            strcpy(str,"ERROR: VARIABLE: ");
+            strcat(str, node->child->leaf_token->lexeme);
+            strcat(str, " USED IN SWITCH MUST HAVE INTEGER OR BOOLEAN DATATYPE");
             add_sem_error(err,str,node->child->leaf_token->line_no);
             flag = 1;
         }
@@ -331,12 +370,21 @@ int type_check_node(AST node, ErrorList* err) {
     // WHILE LOOP SEMANTICS
     if(node->rule_num == 102) {
         int type = extract_type(node->child, err);
+        AST start, end;
+        if(node->child->next->label == STATEMENTS) {
+            start = node->child->next->next;
+            end = start->next;
+        }
+        else {
+            start = node->child->next;
+            end = start->next;
+        }
         
         if(type != 2) {
             //printf("Line: - Incompatible expression used in while construct\n");
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: INCOMPATIBLE EXRESSION USED IN WHILE CONSTRUCT");
-            add_sem_error(err,str, (node->child->next->next->leaf_token->line_no) - 1);
+            strcpy(str,"ERROR: EXRESSION USED IN WHILE CONSTRUCT SHOULD BE OF TYPE BOOLEAN");
+            add_sem_error(err,str, (start->leaf_token->line_no) - 1);
             flag = 1;
         }
         else {
@@ -348,17 +396,20 @@ int type_check_node(AST node, ErrorList* err) {
                 //printf("Line: - No identifier used in while construct\n");
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                 strcpy(str,"ERROR: NO IDENTIFIER USED IN WHILE CONSTRUCT");
-                add_sem_error(err,str,(node->child->next->next->leaf_token->line_no) - 1);
+                add_sem_error(err,str,(start->leaf_token->line_no) - 1);
                 flag = 1;
             }
             
             if(!flag) {
                 int line_num = 0;
-                int is_redeclared = check_if_redeclared_in_scope(id_used, &line_num);
+                AST temp;
+                int is_redeclared = check_if_redeclared_in_scope(id_used, &line_num, &temp);
                 if(is_redeclared) {
                     //printf("Line: - Identifier used in while construct cannot be redeclared\n");
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: IDENTIFIER USED IN WHILE CONSTRUCT CANNOT BE REDECLARED");
+                    strcpy(str,"ERROR: IDENTIFIER: ");
+                    strcat(str, temp->leaf_token->lexeme);
+                    strcat(str, " USED IN WHILE CONSTRUCT CANNOT BE REDECLARED");
                     add_sem_error(err,str,line_num);
                     flag = 1;
                 }
@@ -367,12 +418,18 @@ int type_check_node(AST node, ErrorList* err) {
             if(!flag) {
                 int is_modified = 0;
                 int line_num = 0;
-                check_if_modified(id_used, node, &is_modified, &line_num);
+                if(node->child->next->label == STATEMENTS) {
+                    check_if_modified(id_used, node, &is_modified, &line_num);
+                    line_num = node->child->next->next->next->leaf_token->line_no;
+                }
+                else {
+                    line_num = node->child->next->next->leaf_token->line_no;
+                }
 
                 if(!is_modified) {
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
                     strcpy(str,"ERROR: NO VARIABLE IN WHILE CONDITION MODIFIED");
-                    add_sem_error(err,str, node->child->next->next->next->leaf_token->line_no);
+                    add_sem_error(err,str, line_num);
                     flag = 1;
                 }
                 else {
@@ -406,7 +463,9 @@ int type_check_node(AST node, ErrorList* err) {
             flag = 1;
             //printf("Line: %d - Module used in call not defined\n", fun_id->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: MODULE USED IN CALL NOT DEFINED");
+            strcpy(str,"ERROR: CALLED MODULE: ");
+            strcat(str, fun_id->leaf_token->lexeme);
+            strcat(str, " NOT DEFINED");
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
@@ -415,7 +474,9 @@ int type_check_node(AST node, ErrorList* err) {
         if(strcmp(fun_id->leaf_token->lexeme, node->current_scope->name)==0) {
             flag = 1;
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: MODULE IS RECURSIVELY CALLED");
+            strcpy(str,"ERROR: MODULE: ");
+            strcat(str, fun_id->leaf_token->lexeme);
+            strcat(str, " IS RECURSIVELY CALLED");
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
@@ -533,26 +594,32 @@ int type_check_node(AST node, ErrorList* err) {
 
         int op_assign_error = 0;
         int line_num, itr;
+        AST temp1;
+
+        if(fun_def->label != STATEMENTS) {
+            fun_def = NULL;
+            line_num = node->child->next->next->next->next->leaf_token->line_no;
+        }
+        else {
+            line_num = node->child->next->next->next->next->next->leaf_token->line_no;
+        }
+
         for(itr = 0; itr<op_count; itr++) {
             Symbol_Node* curr_op = (*op_head)[itr];
             int current = 0;
-            check_if_output_modified(curr_op, fun_def, &current);
+            check_if_output_modified(curr_op, fun_def, &current, &temp1);
             if(!current) {
-                op_assign_error = 1;
-                line_num = node->child->next->next->next->next->next->leaf_token->line_no;
+                flag = 1;
+                // printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: OUTPUT PARAMETER: ");
+                strcat(str, temp1->leaf_token->lexeme);
+                strcat(str, " NOT ASSIGNED VALUE");
+                add_sem_error(err,str,line_num);
+                // line_num = node->child->next->next->next->next->next->leaf_token->line_no;
                 // printf("%d\n", line_num);
-                break;
+                current = 0;
             }
-        }
-        
-
-        if(op_assign_error) {
-            flag = 1;
-            // printf("Line: %d - All outputs not assigned value in module\n", fun_id->leaf_token->line_no);
-            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: ALL OUTPUTS NOT ASSIGNED VALUE IN MODULE");
-            add_sem_error(err,str,line_num);
-            return flag;
         }
         
     }
@@ -635,12 +702,13 @@ int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
     }
 }
 
-void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
+void check_if_output_modified(Symbol_Node* sym, AST node, int* current, AST *temp1) {
     // if(sym->node->leaf_token->line_no == 60) {
         // printf("%s %d\n", sym->node->leaf_token->lexeme, sym->node->leaf_token->line_no);
     // }
     
     if(node == NULL || (*current) == 1) {
+        *temp1 = sym->node;
         return;
     }
 
@@ -657,6 +725,7 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
         if(!index) {
             if(strcmp(id->leaf_token->lexeme, sym->node->leaf_token->lexeme) == 0) {
                 *current = 1;
+                *temp1 = sym->node;
             }
         }
 
@@ -670,6 +739,7 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
     else if(node->rule_num == 40 && node->tag == 0) {
         if(strcmp(node->leaf_token->lexeme, sym->node->leaf_token->lexeme) == 0) {
             *current = 1;
+            *temp1 = sym->node;
         }
         if((*current) == 1)
             return;
@@ -681,6 +751,7 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
             while(temp) {
                 if(strcmp(temp->child->leaf_token->lexeme, sym->node->leaf_token->lexeme)==0) {
                     *current = 1;
+                    *temp1 = sym->node;
                 }
                 if((*current)==1)
                     return;
@@ -692,9 +763,10 @@ void check_if_output_modified(Symbol_Node* sym, AST node, int* current) {
     AST temp = node->child;
 
     while(temp) {
-        check_if_output_modified(sym, temp, current);
+        check_if_output_modified(sym, temp, current, temp1);
         temp = temp->next;
     }
+    *temp1 = sym->node;
 
     return;
 }
@@ -785,7 +857,7 @@ int compare_list_node(AST_list** head, AST id, AST index) {
     return 0;
 }
 
-int check_if_redeclared_in_scope(AST_list** head, int *line_num) {
+int check_if_redeclared_in_scope(AST_list** head, int *line_num, AST *temp1) {
     int is_redeclared = 0;
 
     AST_list* temp = *head;
@@ -794,6 +866,7 @@ int check_if_redeclared_in_scope(AST_list** head, int *line_num) {
         is_redeclared = search_current_scope(temp->node->leaf_token->lexeme, temp->node->current_scope) ? 1 : is_redeclared;
         if(is_redeclared == 1) {
             *line_num = temp->node->leaf_token->line_no;
+            *temp1 = temp->node;
             break;
         }
         temp = temp->next;
@@ -919,10 +992,10 @@ void sort_errors_util(Error* temp, int count) {
 void print_errors(ErrorList* errors) {
 
 	Error* temp = errors->head;
-	printf("Semantic Errors\n");
+	printf("SEMANTIC ERRORS\n\n");
 	while(temp!=NULL) {
         if(temp->line_num!=-1) {
-		    printf("Line No: %d, %s\n",temp->line_num,temp->str);
+		    printf("Line %d: %s\n",temp->line_num,temp->str);
         }
         else {
 		    printf("%s\n",temp->str);

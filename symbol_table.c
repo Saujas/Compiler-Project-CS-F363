@@ -213,7 +213,7 @@ Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err) {
     
     Symbol_Table_Tree tree = make_symbol_table_tree_node(NULL, AST_PROGRAM, "main", 0, 0, 0, -1);
     traverse_ast(root, tree, err);
-    printf("**\nAST traversed\n**");
+    printf("\n**\nAST traversed\n**\n");
 
     print_symbol_tables(tree);
 
@@ -324,12 +324,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     if(!node)
         return;
 
-    // if(node->tag == 1) {
-    //     printf("%s\n", ast_string_map_copy[node->label]);
-    // }
-    // else {
-    //     printf("%s %d\n", node->leaf_token->lexeme, node->leaf_token->line_no);
-    // }
+    if(node->tag == 1) {
+        printf("%s\n", ast_string_map_copy[node->label]);
+    }
+    else {
+        printf("%s\n", node->leaf_token->lexeme);
+    }
 
     // Width: 2 for INT, 8: REAL, 1: BOOLEAN, 8: ARRAY OFFSET
     int data_width[4] = {2, 8, 1, 8};
@@ -359,18 +359,32 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         int start, end;
         AST temp1 = node->child->next->next;
         if(temp1->label == OUTPUT_PLIST) {
-            start = temp1->next->next->leaf_token->line_no;
-            end = temp1->next->next->next->leaf_token->line_no;
+            if(temp1->next->label == STATEMENTS) {
+                start = temp1->next->next->leaf_token->line_no;
+                end = temp1->next->next->next->leaf_token->line_no;
+            }
+            else {
+                start = temp1->next->leaf_token->line_no;
+                end = temp1->next->next->leaf_token->line_no;
+            }
         }
         else {
-            start = temp1->next->leaf_token->line_no;
-            end = temp1->next->next->leaf_token->line_no;
+            if(temp1->label == STATEMENTS) {
+                start = temp1->next->leaf_token->line_no;
+                end = temp1->next->next->leaf_token->line_no;
+            }
+            else {
+                start = temp1->leaf_token->line_no;
+                end = temp1->next->leaf_token->line_no;
+            }
         }
         
         if(defined) {
             //printf("Line %d - %s Module already defined\n", node->child->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: MODULE ALREADY DEFINED");
+            strcpy(str,"ERROR: MODULE: ");
+            strcat(str, name);
+            strcat(str, " CANNOT BE OVERLOADED");
             add_sem_error(err,str,node->child->leaf_token->line_no);
             // exit(-1);
             return;
@@ -387,7 +401,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             // }
             //printf("Line %d - Redundant declaration found for module %s\n", node->child->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: REDUNDANT DECLARATION FOUND FOR MODULE");
+            strcpy(str,"ERROR: MODULE: ");
+            strcat(str, name);
+            strcat(str, " DEFINITON AND DECLARATION BOTH APPEAR BEFORE ITS CALL");
             add_sem_error(err,str,node->child->leaf_token->line_no);
             return;
             // Symbol_Table_Tree temp = current->child;
@@ -436,10 +452,22 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
     // Driver Module definition
     if(node->rule_num == 7) {
+        
         char * name = "AST_DRIVER";
         int defined = check_if_defined(current, name);
-        int start = node->child->next->leaf_token->line_no;
-        int end = node->child->next->next->leaf_token->line_no;
+
+        int start;
+        int end;
+
+        if(node->child->tag != 1) {
+            start = node->child->leaf_token->line_no;
+            end = node->child->next->leaf_token->line_no;
+        }
+        else {
+            start = node->child->next->leaf_token->line_no;
+            end = node->child->next->next->leaf_token->line_no;
+        }
+        
         
         if(defined) {
             // error
@@ -466,7 +494,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             // error
             //printf("Line %d - %s Module is already declared\n", node->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: MODULE IS ALREADY DECLARED");
+            strcpy(str,"ERROR: MODULE: ");
+            strcat(str, name);
+            strcat(str, " IS RE-DECLARED");
             add_sem_error(err,str,node->leaf_token->line_no);
             // exit(-1);
         }
@@ -511,7 +541,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         if(!declared) {
             //printf("Line %d - %s Incorrect Function Call, Module not found\n", temp_node->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: INCORRECT FUNCTION CALL, MODULE NOT FOUND");
+            strcpy(str,"ERROR: INCORRECT FUNCTION CALL, MODULE: ");
+            strcat(str, name);
+            strcat(str, " NOT FOUND");
 
             add_sem_error(err,str,temp_node->leaf_token->line_no);
             temp_node->current_scope = NULL;
@@ -527,8 +559,15 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
     // New for loop
     if(node->rule_num == 101 && node->tag == 1) {
-        int start = node->child->next->next->next->leaf_token->line_no;
-        int end = node->child->next->next->next->next->leaf_token->line_no;
+        int start, end;
+        if(node->child->next->next->label == STATEMENTS) {
+            start = node->child->next->next->next->leaf_token->line_no;
+            end = node->child->next->next->next->next->leaf_token->line_no;
+        }
+        else {
+            start = node->child->next->next->leaf_token->line_no;
+            end = node->child->next->next->next->leaf_token->line_no;
+        }
         int level = current->level + 1;
         new = make_symbol_table_tree_node(current, AST_FOR, "FOR", 0, start, end, level);
         new->is_declared = -1;
@@ -537,8 +576,15 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     
     // New while loop
     if(node->rule_num == 102 && node->tag == 1) {
-        int start = node->child->next->next->leaf_token->line_no;
-        int end = node->child->next->next->next->leaf_token->line_no;
+        int start, end;
+        if(node->child->next->label == STATEMENTS) {
+            start = node->child->next->next->leaf_token->line_no;
+            end = node->child->next->next->next->leaf_token->line_no;
+        }
+        else {
+            start = node->child->next->leaf_token->line_no;
+            end = node->child->next->next->leaf_token->line_no;
+        }
         int level = current->level + 1;
         new = make_symbol_table_tree_node(current, AST_WHILE, "WHILE", 0, start, end, level);
         new->is_declared = -2;
@@ -591,7 +637,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 else {
                     //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
+                    strcpy(str,"ERROR: VARIABLE: ");
+                    strcat(str, temp->child->leaf_token->lexeme);
+                    strcat(str, " IS RE-DECLARED");
                     add_sem_error(err,str,temp->child->leaf_token->line_no);
                     flag = 0;
                 }
@@ -626,7 +674,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 }
                 else {
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: INCORRECT ARRAY BOUNDS");
+                    strcpy(str,"ERROR: ARRAY: ");
+                    strcat(str, temp->child->leaf_token->lexeme);
+                    strcat(str, " SHOULD HAVE POSITIVE BOUNDS WITH LOWER LIMIT LESS THAN UPPER LIMIT");
                     add_sem_error(err,str,temp->child->leaf_token->line_no);
                     flag = 0;
                 }
@@ -638,7 +688,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 else{
                     //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
+                    strcpy(str,"ERROR: VARIABLE: ");
+                    strcat(str, temp->child->leaf_token->lexeme);
+                    strcat(str, " IS RE-DECLARED");
                     add_sem_error(err,str,temp->child->leaf_token->line_no);
                     flag = 0;
                 }
@@ -685,7 +737,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             else{
                 //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
+                strcpy(str,"ERROR: VARIABLE: ");
+                strcat(str, temp->child->leaf_token->lexeme);
+                strcat(str, " IS RE-DECLARED");
                 add_sem_error(err,str,temp->child->leaf_token->line_no);
             }
             temp = temp->child->next->next;
@@ -724,7 +778,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             else{
                 //printf("Line: %d - Variable %s already declared\n", temp->child->child->leaf_token->line_no, temp->child->child->leaf_token->lexeme);
                 char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
+                strcpy(str,"ERROR: VARIABLE: ");
+                strcat(str, temp->child->child->leaf_token->lexeme);
+                strcat(str, " IS RE-DECLARED");
                 add_sem_error(err,str,temp->child->child->leaf_token->line_no);
             }
 
@@ -739,7 +795,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 else{
                     //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
+                    strcpy(str,"ERROR: VARIABLE: ");
+                    strcat(str, temp->child->leaf_token->lexeme);
+                    strcat(str, " IS RE-DECLARED");
                     add_sem_error(err,str,temp->child->leaf_token->line_no);
                 }
                 temp = temp->child->next;
@@ -769,7 +827,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 if(range1->leaf_token->val.num <= 0) {
                     //printf("Line: %d - Variable used as array index has to be positive: %d\n", range1->leaf_token->line_no, range1->leaf_token->val.num);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE USED AS ARRAY INDEX HAS TO BE POSITIVE");
+                    strcpy(str,"ERROR: NUMBER USED AS ARRAY INDEX HAS TO BE POSITIVE");
                     add_sem_error(err,str,range1->leaf_token->line_no);
                     flag = 0;
                 }
@@ -786,14 +844,18 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                         flag = 0;
                         //printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp->child->child->leaf_token->line_no, temp1->node->leaf_token->lexeme);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: VARABLE USED AS ARRAY INDEX HAS TO BE INTEGER");
+                        strcpy(str,"ERROR: VARABLE: ");
+                        strcat(str, range1->leaf_token->lexeme);
+                        strcat(str, " USED AS ARRAY INDEX HAS TO BE INTEGER");
                         add_sem_error(err,str,temp->child->child->leaf_token->line_no);
                     }
                 }
                 else {
                    // printf("Line: %d - Variable used as array index: %s is not declared\n", range1->leaf_token->line_no, range1->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE USED AS ARRAY INDEX NOT DECLARED");
+                    strcpy(str,"ERROR: VARIABLE: ");
+                    strcat(str, range1->leaf_token->lexeme);
+                    strcat(str, " USED AS ARRAY INDEX NOT DECLARED");
                     add_sem_error(err,str,range1->leaf_token->line_no);
                     flag = 0;
                 }
@@ -805,7 +867,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 if(range2->leaf_token->val.num <= 0) {
                     //printf("Line: %d - Variable used as array index has to be positive: %d\n", range2->leaf_token->line_no, range2->leaf_token->val.num);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE USED AS ARRAY INDEX HAS TO BE POSITIVE");
+                    strcpy(str,"ERROR: NUMBER USED AS ARRAY INDEX HAS TO BE POSITIVE");
                     add_sem_error(err,str,range2->leaf_token->line_no);
                     flag = 0;
                 }
@@ -828,14 +890,18 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                         flag = 0;
                         //printf("Line: %d - Variable used as array index: %s, has to have integer datatype\n", temp->child->child->leaf_token->line_no, temp1->node->leaf_token->lexeme);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: VARIABLE USED AS ARRAY INDEX MUST BE INTEGER");
+                        strcpy(str,"ERROR: VARABLE: ");
+                        strcat(str, range2->leaf_token->lexeme);
+                        strcat(str, " USED AS ARRAY INDEX HAS TO BE INTEGER");
                         add_sem_error(err,str,temp->child->child->leaf_token->line_no);
                     }
                 }
                 else {
                     //printf("Line: %d - Variable used as array index: %s is not declared\n", range2->leaf_token->line_no, range2->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE USED AS ARRAY INDEX NOT DECLARED");
+                    strcpy(str,"ERROR: VARIABLE: ");
+                    strcat(str, range2->leaf_token->lexeme);
+                    strcat(str, " USED AS ARRAY INDEX NOT DECLARED");
                     add_sem_error(err,str,range2->leaf_token->line_no);
                     flag = 0;
                 }
@@ -862,7 +928,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 else {
                     //printf("Line: %d - Variable %s already declared\n", temp->child->child->leaf_token->line_no, temp->child->child->leaf_token->lexeme);
                     char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                    strcpy(str,"ERROR: VARIABLE ALEREADY DECLARED");
+                    strcpy(str,"ERROR: VARIABLE: ");
+                    strcat(str, temp->child->child->leaf_token->lexeme);
+                    strcat(str, " IS RE-DECLARED");
                     add_sem_error(err,str,temp->child->child->leaf_token->line_no);
                 }
 
@@ -877,7 +945,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                     else {
                         //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: VARIABLE ALREADY DECLARED");
+                        strcpy(str,"ERROR: VARIABLE: ");
+                        strcat(str, temp->child->leaf_token->lexeme);
+                        strcat(str, " IS RE-DECLARED");
                         add_sem_error(err,str,temp->child->leaf_token->line_no);
                     }
                     temp = temp->child->next;
@@ -896,7 +966,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         if(!temp) {
             //printf("Line: %d - Variable %s not declared\n", node->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str, "ERROR: VARIABLE NOT DECLARED");
+            strcpy(str,"ERROR: VARIABLE: ");
+            strcat(str, name);
+            strcat(str, " NOT DECLARED");
             add_sem_error(err,str,node->leaf_token->line_no);
         }
 
@@ -913,7 +985,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
         if(!temp) {
             // printf("Line: %d - Variable %s not declared\n", node->leaf_token->line_no, name);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str, "ERROR: VARIABLE NOT DECLARED");
+            strcpy(str,"ERROR: VARIABLE: ");
+            strcat(str, name);
+            strcat(str, " NOT DECLARED");
             add_sem_error(err,str,node->leaf_token->line_no);
         }
 
@@ -935,7 +1009,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                     if(temp2->child->symbol_table_node == NULL) {
                         //printf("Line: %d - Variable %s not declared\n", temp2->child->leaf_token->line_no, name);
                         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                        strcpy(str,"ERROR: VARIABLE NOT DECLARED");
+                        strcpy(str,"ERROR: VARIABLE: ");
+                        strcat(str, name);
+                        strcat(str, " NOT DECLARED");
                         add_sem_error(err,str,temp2->child->leaf_token->line_no);
                     }
 
