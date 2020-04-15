@@ -6,7 +6,7 @@ section .data
 	fmt_string: db '%s', 10, 0
 
 section .bss
-	mem_main resb 6
+	mem_main resb 27
 section .text
 global main
 
@@ -14,22 +14,22 @@ main:
 	mov rbp, mem_main
 	push rbp
 	mov rbp, rsp
-	mov word [rbp + 2], 2
-	mov ax, word [rbp + 2]
-	mov word [rbp + 0], ax
-	xor dx, dx
-	mov ax, word [rbp + 0]
-	mov cx, 2
-	idiv cx
-	mov word [rbp + 4], ax
-	mov ax, word [rbp + 4]
-	mov word [rbp + 0], ax
-	mov rax, 0
-	mov ax, [rbp + 0]
-	movsx rax, ax
-	mov rdi, fmt_integer
-	mov rsi, rax
-	mov rax, 0
+	finit
+	sub rsp, 128
+	mov rax, __float64__(2.3)
+	mov [rsp], rax
+	fld qword [rsp]
+	 add rsp, 64
+	mov rax, __float64__(1.2)
+	mov [rsp], rax
+	fadd qword [rsp]
+	fstp qword [rbp + 19]
+	mov rax, qword [rbp + 19]
+	mov qword [rbp + 3], rax
+	mov rax, qword[rbp + 3]
+	mov rdi, fmt_float
+	movq xmm0, rax
+	mov eax, 1
 	call printf
 
 

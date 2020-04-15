@@ -34,6 +34,7 @@ parsetreeOutFile.txt
 # Executables
 stage1exe
 exe
+program
 *.exe
 *.out
 *.app

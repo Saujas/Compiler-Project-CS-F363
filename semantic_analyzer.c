@@ -226,20 +226,20 @@ int type_check_node(AST node, ErrorList* err) {
     }
 
     // IO READ STATEMENT
-    if(node->rule_num == 40 && node->tag == 0) {
-        if(!search_symbol_table(node->leaf_token->lexeme, node->current_scope))
-            flag = 1;
-        else if((node->symbol_table_node->datatype == 2)) {
-           // printf("Line: %d - Incompatible datatype of variable %s\n", node->leaf_token->line_no, node->leaf_token->lexeme);
-            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: DATA TYPE OF VARIABLE: ");
-            strcat(str, node->leaf_token->lexeme);
-            strcat(str, " BEING READ IS BOOLEAN");
-            add_sem_error(err,str,node->leaf_token->line_no);
-            flag = 1;
-        }
-    }
-
+    // if(node->rule_num == 40 && node->tag == 0) {
+    //     if(!search_symbol_table(node->leaf_token->lexeme, node->current_scope))
+    //         flag = 1;
+    //     else if((node->symbol_table_node->datatype == 2)) {
+    //        // printf("Line: %d - Incompatible datatype of variable %s\n", node->leaf_token->line_no, node->leaf_token->lexeme);
+    //         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+    //         strcpy(str,"ERROR: DATA TYPE OF VARIABLE: ");
+    //         strcat(str, node->leaf_token->lexeme);
+    //         strcat(str, " BEING READ IS BOOLEAN");
+    //         add_sem_error(err,str,node->leaf_token->line_no);
+    //         flag = 1;
+    //     }
+    // }
+    
     // IO WRITE STATEMENT
     if(node->rule_num == 42 && node->label == IO_WRITE && node->tag == 1) {
         if(node->child->symbol_table_node == NULL) {
