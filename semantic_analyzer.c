@@ -580,36 +580,67 @@ int type_check_node(AST node, ErrorList* err) {
         // checking input first
         int ip_succ = 0;
         AST act_ip = fun_id->next;
+        AST *list_input = (AST*)malloc(sizeof(AST)*ip_count);
+        int input_count = 0;
 
-        ip_succ = verify_types(act_ip, ip_head, ip_count, ip_count, 0);
-        if(!ip_succ) {
+        ip_succ = verify_types(act_ip, ip_head, ip_count, ip_count, 0, list_input, &input_count);
+        if(ip_succ == 2) {
             flag = 1;
             //printf("Line: %d - Input parameters do not match\n", fun_id->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: INPUT PARAMETERS DO NOT MATCH");
+            strcpy(str,"ERROR: NUMBER OF INPUT PARAMETERS DOES NOT MATCH WITH THAT OF FORMAL PARAMETERS");
             add_sem_error(err,str,fun_id->leaf_token->line_no);
-            return flag;
+        }
+        else if(input_count != 0) {
+            flag = 1;
+            int i;
+            for(i=0; i<input_count; i++) {
+            //printf("Line: %d - Input parameters do not match\n", fun_id->leaf_token->line_no);
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: TYPE OF INPUT PARAMETER: ");
+                strcat(str, list_input[i]->leaf_token->lexeme);
+                strcat(str, " DOES NOT MATCH WITH THAT OF FORMAL PARAMETER");
+                add_sem_error(err,str,fun_id->leaf_token->line_no);
+            }
         }
         
 
         // checking output now
         int op_succ = 0;
+        AST *list_output;
+        int output_count = 0;
         if(node->child->tag == 0 && op_count == 0) {
             op_succ = 1;
         }
         else if(node->child->tag == 1) {
             AST act_op = node->child;
-            op_succ = verify_types(act_op, op_head, op_count, op_count, 0);
+            list_output = (AST*)malloc(sizeof(AST)*op_count);
+            op_succ = verify_types(act_op, op_head, op_count, op_count, 0, list_output, &output_count);
         }
-
-        if(!op_succ) {
+        if(op_succ == 2) {
             flag = 1;
-            //printf("Line: %d - Output parameters do not match\n", fun_id->leaf_token->line_no);
+            //printf("Line: %d - Input parameters do not match\n", fun_id->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-            strcpy(str,"ERROR: OUTPUT PARAMETERS DO NOT MATCH");
+            strcpy(str,"ERROR: NUMBER OF OUTPUT PARAMETERS DOES NOT MATCH WITH THAT OF FORMAL PARAMETERS");
             add_sem_error(err,str,fun_id->leaf_token->line_no);
             return flag;
         }
+
+        if(output_count != 0) {
+            flag = 1;
+            //printf("Line: %d - Output parameters do not match\n", fun_id->leaf_token->line_no);
+            int i;
+            for(i=0; i<output_count; i++) {
+            //printf("Line: %d - Input parameters do not match\n", fun_id->leaf_token->line_no);
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: TYPE OF OUTPUT PARAMETER: ");
+                strcat(str, list_output[i]->leaf_token->lexeme);
+                strcat(str, " DOES NOT MATCH WITH THAT OF FORMAL PARAMETER");
+                add_sem_error(err,str,fun_id->leaf_token->line_no);
+            }
+            return flag;
+        }
+        return flag;
 
         // AST fun_def;
         // int itr;
@@ -736,7 +767,7 @@ int convert_to_list(Symbol_Table_Tree st, Symbol_Node*** head) {
     return count;
 }
 
-int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
+int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr, AST *list, int *error_count) {
     int error;
     // No inputs
     if(nt == NULL && count == 0) {
@@ -744,11 +775,11 @@ int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
     }
     else if(nt == NULL && count > 0) {
         // Expected input, but got none
-        return 0;
+        return 2;
     }
     else if(nt != NULL && count == 0) {
         // Did not expect input, but got input
-        return 0;
+        return 2;
     }
     else {
         AST ip = nt->child;
@@ -761,23 +792,31 @@ int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr) {
             if(temp->param_order == curr) {
                 // match type
                 if(ip->symbol_table_node->datatype != temp->datatype) {
-                    return 0;
+                    list[*error_count] = ip;
+                    *error_count += 1;
                 }
                 else if(ip->symbol_table_node->datatype == 3) {
                     if(ip->symbol_table_node->array_datatype != temp->array_datatype) {
-                        return 0;
+                        list[*error_count] = ip;
+                        *error_count += 1;
                     }
                     else {
+                        int c = 0;
                         if(ip->symbol_table_node->range[0].tag == 0 && ip->symbol_table_node->range[0].range_pointer.value != temp->range[0].range_pointer.value) {
-                            return 0;
+                            list[*error_count] = ip;
+                            *error_count += 1;
+                            c += 1;
                         }
                         if(ip->symbol_table_node->range[1].tag == 0 && ip->symbol_table_node->range[1].range_pointer.value != temp->range[1].range_pointer.value) {
-                            return 0;
+                            if(!c) {
+                                list[*error_count] = ip;
+                                *error_count += 1;
+                            }
                         }
                     }
                 }
 
-                return verify_types(ip->next, head, total, count - 1, curr + 1);
+                return verify_types(ip->next, head, total, count - 1, curr + 1, list, error_count);
             }
             continue;
         }
