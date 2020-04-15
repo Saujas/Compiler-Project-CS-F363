@@ -15,7 +15,7 @@ char * tc_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDecla
     "Index", "moduleReuseStmt", "optional", "idList", "newX", "expression", "new4", "AorBExpr", "arithmeticExpr", "new6",
     "term", "new7", "factor", "PlusMinus", "MulDiv", "relationalOP", "logicalOP", "boolKey", "boolExpr", "new8", "relationalExpr",
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
-    "numericCase", "new11", "Default"};
+    "numericCase", "new11", "Default", "NT_value"};
 
 
 int get_id_type(AST node) {

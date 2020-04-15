@@ -101,11 +101,11 @@ declareStmt DECLARE idList COLON dataType2 SEMICOL
 iterativeStmt FOR BO ID IN range BC START statements END
 iterativeStmt WHILE BO AorBExpr BC START statements END
 conditionalStatement SWITCH BO ID BC START CASE caseStmt
-caseStmt TRUE COLON statements BREAK SEMICOL CASE FALSE COLON statements BREAK SEMICOL END
-caseStmt FALSE COLON statements BREAK SEMICOL CASE TRUE COLON statements BREAK SEMICOL END
+NT_value boolKey
+NT_value NUM
 caseStmt numericCases
 numericCases numericCase new11
-numericCase NUM COLON statements BREAK SEMICOL
+numericCase NT_value COLON statements BREAK SEMICOL
 new11 CASE numericCases
 new11 Default END
 Default DEFAULT COLON statements BREAK SEMICOL

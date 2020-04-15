@@ -13,7 +13,7 @@ char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDecl
     "Index", "moduleReuseStmt", "optional", "idList", "newX", "expression", "new4", "AorBExpr", "arithmeticExpr", "new6",
     "term", "new7", "factor", "PlusMinus", "MulDiv", "relationalOP", "logicalOP", "boolKey", "boolExpr", "new8", "relationalExpr",
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
-    "numericCase", "new11", "Default"};
+    "numericCase", "new11", "Default", "NT_value"};
 
 AST generate_AST(t_node* root) {
     if(root == NULL) {
@@ -191,6 +191,7 @@ void convert_to_AST_node(t_node* node) {
         case 66:
         case 79:
         case 97:
+        case 104: //new change
         case 106:
         case 110:
             node->tree_node = node->child->tree_node;
@@ -247,6 +248,7 @@ void convert_to_AST_node(t_node* node) {
         case 91:
         case 92:
         case 93:
+        case 105: //new change
             node->tree_node = create_leaf_node(node->child, -1, rule_num);
             // node->child->tree_node = node->tree_node;
             // node->child->tree_node->parent = node->tree_node->parent;
@@ -654,34 +656,33 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 104:
-        case 105:
-            if(rule_num==104)
-                label = CASE_STMT_T;
-            else if(rule_num==105)
-                label = CASE_STMT_F;
+        // case 104:
+        // case 105:
+        //     if(rule_num==104)
+        //         label = CASE_STMT_T;
+        //     else if(rule_num==105)
+        //         label = CASE_STMT_F;
 
-            tag = 1;
-            temp = node->child->sibling->sibling;
+        //     tag = 1;
+        //     temp = node->child->sibling->sibling;
 
-            if(temp->tree_node == NULL) {
-                child = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
-            }
-            else {
-                child = temp->tree_node;
-                child->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
-            }
+        //     if(temp->tree_node == NULL) {
+        //         child = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
+        //     }
+        //     else {
+        //         child = temp->tree_node;
+        //         child->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
+        //     }
 
-            node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
-            link_parent(node->child);
-            break;
+        //     node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
+        //     link_parent(node->child);
+        //     break;
 
-        case 108:
+        case 108: //Modified
             label = NUMERIC_CASE;
             tag = 1;
 
-            child = create_leaf_node(node->child, -1, rule_num);
-            node->child->tree_node = child;
+            child = node->child->tree_node;
             child->next = node->child->sibling->sibling->tree_node;
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
@@ -735,7 +736,12 @@ void convert_to_AST_node(t_node* node) {
             break;
 
         case 111:
-            node->tree_node = create_NT_node(AST_DEFAULT, 1, rule_num, parent, node->child->sibling->sibling->tree_node, sibling, NULL);
+            child = create_leaf_node(node->child, -1, rule_num);
+            node->child->tree_node = child;
+
+            child->next = node->child->sibling->sibling->tree_node;
+            
+            node->tree_node = create_NT_node(AST_DEFAULT, 1, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
             break;
 

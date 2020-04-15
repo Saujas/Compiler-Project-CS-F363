@@ -5,7 +5,7 @@
 
 #ifndef PARSER_DEF
 #define PARSER_DEF
-#define NON_TERMINAL_SIZE 58
+#define NON_TERMINAL_SIZE 59
 
 #include "lexer_def.h"
 
@@ -17,7 +17,7 @@ typedef enum{
     Index, moduleReuseStmt, optional, idList, newX, expression, new4, AorBExpr, arithmeticExpr, new6,
     term, new7, factor, PlusMinus, MulDiv, relationalOP, logicalOP, boolKey, boolExpr, new8, relationalExpr,
     declareStmt, iterativeStmt, conditionalStatement, caseStmt, numericCases, 
-    numericCase, new11, Default
+    numericCase, new11, Default, NT_value
 } non_terminals;
 
 // A unit is a union of a non-teminal enum or a token enum

@@ -423,85 +423,47 @@ int process_node(AST node, tuple_list* list) {
         AST id = node->child;
         Symbol_Table_Tree parent_scope = get_parent_scope(id->current_scope);
         char* label_end = create_label();
+        int count = 0;
+        
 
-        if(node->child->next->label == CASE_STMT_T || node->child->next->label == CASE_STMT_F) {
-            char* str[2] = {"true", "false"};
-            int key;
-            if(node->child->next->label == CASE_STMT_T) {
-                key = 0;
-            }
-            else {
-                key = 1;
-            }
+        AST temp = node->child->next;
 
+        while(temp->label != AST_DEFAULT) {
+            if(id->symbol_table_node->datatype == 2 && count==2) {
+                break;
+            }
+            count++;
             char* label1 = create_label();
             char* label2 = create_label();
+            AST curr = temp->child->child;
 
-            Temporary t0 = create_temporary();
-            add_temp_symboltable(t0->symbol, parent_scope, 1);
-            Tuple new_tup0 = make_tuple(EQUAL, id->leaf_token->lexeme, str[key], t0->name, id->symbol_table_node, NULL, t0->symbol);
+            Temporary t = create_temporary();
+            add_temp_symboltable(t->symbol, parent_scope, 1);
+            Tuple new_tup0 = make_tuple(EQUAL, id->leaf_token->lexeme, curr->leaf_token->lexeme, t->name, id->symbol_table_node, curr->symbol_table_node, t->symbol);
             add_tuple(list, new_tup0);
 
-            Tuple new_tup1 = make_tuple(IF_TRUE, t0->name, "", label1, t0->symbol, NULL, NULL);
+            Tuple new_tup1 = make_tuple(IF_TRUE, t->name, "", label1, t->symbol, NULL, NULL);
             add_tuple(list, new_tup1);
-            Tuple new_tup2 = make_tuple(IF_FALSE, t0->name, "", label2, t0->symbol, NULL, NULL);
+            Tuple new_tup2 = make_tuple(IF_FALSE, t->name, "", label2, t->symbol, NULL, NULL);
             add_tuple(list, new_tup2);
 
             Tuple new_tup3 = make_tuple(LABEL, "", "", label1, NULL, NULL, NULL);
             add_tuple(list, new_tup3);
-
-            generate_ir_util(node->child->next->child, list);
-
+            generate_ir_util(curr->next, list);
             Tuple new_tup4 = make_tuple(GOTO, "", "", label_end, NULL, NULL, NULL);
             add_tuple(list, new_tup4);
-            
+
             Tuple new_tup5 = make_tuple(LABEL, "", "", label2, NULL, NULL, NULL);
             add_tuple(list, new_tup5);
 
-            generate_ir_util(node->child->next->child->next, list);
-
-            Tuple new_tup9 = make_tuple(LABEL, "", "", label_end, NULL, NULL, NULL);
-            add_tuple(list, new_tup9);
-
-            return 1;
+            temp = temp->child->next;
         }
-        else {
 
-            AST temp = node->child->next;
+        generate_ir_util(temp->child, list);
+        Tuple new_tup = make_tuple(LABEL, "", "", label_end, NULL, NULL, NULL);
+        add_tuple(list, new_tup);
 
-            while(temp->label != AST_DEFAULT) {
-                char* label1 = create_label();
-                char* label2 = create_label();
-                AST curr = temp->child->child;
-
-                Temporary t = create_temporary();
-                add_temp_symboltable(t->symbol, parent_scope, 1);
-                Tuple new_tup0 = make_tuple(EQUAL, id->leaf_token->lexeme, curr->leaf_token->lexeme, t->name, id->symbol_table_node, curr->symbol_table_node, t->symbol);
-                add_tuple(list, new_tup0);
-
-                Tuple new_tup1 = make_tuple(IF_TRUE, t->name, "", label1, t->symbol, NULL, NULL);
-                add_tuple(list, new_tup1);
-                Tuple new_tup2 = make_tuple(IF_FALSE, t->name, "", label2, t->symbol, NULL, NULL);
-                add_tuple(list, new_tup2);
-
-                Tuple new_tup3 = make_tuple(LABEL, "", "", label1, NULL, NULL, NULL);
-                add_tuple(list, new_tup3);
-                generate_ir_util(curr->next, list);
-                Tuple new_tup4 = make_tuple(GOTO, "", "", label_end, NULL, NULL, NULL);
-                add_tuple(list, new_tup4);
-
-                Tuple new_tup5 = make_tuple(LABEL, "", "", label2, NULL, NULL, NULL);
-                add_tuple(list, new_tup5);
-
-                temp = temp->child->next;
-            }
-
-            generate_ir_util(temp->child, list);
-            Tuple new_tup = make_tuple(LABEL, "", "", label_end, NULL, NULL, NULL);
-            add_tuple(list, new_tup);
-
-            return 1;
-        }
+        return 1;
     }
 
     if(node->rule_num == 40 && node->tag == 0) {

@@ -15,7 +15,7 @@ char * tc_non_terminals_string_map_copy[NON_TERMINAL_SIZE] = {"program", "module
     "Index", "moduleReuseStmt", "optional", "idList", "newX", "expression", "new4", "AorBExpr", "arithmeticExpr", "new6",
     "term", "new7", "factor", "PlusMinus", "MulDiv", "relationalOP", "logicalOP", "boolKey", "boolExpr", "new8", "relationalExpr",
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
-    "numericCase", "new11", "Default"};
+    "numericCase", "new11", "Default", "NT_value"};
 
 int check_bound(AST index, AST var) {
     if(var->symbol_table_node->range[0].tag == 0 && var->symbol_table_node->range[1].tag == 0) {
@@ -61,6 +61,8 @@ void type_checker(AST root, ErrorList* err, Symbol_Table_Tree tree) {
         return;
     }
     error = type_check_node(root, err);
+    if(error == 2)
+        return;
 
     if(root->child==NULL) {
         return;
@@ -322,49 +324,130 @@ int type_check_node(AST node, ErrorList* err) {
     
     // SWITCH statement
     if(node->rule_num == 103 && node->tag == 1) {
-        if(!search_symbol_table(node->child->leaf_token->lexeme, node->current_scope))
+        if(!search_symbol_table(node->child->leaf_token->lexeme, node->current_scope)) {
             flag = 1;
-        else if(node->child->symbol_table_node->datatype == 2) {
-            AST temp1 = node->child->next;
-            if(temp1->label == NUMERIC_CASES) {
-                //printf("Line: %d - Switch with boolean variable can have only true and false cases\n", node->child->leaf_token->line_no);
-                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE: ");
-                strcat(str, node->child->leaf_token->lexeme);
-                strcat(str, " CAN HAVE ONLY TRUE AND FALSE CASES");
-                add_sem_error(err,str,temp1->child->leaf_token->line_no);
-                flag = 1;
-            }
+            return flag;
         }
-        else if(node->child->symbol_table_node && node->child->symbol_table_node->datatype == 0) {
-            int check = 0;
-            AST temp1 = node->child->next->child->next;
-            while(temp1) {
-                if(temp1->label == AST_DEFAULT) {
-                    check = 1;
-                    break;
-                }
-                temp1 = temp1->child->next;
-            }
-            if(!check) {
-                //printf("Line: %d - Switch with integer variable must have default\n", node->child->leaf_token->line_no);
-                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE:  ");
-                strcat(str, node->child->leaf_token->lexeme);
-                strcat(str, " MUST HAVE DEFAULT");
-                add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
-                flag = 1;
-            }
-        }
-        else {
+
+        else if(node->child->symbol_table_node && node->child->symbol_table_node->datatype !=2 && node->child->symbol_table_node->datatype !=0){
            // printf("Line: %d - Switch must have integer or boolean variable only\n", node->child->leaf_token->line_no);
             char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
             strcpy(str,"ERROR: VARIABLE: ");
             strcat(str, node->child->leaf_token->lexeme);
             strcat(str, " USED IN SWITCH MUST HAVE INTEGER OR BOOLEAN DATATYPE");
             add_sem_error(err,str,node->child->leaf_token->line_no);
-            flag = 1;
+            flag = 2;
+            return flag;
         }
+        int datatype = node->child->symbol_table_node->datatype;
+        AST temp = node->child->next;
+        int c = 0;
+        while(temp && temp->label == NUMERIC_CASES) {            
+            if(datatype == 0 && temp->child->child->leaf_token && temp->child->child->leaf_token->token != NUM) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: CASE VALUE IS INCORRECT AS CONDITION TYPE IS INTEGER");
+                add_sem_error(err,str,temp->child->child->leaf_token->line_no);
+                flag = 1;
+            }
+            else if(datatype==2 && temp->child->child->leaf_token && temp->child->child->leaf_token->token == NUM) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: CASE VALUE IS INCORRECT AS CONDITION TYPE IS BOOLEAN");
+                add_sem_error(err,str,temp->child->child->leaf_token->line_no);
+                flag = 1;
+            }
+            else if(datatype==2 && temp->child->child->leaf_token && temp->child->child->leaf_token->token == TRUE) {
+                if(c==0)
+                    c = 1;
+                else if(c==2)
+                    c = 3;
+                else {
+                    char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                    strcpy(str,"ERROR: CASE TRUE ALREADY PRESENT");
+                    add_sem_error(err,str,temp->child->child->leaf_token->line_no);
+                    flag = 1;
+                }
+            }
+            else if(datatype==2 && temp->child->child->leaf_token && temp->child->child->leaf_token->token == FALSE) {
+                if(c==0)
+                    c = 2;
+                else if(c==1)
+                    c = 3;
+                else {
+                    char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                    strcpy(str,"ERROR: CASE FALSE ALREADY PRESENT");
+                    add_sem_error(err,str,temp->child->child->leaf_token->line_no);
+                    flag = 1;
+                }
+            }
+
+            temp = temp->child->next;
+        }
+        if(datatype == 2) {
+            if(c == 1) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: SWITCH WITH BOOLEAN TYPE DOES NOT HAVE CASE FALSE");
+                add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
+                flag = 1;
+            }
+            else if(c == 2) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: SWITCH WITH BOOLEAN TYPE DOES NOT HAVE CASE TRUE");
+                add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
+                flag = 1;
+            }
+            else if(c == 0) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: SWITCH WITH BOOLEAN TYPE DOES NOT HAVE CASE TRUE OR CASE FALSE");
+                add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
+                flag = 1;
+            }
+            if(temp) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: SWITCH WITH BOOLEAN TYPE CANNOT HAVE DEFAULT");
+                add_sem_error(err,str,temp->child->leaf_token->line_no);
+                flag = 1;
+            }
+        }
+        else if(datatype == 0) {
+            if(!temp) {
+                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                strcpy(str,"ERROR: SWITCH WITH INTEGER CONDITION TYPE MUST HAVE DEFAULT");
+                add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
+                flag = 1;
+            }
+        }
+        // if(node->child->symbol_table_node->datatype == 2) {
+        //     AST temp1 = node->child->next;
+        //     if(temp1->label == NUMERIC_CASES) {
+        //         //printf("Line: %d - Switch with boolean variable can have only true and false cases\n", node->child->leaf_token->line_no);
+        //         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+        //         strcpy(str,"ERROR: SWITCH WITH BOOLEAN VARIABLE: ");
+        //         strcat(str, node->child->leaf_token->lexeme);
+        //         strcat(str, " CAN HAVE ONLY TRUE AND FALSE CASES");
+        //         add_sem_error(err,str,temp1->child->leaf_token->line_no);
+        //         flag = 1;
+        //     }
+        // }
+        // else if(node->child->symbol_table_node && node->child->symbol_table_node->datatype == 0) {
+        //     int check = 0;
+        //     AST temp1 = node->child->next->child->next;
+        //     while(temp1) {
+        //         if(temp1->label == AST_DEFAULT) {
+        //             check = 1;
+        //             break;
+        //         }
+        //         temp1 = temp1->child->next;
+        //     }
+        //     if(!check) {
+        //         //printf("Line: %d - Switch with integer variable must have default\n", node->child->leaf_token->line_no);
+        //         char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+        //         strcpy(str,"ERROR: SWITCH WITH INTEGER VARIABLE:  ");
+        //         strcat(str, node->child->leaf_token->lexeme);
+        //         strcat(str, " MUST HAVE DEFAULT");
+        //         add_sem_error(err,str,node->child->next->next->next->leaf_token->line_no);
+        //         flag = 1;
+        //     }
+        // }
     }
 
     // WHILE LOOP SEMANTICS

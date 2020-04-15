@@ -14,7 +14,7 @@ char * ast_non_terminals_string_map_copy[NON_TERMINAL_SIZE] = {"program", "modul
     "Index", "moduleReuseStmt", "optional", "idList", "newX", "expression", "new4", "AorBExpr", "arithmeticExpr", "new6",
     "term", "new7", "factor", "PlusMinus", "MulDiv", "relationalOP", "logicalOP", "boolKey", "boolExpr", "new8", "relationalExpr",
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
-    "numericCase", "new11", "Default"};
+    "numericCase", "new11", "Default", "NT_value"};
 
 int hash_symbol_table(char* key, int slots) {
     int result = 0;
@@ -324,12 +324,12 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     if(!node)
         return;
 
-    if(node->tag == 1) {
-        printf("%s\n", ast_string_map_copy[node->label]);
-    }
-    else {
-        printf("%s\n", node->leaf_token->lexeme);
-    }
+    // if(node->tag == 1) {
+    //     printf("%s\n", ast_string_map_copy[node->label]);
+    // }
+    // else {
+    //     printf("%s\n", node->leaf_token->lexeme);
+    // }
 
     // Width: 2 for INT, 8: REAL, 1: BOOLEAN, 8: ARRAY OFFSET
     int data_width[4] = {2, 8, 1, 8};
