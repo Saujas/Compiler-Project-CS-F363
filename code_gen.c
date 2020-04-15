@@ -1,5 +1,7 @@
 #include "code_gen.h"
 
+int label = 0;
+
 int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     
     FILE* fp = fopen(filename, "w");
@@ -19,11 +21,13 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
     fprintf(fp, "\tfmt_string: db '%s', 10, 0\n", "%s");
+    fprintf(fp, "\tmessage_true: db 'true', 0\n");
+    fprintf(fp, "\tmessage_false: db 'false', 0\n");
     fprintf(fp, "\n");
     
     fprintf(fp, "section .bss\n");
-
     initialize_bss(list, tree, fp);
+    fprintf(fp, "\n");
 
     if(list != NULL) {
         fprintf(fp, "section .text\nglobal main\n\n");
@@ -69,6 +73,15 @@ int initialize_bss(tuple_list* list, Symbol_Table_Tree tree, FILE* fp) {
     }
 
     return 1;
+}
+
+char* generate_dynamic_label() {
+    char* str = (char *) malloc(sizeof(char) * 10);
+
+    sprintf(str, "__L%d__", label);
+    label += 1;
+
+    return str;
 }
 
 void print_args(struct tup* tup) {
@@ -158,6 +171,9 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             if(tup->op == DIVIDE)
                 strcpy(operation, "fdiv");
 
+            if(strcmp(arg2, "-1") == 0)
+                strcpy(arg2, "__float64__(-1.0)");
+                
             fprintf(fp, "\tfinit\n");
             if(tup->node1 && tup->node2) {
                 fprintf(fp, "\tfld %s\n\tfld %s\n\t%s\n", arg1, arg2, operation);
@@ -169,11 +185,76 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
                 fprintf(fp, "\tsub rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tadd rsp, 64\n\t%s %s\n", arg1, operation, arg2);
             }
             else {
-                fprintf(fp, "\tsub rsp, 128\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\t add rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\t%s qword [rsp]\n", arg1, arg2, operation);
+                fprintf(fp, "\tsub rsp, 128\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tadd rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\t%s qword [rsp]\n", arg1, arg2, operation);
             }
 
             fprintf(fp, "\tfstp qword [rbp + %d]\n", tup->node3->offset);
         }
+    }
+
+    if(tup->op == BOOLEAN_AND || tup->op == BOOLEAN_OR) {
+        char operation[4];
+        if(tup->op == BOOLEAN_AND)
+            strcpy(operation, "and");
+        if(tup->op == BOOLEAN_OR)
+            strcpy(operation, "or");
+        char* arg1 = read_operand(tup->node1, tup->arg1);
+        char* arg2 = read_operand(tup->node2, tup->arg2);
+
+        fprintf(fp, "\tmov al, %s\n\t%s al, %s\n\tmov byte [rbp + %d], al\n", arg1, operation, arg2, tup->node3->offset);
+    }
+
+    if(tup->op == GREATER || tup->op == GREATER_EQUAL || tup->op == LESS ||
+    tup->op == LESS_EQUAL || tup->op == EQUAL || tup->op == NOT_EQUAL) {
+        char* arg1 = read_operand(tup->node1, tup->arg1);
+        char* arg2 = read_operand(tup->node2, tup->arg2);
+        int is_float = 0;
+
+        if((tup->node1 && tup->node1->datatype==1) || (tup->node2 && tup->node2->datatype==1))
+            is_float = 1;
+        else if(!tup->node1 && !tup->node2)
+            is_float = check_if_float(arg1) || check_if_float(arg2);
+
+        if(!tup->node1 && !is_float) {
+            fprintf(fp, "\tmov ax, %s\n\tcmp ax, %s\n", arg1, arg2);
+
+        }
+        else if(tup->node1 && !is_float) {
+            fprintf(fp, "\tcmp %s, %s\n", arg1, arg2);
+        }
+        else {
+            fprintf(fp, "\tfinit\n");
+            if(tup->node1 && tup->node2) {
+                fprintf(fp, "\tfld %s\n\tfld %s\n\tfcomi\n", arg1, arg2);
+            }
+            else if(tup->node1 && !tup->node2) {
+                fprintf(fp, "\tfld %s\n\tsub rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tfcomi\n", arg1, arg2);
+            }
+            else if(!tup->node1 && tup->node2) {
+                fprintf(fp, "\tsub rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tadd rsp, 64\n\tfld %s\n\tfcomi\n", arg1, arg2);
+            }
+            else {
+                fprintf(fp, "\tsub rsp, 128\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tadd rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tfcomi\n", arg1, arg2);
+            }
+        }
+
+        char operation[5];
+        if(tup->op == GREATER)
+            strcpy(operation, "jle");
+        else if(tup->op == GREATER_EQUAL)
+            strcpy(operation, "jl");
+        else if(tup->op == LESS)
+            strcpy(operation, "jge");
+        else if(tup->op == LESS_EQUAL)
+            strcpy(operation, "jg");
+        else if(tup->op == EQUAL)
+            strcpy(operation, "jnz");
+        else if(tup->op == NOT_EQUAL)
+            strcpy(operation, "jz");
+
+        char* label1 = generate_dynamic_label();
+        char* label2 = generate_dynamic_label();
+        fprintf(fp, "\t%s %s\n\tMOV byte [rbp + %d], 1\n\tJMP %s\n%s:\n\tMOV byte [rbp + %d], 0\n%s:\t", operation, label1, tup->node3->offset, label2, label1, tup->node3->offset, label2);
     }
 
     if(tup->op == WRITE) {
@@ -183,7 +264,10 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             else if(tup->node3->datatype == 1)
                 fprintf(fp, "\tmov rax, qword[rbp + %d]\n\tmov rdi, fmt_float\n\tmovq xmm0, rax\n\tmov eax, 1\n\tcall printf\n", tup->node3->offset);
             else if(tup->node3->datatype == 2) {
-                fprintf(fp, "\tmov rax, 0\n\tmov al, byte [rbp + %d]\n\tmov rdi, fmt_integer\n\tmov rsi, rax\n\tmov rax, 0\n\tcall printf\n", tup->node3->offset); 
+                char* label1 = generate_dynamic_label();
+                char* label2 = generate_dynamic_label();
+                fprintf(fp, "\tcmp byte [rbp + %d], 1\n\tjz %s\n\tmov rax, message_false\n\tjmp %s\n%s:\n\tmov rax, message_true\n%s:\n", tup->node3->offset, label1, label2, label1, label2); 
+                fprintf(fp, "\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n");
             }
         }
         else {
@@ -207,7 +291,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             
             fprintf(fp, "\tmov rax, '%s'\n\tmov qword [rsp], rax\n", str);
             fprintf(fp, "\tadd rsp, %d\n\tmov byte [rsp], 0\n\tsub rsp, %d\n", j, (length-1));
-            fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string\n\tmov rsi, rax\n\tmov rax, 0\n\tcall printf\n\tadd rsp, %d\n", length);
+            fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n\tadd rsp, %d\n", length);
         }
     }
 
@@ -231,6 +315,10 @@ char* read_operand(Symbol_Node* node, char* arg) {
         if(check_if_float(arg)) {
             sprintf(arg1, "__float64__(%s)", arg);
         }
+        else if(strcmp(arg, "true") == 0)
+            strcpy(arg1, "1");
+        else if(strcmp(arg, "false") == 0)
+            strcpy(arg1, "0");
         else
             strcpy(arg1, arg);
     }

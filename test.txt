@@ -3,7 +3,18 @@ start
 	declare a: integer;
 	declare b: boolean;
 	declare f1, f2: real;
-
-	f1 := 2.3 + 1.2;
+	f1 := -(2.3 + 1.2);
 	print(f1);
+	
+	a := -2;
+	print(a);
+	f1 := -5.2;
+	print(f1);
+	b := 2.2 < f1;
+	f2 := f1 + 5.1;
+	print(f2);
+	b := 2.2 > f1 + 5.1;
+
+	print(b);
+	
 end
