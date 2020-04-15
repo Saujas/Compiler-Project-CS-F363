@@ -8,7 +8,7 @@ section .data
 	message_false: db 'false', 0
 
 section .bss
-	mem_main resb 63
+	mem_main resb 140
 
 section .text
 global main
@@ -17,124 +17,160 @@ main:
 	mov rbp, mem_main
 	push rbp
 	mov rbp, rsp
-	finit
-	sub rsp, 128
-	mov rax, __float64__(2.3)
-	mov [rsp], rax
-	fld qword [rsp]
-	add rsp, 64
-	mov rax, __float64__(1.2)
-	mov [rsp], rax
-	fadd qword [rsp]
-	fstp qword [rbp + 19]
-	finit
-	fld qword [rbp + 19]
-	sub rsp, 64
-	mov rax, __float64__(-1.0)
-	mov [rsp], rax
-	fmul qword [rsp]
-	add rsp, 64
-	fstp qword [rbp + 27]
-	mov rax, qword [rbp + 27]
-	mov qword [rbp + 3], rax
-	mov rax, qword[rbp + 3]
-	mov rdi, fmt_float
-	movq xmm0, rax
-	mov eax, 1
-	call printf
+	mov ax, 1
+	sub ax, 1
+	mov word [rbp + 46], ax
+	mov ax, word [rbp + 46]
+	imul ax, 2
+	mov word [rbp + 48], ax
+	mov rax, rbp
+	add rax, 2
+	xor rbx, rbx
+	mov bx, word [rbp + 48]
+	add rax, rbx
+	mov qword [rbp + 50], rax
+	mov word [rbp + 58], 1
+	mov rbx,  [rbp + 50]
+	mov ax, word [rbp + 58]
+	mov word [rbx], ax
 	mov ax, 2
-	imul ax, -1
-	mov word [rbp + 35], ax
-	mov ax, word [rbp + 35]
+	sub ax, 1
+	mov word [rbp + 60], ax
+	mov ax, word [rbp + 60]
+	imul ax, 2
+	mov word [rbp + 62], ax
+	mov rax, rbp
+	add rax, 2
+	xor rbx, rbx
+	mov bx, word [rbp + 62]
+	add rax, rbx
+	mov qword [rbp + 64], rax
+	mov word [rbp + 72], 1
+	mov rbx,  [rbp + 64]
+	mov ax, word [rbp + 72]
+	mov word [rbx], ax
+	mov word [rbp + 0], 3
+L0:
+	cmp word [rbp + 0], 25
+	jg __L6__
+	MOV byte [rbp + 74], 1
+	JMP __L7__
+__L6__:
+	MOV byte [rbp + 74], 0
+__L7__:		mov al, byte [rbp + 74]
+	cmp al, 1
+	jz L1
+	mov al, byte [rbp + 74]
+	cmp al, 0
+	jz L2
+L1:
+	mov ax, word [rbp + 0]
+	sub ax, 1
+	mov word [rbp + 75], ax
+	mov ax, word [rbp + 75]
+	mov word [rbp + 42], ax
+	mov ax, word [rbp + 0]
+	sub ax, 2
+	mov word [rbp + 77], ax
+	mov ax, word [rbp + 77]
+	mov word [rbp + 44], ax
+	mov ax, word [rbp + 0]
+	sub ax, 1
+	mov word [rbp + 79], ax
+	mov ax, word [rbp + 79]
+	imul ax, 2
+	mov word [rbp + 81], ax
+	mov rax, rbp
+	add rax, 2
+	xor rbx, rbx
+	mov bx, word [rbp + 81]
+	add rax, rbx
+	mov qword [rbp + 83], rax
+	mov ax, word [rbp + 42]
+	sub ax, 1
+	mov word [rbp + 91], ax
+	mov ax, word [rbp + 91]
+	imul ax, 2
+	mov word [rbp + 93], ax
+	mov rax, rbp
+	add rax, 2
+	xor rbx, rbx
+	mov bx, word [rbp + 93]
+	add rax, rbx
+	mov qword [rbp + 95], rax
+	mov rbx,  [rbp + 95]
+	mov ax, word [rbx]
+	mov word [rbp + 103], ax
+	mov ax, word [rbp + 44]
+	sub ax, 1
+	mov word [rbp + 105], ax
+	mov ax, word [rbp + 105]
+	imul ax, 2
+	mov word [rbp + 107], ax
+	mov rax, rbp
+	add rax, 2
+	xor rbx, rbx
+	mov bx, word [rbp + 107]
+	add rax, rbx
+	mov qword [rbp + 109], rax
+	mov rbx,  [rbp + 109]
+	mov ax, word [rbx]
+	mov word [rbp + 117], ax
+	mov ax, word [rbp + 103]
+	add ax, word [rbp + 117]
+	mov word [rbp + 119], ax
+	mov rbx,  [rbp + 83]
+	mov ax, word [rbp + 119]
+	mov word [rbx], ax
+	mov ax, word [rbp + 0]
+	add ax, 1
+	mov word [rbp + 121], ax
+	mov ax, word [rbp + 121]
 	mov word [rbp + 0], ax
+	jmp L0
+L2:
+	mov word [rbp + 123], 1
+L3:
+	cmp word [rbp + 123], 20
+	jg __L8__
+	MOV byte [rbp + 125], 1
+	JMP __L9__
+__L8__:
+	MOV byte [rbp + 125], 0
+__L9__:		mov al, byte [rbp + 125]
+	cmp al, 1
+	jz L4
+	mov al, byte [rbp + 125]
+	cmp al, 0
+	jz L5
+L4:
+	mov ax, word [rbp + 123]
+	sub ax, 1
+	mov word [rbp + 126], ax
+	mov ax, word [rbp + 126]
+	imul ax, 2
+	mov word [rbp + 128], ax
+	mov rax, rbp
+	add rax, 2
+	xor rbx, rbx
+	mov bx, word [rbp + 128]
+	add rax, rbx
+	mov qword [rbp + 130], rax
+	mov rbx, qword [rbp + 130]
 	mov rax, 0
-	mov ax, [rbp + 0]
+	mov ax, word [rbx]
 	movsx rax, ax
 	mov rdi, fmt_integer
 	mov rsi, rax
 	mov rax, 0
 	call printf
-	finit
-	sub rsp, 128
-	mov rax, __float64__(5.2)
-	mov [rsp], rax
-	fld qword [rsp]
-	add rsp, 64
-	mov rax, __float64__(-1.0)
-	mov [rsp], rax
-	fmul qword [rsp]
-	fstp qword [rbp + 37]
-	mov rax, qword [rbp + 37]
-	mov qword [rbp + 3], rax
-	mov rax, qword[rbp + 3]
-	mov rdi, fmt_float
-	movq xmm0, rax
-	mov eax, 1
-	call printf
-	finit
-	sub rsp, 64
-	mov rax, __float64__(2.2)
-	mov [rsp], rax
-	fld qword [rsp]
-	add rsp, 64
-	fld qword [rbp + 3]
-	fcomi
-	jge __L0__
-	MOV byte [rbp + 45], 1
-	JMP __L1__
-__L0__:
-	MOV byte [rbp + 45], 0
-__L1__:		mov al, byte [rbp + 45]
-	mov byte [rbp + 2], al
-	finit
-	fld qword [rbp + 3]
-	sub rsp, 64
-	mov rax, __float64__(5.1)
-	mov [rsp], rax
-	fadd qword [rsp]
-	add rsp, 64
-	fstp qword [rbp + 46]
-	mov rax, qword [rbp + 46]
-	mov qword [rbp + 11], rax
-	mov rax, qword[rbp + 11]
-	mov rdi, fmt_float
-	movq xmm0, rax
-	mov eax, 1
-	call printf
-	finit
-	fld qword [rbp + 3]
-	sub rsp, 64
-	mov rax, __float64__(5.1)
-	mov [rsp], rax
-	fadd qword [rsp]
-	add rsp, 64
-	fstp qword [rbp + 54]
-	finit
-	sub rsp, 64
-	mov rax, __float64__(2.2)
-	mov [rsp], rax
-	fld qword [rsp]
-	add rsp, 64
-	fld qword [rbp + 54]
-	fcomi
-	jle __L2__
-	MOV byte [rbp + 62], 1
-	JMP __L3__
-__L2__:
-	MOV byte [rbp + 62], 0
-__L3__:		mov al, byte [rbp + 62]
-	mov byte [rbp + 2], al
-	cmp byte [rbp + 2], 1
-	jz __L4__
-	mov rax, message_false
-	jmp __L5__
-__L4__:
-	mov rax, message_true
-__L5__:
-	mov rdi, fmt_string
-	mov rsi, rax
-	xor rax, rax
-	call printf
+	mov ax, word [rbp + 123]
+	add ax, 1
+	mov word [rbp + 138], ax
+	mov ax, word [rbp + 138]
+	mov word [rbp + 123], ax
+	jmp L3
+L5:
 
 
 ; exiting program

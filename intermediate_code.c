@@ -1078,21 +1078,37 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
         char* li = (char*) malloc(sizeof(char)*4);
         sprintf(li, "%d", node->symbol_table_node->range[0].range_pointer.value);
         new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, li, temp0->name, arg1, NULL, temp0->symbol);
+        add_tuple(list, new_tup0);
     }
     else if(node->symbol_table_node->range[0].tag == 1) {
         new_tup0 = make_tuple(SUBTRACTION, index->leaf_token->lexeme, node->symbol_table_node->range[0].range_pointer.id->node->leaf_token->lexeme, temp0->name, arg1, 
         node->symbol_table_node->range[0].range_pointer.id, temp0->symbol);
+        add_tuple(list, new_tup0);
     }
     
-
     Tuple new_tup1 = make_tuple(MULTIPLY, temp0->name, str_width, temp1->name, temp0->symbol, NULL, temp1->symbol);
-
-    Temporary temp2 = create_temporary();
-    add_temp_symboltable(temp2->symbol, parent_scope, 2);
-    Tuple new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
-    // printf("HI\n");
-    add_tuple(list, new_tup0);
     add_tuple(list, new_tup1);
+
+    // this temporary stores address of memory location
+    Temporary temp2 = create_temporary();
+    add_temp_symboltable(temp2->symbol, parent_scope, 8);
+    temp2->symbol->datatype = 3;
+    temp2->symbol->array_datatype = node->symbol_table_node->array_datatype;
+    Tuple new_tup2;
+
+    if(node->symbol_table_node->range[0].tag == 0)
+        new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
+    else {
+        Temporary t = create_temporary();
+        add_temp_symboltable(t->symbol, parent_scope, 8);
+        t->symbol->datatype = 3;
+        t->symbol->array_datatype = node->symbol_table_node->array_datatype;
+        Tuple new_tup = make_tuple(COPY, node->leaf_token->lexeme, "", t->name, node->symbol_table_node, NULL, t->symbol);
+        add_tuple(list, new_tup);
+        
+        new_tup2 = make_tuple(ADDITION, t->name, temp1->name, temp2->name, t->symbol, temp1->symbol, temp2->symbol);
+    }
+    
     add_tuple(list, new_tup2);
     // printf("HI\n");
     return temp2;

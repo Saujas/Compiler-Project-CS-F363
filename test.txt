@@ -1,20 +1,18 @@
 <<<driver program>>>
 start
-	declare a: integer;
-	declare b: boolean;
-	declare f1, f2: real;
-	f1 := -(2.3 + 1.2);
-	print(f1);
-	
-	a := -2;
-	print(a);
-	f1 := -5.2;
-	print(f1);
-	b := 2.2 < f1;
-	f2 := f1 + 5.1;
-	print(f2);
-	b := 2.2 > f1 + 5.1;
+	declare i:integer;
+	declare arr:array[1..20] of integer;
+	arr[1] := 1;
+	arr[2] := 1;
 
-	print(b);
+	for(i in 3..20)
+	start
+		declare j, k:integer;
+		j := i-1;
+		k := i-2;
+		arr[i] := arr[j] + arr[k];
+	end
+
+	print(arr);
 	
 end

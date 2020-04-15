@@ -909,7 +909,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
             if(flag) {
 
-                int width = 2, offset = parent_module->last_offset;
+                int width = 8, offset = parent_module->last_offset;
                 int val1 = range[0].range_pointer.value, val2 = range[1].range_pointer.value;
 
                 if(range[0].tag == 0 && range[1].tag == 0) {
