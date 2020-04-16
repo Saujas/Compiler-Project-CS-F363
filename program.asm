@@ -1,14 +1,23 @@
-extern printf
+extern printf, scanf
 
 section .data
 	fmt_integer: db '%d', 10, 0
 	fmt_float: db '%f', 10, 0
 	fmt_string: db '%s', 10, 0
+	fmt_string_no_line_break: db '%s', 0
+	fmt_ip_integer: db '%d', 0
+	fmt_ip_float: db '%lf', 0
 	message_true: db 'true', 0
 	message_false: db 'false', 0
+	message_ip_integer: db 'Input: Enter an integer value: ', 0
+	message_ip_real: db 'Input: Enter a real value: ', 0
+	message_ip_boolean: db 'Input: Enter a boolean value: ', 0
+
+message_output: db 'Output: ', 0
+	buffer_integer: dd 0
 
 section .bss
-	mem_main resb 140
+	mem_main resb 53
 
 section .text
 global main
@@ -16,147 +25,136 @@ global main
 main:
 	mov rbp, mem_main
 	push rbp
-	mov rbp, rsp
-	mov ax, 1
-	sub ax, 1
-	mov word [rbp + 46], ax
-	mov ax, word [rbp + 46]
-	imul ax, 2
-	mov word [rbp + 48], ax
-	mov rax, rbp
-	add rax, 2
-	xor rbx, rbx
-	mov bx, word [rbp + 48]
-	add rax, rbx
-	mov qword [rbp + 50], rax
-	mov word [rbp + 58], 1
-	mov rbx,  [rbp + 50]
-	mov ax, word [rbp + 58]
-	mov word [rbx], ax
-	mov ax, 2
-	sub ax, 1
-	mov word [rbp + 60], ax
-	mov ax, word [rbp + 60]
-	imul ax, 2
-	mov word [rbp + 62], ax
-	mov rax, rbp
-	add rax, 2
-	xor rbx, rbx
-	mov bx, word [rbp + 62]
-	add rax, rbx
-	mov qword [rbp + 64], rax
-	mov word [rbp + 72], 1
-	mov rbx,  [rbp + 64]
-	mov ax, word [rbp + 72]
-	mov word [rbx], ax
-	mov word [rbp + 0], 3
-L0:
-	cmp word [rbp + 0], 25
-	jg __L6__
-	MOV byte [rbp + 74], 1
-	JMP __L7__
-__L6__:
-	MOV byte [rbp + 74], 0
-__L7__:		mov al, byte [rbp + 74]
+	mov rbp, [rsp]
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	sub rsp, 24
+	mov rax, 'Enter el'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'ements o'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'f arrayo'
+	mov qword [rsp], rax
+	add rsp, 7
+	mov byte [rsp], 0
+	sub rsp, 23
+	mov rax, rsp
+	mov rdi, fmt_string
+	mov rsi, rax
+	xor rax, rax
+	call printf
+	add rsp, 24
+	mov word [rbp + 19], 1
+__L0__:
+	cmp word [rbp + 19], 4
+	jg __LL6__
+	mov byte [rbp + 21], 1
+	jmp __LL7__
+__LL6__:
+	mov byte [rbp + 21], 0
+__LL7__:
+	mov al, byte [rbp + 21]
 	cmp al, 1
-	jz L1
-	mov al, byte [rbp + 74]
+	jz __L1__
+	mov al, byte [rbp + 21]
 	cmp al, 0
-	jz L2
-L1:
-	mov ax, word [rbp + 0]
+	jz __L2__
+__L1__:
+	mov ax, word [rbp + 19]
 	sub ax, 1
-	mov word [rbp + 75], ax
-	mov ax, word [rbp + 75]
-	mov word [rbp + 42], ax
-	mov ax, word [rbp + 0]
-	sub ax, 2
-	mov word [rbp + 77], ax
-	mov ax, word [rbp + 77]
-	mov word [rbp + 44], ax
-	mov ax, word [rbp + 0]
-	sub ax, 1
-	mov word [rbp + 79], ax
-	mov ax, word [rbp + 79]
+	mov word [rbp + 22], ax
+	mov ax, word [rbp + 22]
 	imul ax, 2
-	mov word [rbp + 81], ax
+	mov word [rbp + 24], ax
 	mov rax, rbp
-	add rax, 2
+	add rax, 9
 	xor rbx, rbx
-	mov bx, word [rbp + 81]
+	mov bx, word [rbp + 24]
 	add rax, rbx
-	mov qword [rbp + 83], rax
-	mov ax, word [rbp + 42]
-	sub ax, 1
-	mov word [rbp + 91], ax
-	mov ax, word [rbp + 91]
-	imul ax, 2
-	mov word [rbp + 93], ax
-	mov rax, rbp
-	add rax, 2
-	xor rbx, rbx
-	mov bx, word [rbp + 93]
-	add rax, rbx
-	mov qword [rbp + 95], rax
-	mov rbx,  [rbp + 95]
-	mov ax, word [rbx]
-	mov word [rbp + 103], ax
-	mov ax, word [rbp + 44]
-	sub ax, 1
-	mov word [rbp + 105], ax
-	mov ax, word [rbp + 105]
-	imul ax, 2
-	mov word [rbp + 107], ax
-	mov rax, rbp
-	add rax, 2
-	xor rbx, rbx
-	mov bx, word [rbp + 107]
-	add rax, rbx
-	mov qword [rbp + 109], rax
-	mov rbx,  [rbp + 109]
-	mov ax, word [rbx]
-	mov word [rbp + 117], ax
-	mov ax, word [rbp + 103]
-	add ax, word [rbp + 117]
-	mov word [rbp + 119], ax
-	mov rbx,  [rbp + 83]
-	mov ax, word [rbp + 119]
+	mov qword [rbp + 26], rax
+	mov rbx, qword [rbp + 26]
+	mov rsi, message_ip_integer
+	mov rdi, fmt_string
+	xor rax, rax
+	call printf
+	mov rsi, buffer_integer
+	mov rdi, fmt_ip_integer
+	mov al, 0
+	call scanf
+	mov eax, [buffer_integer]
 	mov word [rbx], ax
-	mov ax, word [rbp + 0]
+	mov ax, word [rbp + 19]
 	add ax, 1
-	mov word [rbp + 121], ax
-	mov ax, word [rbp + 121]
-	mov word [rbp + 0], ax
-	jmp L0
-L2:
-	mov word [rbp + 123], 1
-L3:
-	cmp word [rbp + 123], 20
-	jg __L8__
-	MOV byte [rbp + 125], 1
-	JMP __L9__
-__L8__:
-	MOV byte [rbp + 125], 0
-__L9__:		mov al, byte [rbp + 125]
+	mov word [rbp + 34], ax
+	mov ax, word [rbp + 34]
+	mov word [rbp + 19], ax
+	jmp __L0__
+__L2__:
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	sub rsp, 35
+	mov rax, 'Printing'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, ' array e'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'lements '
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'one-by-o'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'nee-by-o'
+	mov qword [rsp], rax
+	add rsp, 2
+	mov byte [rsp], 0
+	sub rsp, 34
+	mov rax, rsp
+	mov rdi, fmt_string
+	mov rsi, rax
+	xor rax, rax
+	call printf
+	add rsp, 35
+	mov word [rbp + 36], 1
+__L3__:
+	cmp word [rbp + 36], 4
+	jg __LL8__
+	mov byte [rbp + 38], 1
+	jmp __LL9__
+__LL8__:
+	mov byte [rbp + 38], 0
+__LL9__:
+	mov al, byte [rbp + 38]
 	cmp al, 1
-	jz L4
-	mov al, byte [rbp + 125]
+	jz __L4__
+	mov al, byte [rbp + 38]
 	cmp al, 0
-	jz L5
-L4:
-	mov ax, word [rbp + 123]
+	jz __L5__
+__L4__:
+	mov ax, word [rbp + 36]
 	sub ax, 1
-	mov word [rbp + 126], ax
-	mov ax, word [rbp + 126]
+	mov word [rbp + 39], ax
+	mov ax, word [rbp + 39]
 	imul ax, 2
-	mov word [rbp + 128], ax
+	mov word [rbp + 41], ax
 	mov rax, rbp
-	add rax, 2
+	add rax, 9
 	xor rbx, rbx
-	mov bx, word [rbp + 128]
+	mov bx, word [rbp + 41]
 	add rax, rbx
-	mov qword [rbp + 130], rax
-	mov rbx, qword [rbp + 130]
+	mov qword [rbp + 43], rax
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	mov rbx, qword [rbp + 43]
 	mov rax, 0
 	mov ax, word [rbx]
 	movsx rax, ax
@@ -164,13 +162,13 @@ L4:
 	mov rsi, rax
 	mov rax, 0
 	call printf
-	mov ax, word [rbp + 123]
+	mov ax, word [rbp + 36]
 	add ax, 1
-	mov word [rbp + 138], ax
-	mov ax, word [rbp + 138]
-	mov word [rbp + 123], ax
-	jmp L3
-L5:
+	mov word [rbp + 51], ax
+	mov ax, word [rbp + 51]
+	mov word [rbp + 36], ax
+	jmp __L3__
+__L5__:
 
 
 ; exiting program

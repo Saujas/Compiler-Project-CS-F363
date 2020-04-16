@@ -64,19 +64,8 @@ void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_node, in
 }
 
 char* create_label() {
-    char* l = (char*) malloc(sizeof(char)*5);
-    int i;
-    for(i=0; i<5; i++) {
-        l[i] = '\0';
-    }
-
-    l[0] = 'L';
-    
-    char str2[10];
-    sprintf(str2, "%d", label);
-    for(i=0; i<3; i++) {
-        l[i+1] = str2[i];
-    }
+    char* l = (char*) malloc(sizeof(char)*10);
+    sprintf(l, "__L%d__", label);
 
     label += 1;
     return l;
@@ -529,6 +518,9 @@ int process_node(AST node, tuple_list* list) {
             char* ll;
             char* ul;
             Symbol_Node* sym_node = node->symbol_table_node;
+            
+            Tuple new_t = make_tuple(WRITE, "", "", "Enter elements of array", NULL, NULL, NULL);
+            add_tuple(list, new_t);
 
             Temporary itr = create_temporary();
             add_temp_symboltable(itr->symbol, parent_scope, 2);
@@ -685,6 +677,9 @@ int process_node(AST node, tuple_list* list) {
                 // int width;
                 // int arr[3] = {2, 4, 1};
                 // width = arr[datatype];
+
+                Tuple new_t = make_tuple(WRITE, "", "", "Printing array elements one-by-one", NULL, NULL, NULL);
+                add_tuple(list, new_t);
 
                 Temporary itr = create_temporary();
                 add_temp_symboltable(itr->symbol, parent_scope, 2);

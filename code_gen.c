@@ -19,12 +19,20 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     
     printf("No. of tuples: %d\n", list->count);
 
-    fprintf(fp, "extern printf\n\nsection .data\n");
+    fprintf(fp, "extern printf, scanf\n\nsection .data\n");
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
     fprintf(fp, "\tfmt_string: db '%s', 10, 0\n", "%s");
+    fprintf(fp, "\tfmt_string_no_line_break: db '%s', 0\n", "%s");
+    fprintf(fp, "\tfmt_ip_integer: db '%s', 0\n", "%d");
+    fprintf(fp, "\tfmt_ip_float: db '%s', 0\n", "%lf");
     fprintf(fp, "\tmessage_true: db 'true', 0\n");
     fprintf(fp, "\tmessage_false: db 'false', 0\n");
+    fprintf(fp, "\tmessage_ip_integer: db 'Input: Enter an integer value: ', 0\n");
+    fprintf(fp, "\tmessage_ip_real: db 'Input: Enter a real value: ', 0\n");
+    fprintf(fp, "\tmessage_ip_boolean: db 'Input: Enter a boolean value: ', 0\n");
+    fprintf(fp, "\nmessage_output: db 'Output: ', 0\n");
+    fprintf(fp, "\tbuffer_integer: dd 0\n");
     fprintf(fp, "\n");
     
     fprintf(fp, "section .bss\n");
@@ -80,7 +88,7 @@ int initialize_bss(tuple_list* list, Symbol_Table_Tree tree, FILE* fp) {
 char* generate_dynamic_label() {
     char* str = (char *) malloc(sizeof(char) * 10);
 
-    sprintf(str, "__L%d__", label);
+    sprintf(str, "__LL%d__", label);
     label += 1;
 
     return str;
@@ -88,17 +96,12 @@ char* generate_dynamic_label() {
 
 void print_args(struct tup* tup) {
     
-    if(tup->node1) {
+    if(tup->node1)
         printf("%s: %d %d\n", tup->arg1, tup->node1->offset, tup->node1->width);
-    }
-
-    if(tup->node2) {
+    if(tup->node2)
         printf("%s: %d %d\n", tup->arg2, tup->node2->offset, tup->node2->width);
-    }
-
-    if(tup->node3) {
+    if(tup->node3)
         printf("%s: %d %d\n", tup->result, tup->node3->offset, tup->node3->width);
-    }
 
     return;
 }
@@ -112,7 +115,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
         fprintf(fp, "%s:\n", tup->result);
 
         if(tup->op == FUN_LABEL) {
-            fprintf(fp, "\tmov rbp, mem_%s\n\tpush rbp\n\tmov rbp, rsp\n", tup->result);
+            fprintf(fp, "\tmov rbp, mem_%s\n\tpush rbp\n\tmov rbp, [rsp]\n", tup->result);
         }
     }
 
@@ -302,10 +305,11 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
 
         char* label1 = generate_dynamic_label();
         char* label2 = generate_dynamic_label();
-        fprintf(fp, "\t%s %s\n\tMOV byte [rbp + %d], 1\n\tJMP %s\n%s:\n\tMOV byte [rbp + %d], 0\n%s:\t", operation, label1, tup->node3->offset, label2, label1, tup->node3->offset, label2);
+        fprintf(fp, "\t%s %s\n\tmov byte [rbp + %d], 1\n\tjmp %s\n%s:\n\tmov byte [rbp + %d], 0\n%s:\n", operation, label1, tup->node3->offset, label2, label1, tup->node3->offset, label2);
     }
 
     if(tup->op == WRITE) {
+        fprintf(fp, "\tmov rsi, message_output\n\tmov rdi, fmt_string_no_line_break\n\txor rax, rax\n\tcall printf\n");
         if(tup->node3) {
             int data_type = tup->node3->datatype;
 
@@ -353,6 +357,42 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             fprintf(fp, "\tmov rax, '%s'\n\tmov qword [rsp], rax\n", str);
             fprintf(fp, "\tadd rsp, %d\n\tmov byte [rsp], 0\n\tsub rsp, %d\n", j, (length-1));
             fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n\tadd rsp, %d\n", length);
+        }
+    }
+
+    if(tup->op == READ) {
+        int data_type = tup->node3->datatype, flag = 0;
+
+        if(data_type == 3) {
+            flag = 1;
+            data_type = tup->node3->array_datatype;
+            fprintf(fp, "\tmov rbx, qword [rbp + %d]\n", tup->node3->offset);
+        }
+
+        if(data_type == 0) {
+            fprintf(fp, "\tmov rsi, message_ip_integer\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
+            fprintf(fp, "\tmov rsi, buffer_integer\n\tmov rdi, fmt_ip_integer\n\tmov al, 0\n\tcall scanf\n\tmov eax, [buffer_integer]\n");
+            if(flag)
+                fprintf(fp, "\tmov word [rbx], ax\n");
+            else
+                fprintf(fp, "\tmov word [rbp + %d], ax\n", tup->node3->offset);
+        }
+        else if(data_type == 1) {
+            fprintf(fp, "\tmov rsi, message_ip_real\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
+            if(flag)
+                fprintf(fp, "\tmov rsi, rbx\n");
+            else
+                fprintf(fp, "\tmov rsi, rbp\n\tadd rsi, %d\n", tup->node3->offset);
+
+            fprintf(fp, "\tmov rdi, fmt_ip_float\n\tmov al, 0\n\tcall scanf\n");
+        }
+        else if(data_type == 2) {
+            fprintf(fp, "\tmov rsi, message_ip_boolean\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
+            fprintf(fp, "\tmov rsi, buffer_integer\n\tmov rdi, fmt_ip_integer\n\tmov al, 0\n\tcall scanf\n\tmov eax, [buffer_integer]\n");
+            if(flag)
+                fprintf(fp, "\tmov byte [rbx], ax\n");
+            else
+                fprintf(fp, "\tmov byte [rbp + %d], al\n", tup->node3->offset);
         }
     }
 
