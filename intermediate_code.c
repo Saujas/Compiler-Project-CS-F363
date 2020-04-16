@@ -64,19 +64,8 @@ void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_node, in
 }
 
 char* create_label() {
-    char* l = (char*) malloc(sizeof(char)*5);
-    int i;
-    for(i=0; i<5; i++) {
-        l[i] = '\0';
-    }
-
-    l[0] = 'L';
-    
-    char str2[10];
-    sprintf(str2, "%d", label);
-    for(i=0; i<3; i++) {
-        l[i+1] = str2[i];
-    }
+    char* l = (char*) malloc(sizeof(char)*10);
+    sprintf(l, "__L%d__", label);
 
     label += 1;
     return l;

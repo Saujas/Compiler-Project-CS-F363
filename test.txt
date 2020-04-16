@@ -1,18 +1,11 @@
 <<<driver program>>>
 start
-	declare i:integer;
-	declare arr:array[1..20] of integer;
-	arr[1] := 1;
-	arr[2] := 1;
+	declare i:real;
+	declare j:boolean;
+	declare arr: array [1..4] of integer;
+	declare k:integer;
 
-	for(i in 3..20)
-	start
-		declare j, k:integer;
-		j := i-1;
-		k := i-2;
-		arr[i] := arr[j] + arr[k];
-	end
-
+	get_value(arr);
 	print(arr);
 	
 end
