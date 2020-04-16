@@ -4,13 +4,16 @@ section .data
 	fmt_integer: db '%d', 10, 0
 	fmt_float: db '%f', 10, 0
 	fmt_string: db '%s', 10, 0
+	fmt_string_no_line_break: db '%s', 0
 	fmt_ip_integer: db '%d', 0
 	fmt_ip_float: db '%lf', 0
 	message_true: db 'true', 0
 	message_false: db 'false', 0
-	message_ip_integer: db 'Enter an integer value: ', 0
-	message_ip_real: db 'Enter a real value: ', 0
-	message_ip_boolean: db 'Enter a boolean value: ', 0
+	message_ip_integer: db 'Input: Enter an integer value: ', 0
+	message_ip_real: db 'Input: Enter a real value: ', 0
+	message_ip_boolean: db 'Input: Enter a boolean value: ', 0
+
+message_output: db 'Output: ', 0
 	buffer_integer: dd 0
 
 section .bss
@@ -23,14 +26,36 @@ main:
 	mov rbp, mem_main
 	push rbp
 	mov rbp, [rsp]
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	sub rsp, 24
+	mov rax, 'Enter el'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'ements o'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'f arrayo'
+	mov qword [rsp], rax
+	add rsp, 7
+	mov byte [rsp], 0
+	sub rsp, 23
+	mov rax, rsp
+	mov rdi, fmt_string
+	mov rsi, rax
+	xor rax, rax
+	call printf
+	add rsp, 24
 	mov word [rbp + 19], 1
 __L0__:
 	cmp word [rbp + 19], 4
 	jg __LL6__
-	MOV byte [rbp + 21], 1
-	JMP __LL7__
+	mov byte [rbp + 21], 1
+	jmp __LL7__
 __LL6__:
-	MOV byte [rbp + 21], 0
+	mov byte [rbp + 21], 0
 __LL7__:
 	mov al, byte [rbp + 21]
 	cmp al, 1
@@ -69,14 +94,42 @@ __L1__:
 	mov word [rbp + 19], ax
 	jmp __L0__
 __L2__:
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	sub rsp, 35
+	mov rax, 'Printing'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, ' array e'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'lements '
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'one-by-o'
+	mov qword [rsp], rax
+	add rsp, 8
+	mov rax, 'nee-by-o'
+	mov qword [rsp], rax
+	add rsp, 2
+	mov byte [rsp], 0
+	sub rsp, 34
+	mov rax, rsp
+	mov rdi, fmt_string
+	mov rsi, rax
+	xor rax, rax
+	call printf
+	add rsp, 35
 	mov word [rbp + 36], 1
 __L3__:
 	cmp word [rbp + 36], 4
 	jg __LL8__
-	MOV byte [rbp + 38], 1
-	JMP __LL9__
+	mov byte [rbp + 38], 1
+	jmp __LL9__
 __LL8__:
-	MOV byte [rbp + 38], 0
+	mov byte [rbp + 38], 0
 __LL9__:
 	mov al, byte [rbp + 38]
 	cmp al, 1
@@ -97,6 +150,10 @@ __L4__:
 	mov bx, word [rbp + 41]
 	add rax, rbx
 	mov qword [rbp + 43], rax
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
 	mov rbx, qword [rbp + 43]
 	mov rax, 0
 	mov ax, word [rbx]

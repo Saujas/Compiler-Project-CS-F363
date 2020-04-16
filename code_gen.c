@@ -23,13 +23,15 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
     fprintf(fp, "\tfmt_string: db '%s', 10, 0\n", "%s");
+    fprintf(fp, "\tfmt_string_no_line_break: db '%s', 0\n", "%s");
     fprintf(fp, "\tfmt_ip_integer: db '%s', 0\n", "%d");
     fprintf(fp, "\tfmt_ip_float: db '%s', 0\n", "%lf");
     fprintf(fp, "\tmessage_true: db 'true', 0\n");
     fprintf(fp, "\tmessage_false: db 'false', 0\n");
-    fprintf(fp, "\tmessage_ip_integer: db 'Enter an integer value: ', 0\n");
-    fprintf(fp, "\tmessage_ip_real: db 'Enter a real value: ', 0\n");
-    fprintf(fp, "\tmessage_ip_boolean: db 'Enter a boolean value: ', 0\n");
+    fprintf(fp, "\tmessage_ip_integer: db 'Input: Enter an integer value: ', 0\n");
+    fprintf(fp, "\tmessage_ip_real: db 'Input: Enter a real value: ', 0\n");
+    fprintf(fp, "\tmessage_ip_boolean: db 'Input: Enter a boolean value: ', 0\n");
+    fprintf(fp, "\nmessage_output: db 'Output: ', 0\n");
     fprintf(fp, "\tbuffer_integer: dd 0\n");
     fprintf(fp, "\n");
     
@@ -303,10 +305,11 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
 
         char* label1 = generate_dynamic_label();
         char* label2 = generate_dynamic_label();
-        fprintf(fp, "\t%s %s\n\tMOV byte [rbp + %d], 1\n\tJMP %s\n%s:\n\tMOV byte [rbp + %d], 0\n%s:\n", operation, label1, tup->node3->offset, label2, label1, tup->node3->offset, label2);
+        fprintf(fp, "\t%s %s\n\tmov byte [rbp + %d], 1\n\tjmp %s\n%s:\n\tmov byte [rbp + %d], 0\n%s:\n", operation, label1, tup->node3->offset, label2, label1, tup->node3->offset, label2);
     }
 
     if(tup->op == WRITE) {
+        fprintf(fp, "\tmov rsi, message_output\n\tmov rdi, fmt_string_no_line_break\n\txor rax, rax\n\tcall printf\n");
         if(tup->node3) {
             int data_type = tup->node3->datatype;
 
