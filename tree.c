@@ -110,29 +110,29 @@ int print_tnode(t_node* n, non_terminals parent, FILE* fp) {
     }
 
     if(n->tag == 0) { //Print a leaf node with its value
-        fprintf(fp, "Lexeme: %-20s  Line No: %-3d  Token: %-20s  ", n->node.leaf.lexeme, n->node.leaf.line_no, t_string_map[n->node.leaf.token]);
+        printf("Lexeme: %-20s  Line No: %-3d  Token: %-20s  ", n->node.leaf.lexeme, n->node.leaf.line_no, t_string_map[n->node.leaf.token]);
         if(n->node.leaf.tag == 1)
-            fprintf(fp, "Value: %-15d  ", n->node.leaf.val.num);
+            printf("Value: %-15d  ", n->node.leaf.val.num);
         else if(n->node.leaf.tag == 2)
-            fprintf(fp, "Value: %-15f  ", n->node.leaf.val.rnum);
+            printf("Value: %-15f  ", n->node.leaf.val.rnum);
         else
-            fprintf(fp, "Value: %-15s  ", "-");
+            printf("Value: %-15s  ", "-");
         
-        fprintf(fp, "Parent Node: %-20s  ", nt_string_map[parent]);
-        fprintf(fp, "Leaf Node: Yes  ");
-        fprintf(fp, "Node Symbol: %-20s", "-");
-        fprintf(fp, "Rule Number: %-10d\n\n", n->rule_num);
+        printf("Parent Node: %-20s  ", nt_string_map[parent]);
+        printf("Leaf Node: Yes  ");
+        printf("Node Symbol: %-20s", "-");
+        printf("Rule Number: %-10d\n\n", n->rule_num);
     }
     else { //Printing an internal node with blank lexeme and token
-        fprintf(fp, "Lexeme: %-20s  Line No: %-3s  Token: %-20s  Value: %-15s  ", "-", "-", "-", "-");
+        printf("Lexeme: %-20s  Line No: %-3s  Token: %-20s  Value: %-15s  ", "-", "-", "-", "-");
         if(parent == -1)
-            fprintf(fp, "Parent Node: ROOT%16s  ", " ");
+            printf("Parent Node: ROOT%16s  ", " ");
         else
-            fprintf(fp, "Parent Node: %-20s  ", nt_string_map[parent]);
+            printf("Parent Node: %-20s  ", nt_string_map[parent]);
         
-        fprintf(fp, "Leaf Node: No   ");
-        fprintf(fp, "Node Symbol: %-20s", nt_string_map[n->node.internal]);
-        fprintf(fp, "Rule Number: %-10d\n\n", n->rule_num);
+        printf("Leaf Node: No   ");
+        printf("Node Symbol: %-20s", nt_string_map[n->node.internal]);
+        printf("Rule Number: %-10d\n\n", n->rule_num);
     }
 
     return 1;

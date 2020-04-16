@@ -36,7 +36,7 @@ char * non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarat
 
 /* Main function of parser which calls all other functions starting with lexical analyser
 */
-t_node** parser(char* filename, char* output_fname, int *has_parsed) {
+t_node** parser(char* filename, char* output_fname, int *has_parsed, int check) {
     
     Node ** token_stream;
     lookup_table *table;
@@ -69,8 +69,9 @@ t_node** parser(char* filename, char* output_fname, int *has_parsed) {
     else
         printf("\n\tParsing unsuccessful, errors detected\n");
 
-    print_parse_tree(parse_tree, output_fname);
-    printf("\n\tParse tree output has been saved to %s\n", output_fname);
+    if(check)
+        print_parse_tree(parse_tree, output_fname);
+    // printf("\n\tParse tree output has been saved to %s\n", output_fname);
 
     return &parse_tree;
 }

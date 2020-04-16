@@ -47,12 +47,15 @@ int main(int argc, char* argv[]) {
         */
         printf("\nPress:\n\n");
         printf("0: For exit\n");
-        printf("1: For removal of comments\n");
-        printf("2: For invoking only lexer\n");
-        printf("3: For invoking both lexer and parser\n");
-        printf("4: For printing total time for lexer and parser\n");
-        printf("5: For creating AST and symbol table, type checking\n");
-        printf("6: Generate Code\n");
+        printf("1: For invoking only lexer\n");
+        printf("2: For invoking both lexer and parser and printing parse tree in-order\n");
+        printf("3: For printing AST in-order \n");
+        printf("4: For displaying amount of memory used\n");
+        printf("5: For printing symbol table //TO DO\n");
+        printf("6: For printing activation record sizes of functions //TO DO\n");
+        printf("7: For printing the type expressions and width of array variables //TO DO\n");
+        printf("8: For verifying syntactic and semantic correctness and printing total time taken\n");
+        printf("9: For producing assembly code\n");
         scanf("%d", &choice);
 
         Node ** token_stream = NULL;
@@ -68,65 +71,90 @@ int main(int argc, char* argv[]) {
                 flag = 1;
                 break;
 
-            case 1: //Print source code without comments
-                printf("\n\nSource code after removing comments:\n");
-                print_without_comments(argv[1]);
-                printf("\n");
-                break;
-
-            case 2: //Print only the output of lexical_analyzer
+            case 1: //Print only the output of lexical_analyzer
                 printf("\n");
                 tokens = lexical_analyzer(argv[1], &token_stream, &table, 1);
                 break;
 
-            case 3: //Call lexer and parser, and print both lexical and syntactic errors if any
+            case 2:
                 printf("\n");
-                parser(argv[1], argv[2], &parsed);
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 1);
                 break;
 
-            case 4: //Call lexer and parser, and print the total time taken until parse tree is generated
-                start_time = clock();
-                parser(argv[1], argv[2], &parsed);
-                end_time = clock();
-                total_CPU_time = (double)(end_time - start_time);
-                total_CPU_time_in_seconds = total_CPU_time/CLOCKS_PER_SEC;
-                printf("\n\n*****\n");
-                printf("Total_CPU_time: %lf\n", total_CPU_time);
-                printf("Total_CPU_time_in_seconds: %lf\n", total_CPU_time_in_seconds);
-                printf("*****\n\n");
-                break;
-
-            case 5:
+            case 3:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed);
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
                 if(!parsed) {
                     break;
                 }
-                root = generate_AST(*parse_tree_ptr);
+                root = generate_AST(*parse_tree_ptr, 1);
+                break;
+
+            case 4: 
+                printf("\n");
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                if(!parsed) {
+                    break;
+                }
+                root = generate_AST(*parse_tree_ptr, 0);
+                calculate_allocated_memory(*parse_tree_ptr, root);
+                
+                break;
+
+            case 5:
+                break;
+            
+            case 6:
+                break;
+                
+            case 7:
+                break;
+
+            case 8:
+                printf("\n");
+                start_time = clock();
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                if(!parsed) {
+                    end_time = clock();
+                    total_CPU_time = (double)(end_time - start_time);
+                    total_CPU_time_in_seconds = total_CPU_time/CLOCKS_PER_SEC;
+                    printf("\n\n*****\n");
+                    printf("Total_CPU_time for only parser with syntax errors: %lf\n", total_CPU_time);
+                    printf("Total_CPU_time_in_seconds for only parser with syntax errors: %lf\n", total_CPU_time_in_seconds);
+                    printf("*****\n\n");
+                    break;
+                }
+                root = generate_AST(*parse_tree_ptr, 1);
                 err = initialize_errors();
                 tree = create_symbol_table_tree(root, err);
                 
                 type_checker(root, err, tree);
                 sort_errors(err);
-                //printf("1");
                 if((err->head) != NULL) {
                     printf("Semantic error occurred\n\n");
                     print_errors(err);
                 }
                 else {
                     printf("No semantic errors found\n\n");
-                    generate_ir(root);
                 }
+
+                end_time = clock();
+                total_CPU_time = (double)(end_time - start_time);
+                total_CPU_time_in_seconds = total_CPU_time/CLOCKS_PER_SEC;
+                printf("\n\n*****\n");
+                printf("Total_CPU_time for parser and semantic analyser: %lf\n", total_CPU_time);
+                printf("Total_CPU_time_in_seconds for parser and semantic analyser: %lf\n", total_CPU_time_in_seconds);
+                printf("*****\n\n");
                 break;
 
-            case 6:
+            case 9:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed);
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
                 if(!parsed) {
                     break;
                 }
                 
-                root = generate_AST(*parse_tree_ptr);
+                root = generate_AST(*parse_tree_ptr, 1);
                 err = initialize_errors();
                 tree = create_symbol_table_tree(root, err);
                 

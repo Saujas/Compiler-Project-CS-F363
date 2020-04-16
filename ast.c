@@ -15,7 +15,16 @@ char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDecl
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default", "NT_value"};
 
-AST generate_AST(t_node* root) {
+char * t_string_map_copy1[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
+            "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
+            "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
+            "AND", "OR", "FOR", "IN", "SWITCH", "CASE", "BREAK", "DEFAULT", "WHILE", "PLUS", 
+            "MINUS", "MUL", "DIV", "LT", "LE", "GE", "GT", "EQ", "NE", "DEF", "DRIVERDEF",
+            "ENDDEF", "DRIVERENDDEF", "COLON", "RANGEOP", "SEMICOL", "COMMA", "ASSIGNOP", 
+            "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
+};
+
+AST generate_AST(t_node* root, int flag) {
     if(root == NULL) {
         return NULL;
     }
@@ -26,7 +35,10 @@ AST generate_AST(t_node* root) {
 
     ast = root->tree_node;
 
-    print_ast(ast);
+    if(flag) {
+        printf("\n\n ***AST IN-ORDER TRAVERSAL***\n\n");
+        print_ast(ast, NULL);
+    }
 
     return ast;
 }
@@ -103,13 +115,14 @@ void link_parent(t_node* node) {
     return;
 }
 
-void print_ast(AST root) {
+void print_ast(AST root, AST parent) {
     
     if(root == NULL) {
         return;
     }
+    print_ast(root->child, root);
 
-    print_ast_node(root);
+    print_ast_node(root, parent);
     // print_ast(root->child);
     
 
@@ -117,10 +130,12 @@ void print_ast(AST root) {
         return;
     }
     
+    parent = root;
     root = root->child;
+    root = root->next;
     // root = root->next;
     while(root) {
-        print_ast(root);
+        print_ast(root, parent);
         root = root->next;
     }
     // printf("\n");
@@ -128,20 +143,53 @@ void print_ast(AST root) {
     return;
 }
 
-void print_ast_node(AST node) {
-    if (node->tag == 1) {
-        printf("Rule no: %d - %s\n", node->rule_num, ast_string_map[node->label]);
+void print_ast_node(AST node, AST parent) {
+    // if(node->tag == 1) {
+    //     printf("Rule no: %d - %s", node->rule_num, ast_string_map[node->label]);
+    //     if(node->parent) {
+    //         printf("\t%s", ast_string_map[node->parent->label]);
+    //     }
+    //     else {
+    //         printf("\tNO PARENT");
+    //     }
+    // }
+    // else {
+    //     printf("Rule no: %d - %s", node->rule_num, node->leaf_token->lexeme);
+    //     if(node->parent) {
+    //         printf("\t%s", ast_string_map[node->parent->label]);
+    //     }
+    //     else {
+    //         printf("\tNO PARENT");
+    //     }
+    //     // if(node->label == IO_READ || node->label == IO_WRITE) {
+    //     //     printf("    %s", ast_string_map[node->label]);
+    //     // }
+    // }
+    // printf("\n");
+    if(node->tag == 0) { //Print a leaf node with its value
+        printf("Lexeme: %-20s  Line No: %-3d  Token: %-20s  ", node->leaf_token->lexeme, node->leaf_token->line_no, t_string_map_copy1[node->leaf_token->token]);
+        if(node->leaf_token->tag == 1)
+            printf("Value: %-15d  ", node->leaf_token->val.num);
+        else if(node->leaf_token->tag == 2)
+            printf("Value: %-15f  ", node->leaf_token->val.rnum);
+        else
+            printf("Value: %-15s  ", "-");
+        
+        printf("Parent Node: %-20s  ", ast_string_map[parent->label]);
+        printf("Leaf Node: Yes  ");
+        printf("Node Symbol: %-20s", "-");
+        printf("Rule Number: %-10d\n\n", node->rule_num);
     }
-    else {
-        printf("Rule no: %d - %s", node->rule_num, node->leaf_token->lexeme);
-        if(node->label == IO_READ || node->label == IO_WRITE) {
-            printf("    %s", ast_string_map[node->label]);
-        }
-        /*if(node->symbol_table_node && node->symbol_table_node->usage!=1) {
-            printf("%d %s",node->symbol_table_node->param_order,  node->symbol_table_node->node->leaf_token->lexeme);
-
-        }*/
-        printf("\n");
+    else { //Printing an internal node with blank lexeme and token
+        printf("Lexeme: %-20s  Line No: %-3s  Token: %-20s  Value: %-15s  ", "-", "-", "-", "-");
+        if(parent == NULL)
+            printf("Parent Node: ROOT%16s  ", " ");
+        else
+            printf("Parent Node: %-20s  ", ast_string_map[parent->label]);
+        
+        printf("Leaf Node: No   ");
+        printf("Node Symbol: %-20s", ast_string_map[node->label]);
+        printf("Rule Number: %-10d\n\n", node->rule_num);
     }
 }
 
@@ -354,6 +402,8 @@ void convert_to_AST_node(t_node* node) {
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
+            // printf("%s\n", ast_string_map[node->tree_node->label]);
+            // printf("%s\n", ast_string_map[node->child->tree_node->label]);
             break;
 
         case 8:
@@ -803,3 +853,46 @@ t_node* get_switch_end_node(t_node* temp) {
 }
 
 
+void count_parse_tree_nodes(t_node* root, int* count, int *size) {
+    if(root == NULL)
+        return;
+    *count += 1;
+    *size += sizeof(t_node);
+    t_node* temp = root->child;
+    while(temp) {
+        count_parse_tree_nodes(temp, count, size);
+        temp = temp->sibling;
+    }
+    return;
+}
+
+void count_ast_nodes(AST root, int* count, int *size) {
+    if(root == NULL)
+        return;
+    *count += 1;
+    *size += sizeof(AST_Node);
+    AST temp = root->child;
+    while(temp) {
+        count_ast_nodes(temp, count, size);
+        temp = temp->next;
+    }
+    return;
+}
+
+void calculate_allocated_memory(t_node* root, AST tree) {
+
+    int parse_tree_count = 0;
+    int ast_count = 0;
+    int parse_tree_size = 0;
+    int ast_size = 0;
+    count_parse_tree_nodes(root, &parse_tree_count, &parse_tree_size);
+    count_ast_nodes(tree, &ast_count, &ast_size);
+
+    printf("\nParse tree number of nodes = %d\t Allocated memory = %d\n", parse_tree_count, parse_tree_size);
+    printf("\nAST number of nodes = %d\t Allocated memory = %d\n", ast_count, ast_size);
+
+    int compression = ((parse_tree_size-ast_size)*100)/parse_tree_size;
+    printf("\nCompression percentage = %d\n\n", compression);
+
+    return;
+}
