@@ -892,7 +892,7 @@ void calculate_allocated_memory(t_node* root, AST tree) {
     printf("\nAST number of nodes = %d\t Allocated memory = %d\n", ast_count, ast_size);
 
     int compression = ((parse_tree_size-ast_size)*100)/parse_tree_size;
-    printf("\nCompression percentage = %d\n\n", compression);
+    printf("\nCompression percentage = %d%%\n\n", compression);
 
     return;
 }

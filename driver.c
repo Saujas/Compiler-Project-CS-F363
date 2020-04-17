@@ -52,8 +52,8 @@ int main(int argc, char* argv[]) {
         printf("3: For printing AST in-order \n");
         printf("4: For displaying amount of memory used\n");
         printf("5: For printing symbol table \n");
-        printf("6: For printing activation record sizes of functions //TO DO\n");
-        printf("7: For printing the type expressions and width of array variables //TO DO\n");
+        printf("6: For printing activation record sizes of functions \n");
+        printf("7: For printing the type expressions and width of array variables \n");
         printf("8: For verifying syntactic and semantic correctness and printing total time taken\n");
         printf("9: For producing assembly code\n");
         scanf("%d", &choice);
@@ -114,9 +114,27 @@ int main(int argc, char* argv[]) {
                 break;
             
             case 6:
+                printf("\n");
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                if(!parsed) {
+                    break;
+                }
+                
+                root = generate_AST(*parse_tree_ptr, 0);
+                err = initialize_errors();
+                tree = create_symbol_table_tree(root, err, 3);
                 break;
                 
             case 7:
+                printf("\n");
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                if(!parsed) {
+                    break;
+                }
+                
+                root = generate_AST(*parse_tree_ptr, 0);
+                err = initialize_errors();
+                tree = create_symbol_table_tree(root, err, 2);
                 break;
 
             case 8:

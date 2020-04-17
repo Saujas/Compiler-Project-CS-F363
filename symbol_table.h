@@ -25,3 +25,5 @@ void print_symbols(Slots_List* list);
 Symbol_Table_Tree get_parent_scope(Symbol_Table_Tree current);
 void make_symbol_list(Slots_List* list, Symbol_Node* node, Symbol_List** temp);
 void print_all_symbols(Symbol_List *list);
+void print_array_info(Symbol_List *list);
+void print_activation_record_sizes(Symbol_Table_Tree tree);
