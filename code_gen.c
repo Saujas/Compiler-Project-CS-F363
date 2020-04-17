@@ -63,6 +63,7 @@ int get_ar_size(tuple* tup, Symbol_Table_Tree tree, FILE* fp) {
         if( ((strcmp(tup->result, "main") == 0) && (strcmp("AST_DRIVER", temp->name) == 0)) || 
         (strcmp(tup->result, temp->name) == 0)) {
             int offset = temp->last_offset;
+            printf("%d\n", offset);
             if(offset % 16 == 0)
                 return offset;
 
@@ -206,11 +207,11 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         else {
             fprintf(fp, "\tmov rbx, rbp\n\tsub rbx, %d\n", tup->node3->offset + tup->node3->width);
             if(tup->node3->datatype == 0)
-                fprintf(fp, "\tmov ax, word [rbx]\n\tsub rbx, 8\n\tmov word [rbx], ax\n\t");
+                fprintf(fp, "\tmov ax, word [rbx]\n\tsub rbx, 8\n\tmov rbx, qword [rbx]\n\tmov word [rbx], ax\n");
             else if(tup->node3->datatype == 1)
-                fprintf(fp, "\tmov rax, qword [rbx]\n\tsub rbx, 8\n\tmov qword [rbx], rax\n\t");
+                fprintf(fp, "\tmov rax, qword [rbx]\n\tsub rbx, 8\n\tmov rbx, qword [rbx]\n\tmov qword [rbx], rax\n");
             else if(tup->node3->datatype == 2)
-                fprintf(fp, "\tmov al, byte [rbx]\n\tsub rbx, 8\n\tmov byte [rbx], al\n\t");
+                fprintf(fp, "\tmov al, byte [rbx]\n\tsub rbx, 8\n\tmov rbx, qword [rbx]\n\tmov byte [rbx], al\n");
         }
     }
 
