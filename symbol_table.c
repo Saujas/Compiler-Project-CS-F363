@@ -218,24 +218,24 @@ Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err, int flag) {
     traverse_ast(root, tree, err, print_slot_list, print_list);
     // printf("\n**\nAST traversed\n**\n");
 
-    if(flag == 1) {
-        // sort_errors(err);
-        // if((err->head) != NULL) {
-        //     printf("Semantic errors occurred\n\n");
-        //     print_errors(err);
-        // }
-        // else {
+    if(flag) {
+        sort_errors(err);
+        if((err->head) != NULL) {
+            printf("Semantic errors occurred\n\n");
+            print_errors(err);
+        }
+        if(flag == 1) {
             printf("\n%-20s%-25s%-24s%-10s%-12s%-20s%-17s%-18s%-14s%-12s\n\n", "Variable_name" , "Scope(module name)" , "Scope(line numbers)" , "Width" , "Is_Array" , "Static_or_Dynamic" , "Range_lexemes" , "Type of elememt" , "Offset" , "Nesting level");
             print_all_symbols(*print_list);
-        // }
-    }
-    else if(flag == 2) {
-        printf("\n%-27s%-25s%-25s%-25s%-17s%-18s\n\n", "Scope(module name)" , "Scope(line numbers)" , "Variable_name" , "Static_or_Dynamic" , "Range_lexemes" , "Type of elememt");
-        print_array_info(*print_list);
-    }
-    else if(flag == 3) {
-        printf("\n%-30s%-30s\n\n", "Function name", "Activation record size");
-        print_activation_record_sizes(tree->child);
+        }
+        else if(flag == 2) {
+            printf("\n%-27s%-25s%-25s%-25s%-17s%-18s\n\n", "Scope(module name)" , "Scope(line numbers)" , "Variable_name" , "Static_or_Dynamic" , "Range_lexemes" , "Type of elememt");
+            print_array_info(*print_list);
+        }
+        else if(flag == 3) {
+            printf("\n%-30s%-30s\n\n", "Function name", "Activation record size");
+            print_activation_record_sizes(tree->child);
+        }
     }
 
     return tree;

@@ -80,6 +80,8 @@ void type_checker(AST root, ErrorList* err, Symbol_Table_Tree tree) {
 int type_check_node(AST node, ErrorList* err) {
     // if(node->tag == 0)
     //     printf("%d\n", node->leaf_token->line_no);
+    // else
+    //     printf("%s\n", tc_string_map_copy[node->label]);
 
     int rule_num = node->rule_num;
     int flag = 0;
@@ -619,7 +621,7 @@ int type_check_node(AST node, ErrorList* err) {
         if(temp->tag !=1 || temp->label != OUTPUT_PLIST)
             return flag;
 
-        Symbol_Table_Tree op_list = temp->child->current_scope->output;
+        Symbol_Table_Tree op_list = temp->child->current_scope;
         // printf("%s %s %d\n", op_list->name, node->child->leaf_token->lexeme, node->child->leaf_token->line_no);
 
 
@@ -687,7 +689,6 @@ int convert_to_list(Symbol_Table_Tree st, Symbol_Node*** head) {
             temp = temp->next;
         }
     }
-
     return count;
 }
 
