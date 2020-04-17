@@ -102,6 +102,15 @@ int main(int argc, char* argv[]) {
                 break;
 
             case 5:
+                printf("\n");
+                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                if(!parsed) {
+                    break;
+                }
+                
+                root = generate_AST(*parse_tree_ptr, 0);
+                err = initialize_errors();
+                tree = create_symbol_table_tree(root, err, 1);
                 break;
             
             case 6:
@@ -124,9 +133,9 @@ int main(int argc, char* argv[]) {
                     printf("*****\n\n");
                     break;
                 }
-                root = generate_AST(*parse_tree_ptr, 1);
+                root = generate_AST(*parse_tree_ptr, 0);
                 err = initialize_errors();
-                tree = create_symbol_table_tree(root, err);
+                tree = create_symbol_table_tree(root, err, 0);
                 
                 type_checker(root, err, tree);
                 sort_errors(err);
@@ -156,7 +165,7 @@ int main(int argc, char* argv[]) {
                 
                 root = generate_AST(*parse_tree_ptr, 0);
                 err = initialize_errors();
-                tree = create_symbol_table_tree(root, err);
+                tree = create_symbol_table_tree(root, err, 0);
                 
                 type_checker(root, err, tree);
                 sort_errors(err);
