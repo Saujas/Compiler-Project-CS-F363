@@ -31,18 +31,17 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     fprintf(fp, "\tmessage_ip_integer: db 'Input: Enter an integer value: ', 0\n");
     fprintf(fp, "\tmessage_ip_real: db 'Input: Enter a real value: ', 0\n");
     fprintf(fp, "\tmessage_ip_boolean: db 'Input: Enter a boolean value: ', 0\n");
-    fprintf(fp, "\nmessage_output: db 'Output: ', 0\n");
+    fprintf(fp, "\tmessage_output: db 'Output: ', 0\n");
     fprintf(fp, "\tbuffer_integer: dd 0\n");
     fprintf(fp, "\n");
     
     fprintf(fp, "section .bss\n");
-    initialize_bss(list, tree, fp);
     fprintf(fp, "\n");
 
     if(list != NULL) {
         fprintf(fp, "section .text\nglobal main\n\n");
         tuple* tuple1 = list->head;
-        generate_tuple_code(tuple1, fp);
+        generate_tuple_code(tuple1, tree, fp);
     }
 
     // exit program
@@ -54,35 +53,26 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     return 1;
 }
 
-int initialize_bss(tuple_list* list, Symbol_Table_Tree tree, FILE* fp) {
+int get_ar_size(tuple* tup, Symbol_Table_Tree tree, FILE* fp) {
 
-    tuple* tup = list->head;
     Symbol_Table_Tree fun_tree = tree->child;
 
-    while(tup) {
-        if(tup->op == FUN_LABEL) {
-            Symbol_Table_Tree temp = fun_tree;
+    Symbol_Table_Tree temp = fun_tree;
 
-            while(temp) {
-                if( (strcmp(tup->result, "main") == 0) && (strcmp("AST_DRIVER", temp->name) == 0) || 
-                (strcmp(tup->result, temp->name) == 0)) {
-                    
-                    char s1[30];
-                    strcpy(s1, "mem_");
-                    strcat(s1, tup->result);
+    while(temp) {
+        if( ((strcmp(tup->result, "main") == 0) && (strcmp("AST_DRIVER", temp->name) == 0)) || 
+        (strcmp(tup->result, temp->name) == 0)) {
+            int offset = temp->last_offset;
+            if(offset % 16 == 0)
+                return offset;
 
-                    fprintf(fp, "\t%s resb %d\n", s1, temp->last_offset);
-
-                    break;
-                }
-                temp = temp->sibling;
-            }
+            else
+                return (int) ((offset / 16) + 1) * 16;
         }
-        
-        tup = tup->next;
+        temp = temp->sibling;
     }
 
-    return 1;
+    return 0;
 }
 
 char* generate_dynamic_label() {
@@ -106,7 +96,7 @@ void print_args(struct tup* tup) {
     return;
 }
 
-int generate_tuple_code(tuple* tup, FILE* fp) {
+int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
     
     if(tup == NULL)
         return 0;
@@ -115,7 +105,8 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
         fprintf(fp, "%s:\n", tup->result);
 
         if(tup->op == FUN_LABEL) {
-            fprintf(fp, "\tmov rbp, mem_%s\n\tpush rbp\n\tmov rbp, [rsp]\n", tup->result);
+            int offset = get_ar_size(tup, tree, fp);
+            fprintf(fp, "\tpush rbp\n\tmov rbp, rsp\n\tsub rsp, %d\n", offset);
         }
     }
 
@@ -126,11 +117,11 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
 
         if(tup->node1) {
             if(tup->node1->datatype == 0)
-                fprintf(fp, "\tmov ax, word [rbp + %d]\n\tmov %s, ax\n", tup->node1->offset, res);
+                fprintf(fp, "\tmov ax, word [rbp - %d]\n\tmov %s, ax\n", tup->node1->offset + tup->node1->width, res);
             else if(tup->node1->datatype == 1)
-                fprintf(fp, "\tmov rax, qword [rbp + %d]\n\tmov %s, rax\n", tup->node1->offset, res);
+                fprintf(fp, "\tmov rax, qword [rbp - %d]\n\tmov %s, rax\n", tup->node1->offset + tup->node1->width, res);
             else if(tup->node1->datatype == 2)
-                fprintf(fp, "\tmov al, byte [rbp + %d]\n\tmov %s, al\n", tup->node1->offset, res);
+                fprintf(fp, "\tmov al, byte [rbp - %d]\n\tmov %s, al\n", tup->node1->offset + tup->node1->width, res);
         }
         else {
             if(tup->node3->datatype == 0)
@@ -152,11 +143,11 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
 
         if(tup->node1) {
             if(tup->node1->datatype == 0)
-                fprintf(fp, "\tmov ax, word [rbp + %d]\n\tmov word [rbx], ax\n", tup->node1->offset);
+                fprintf(fp, "\tmov ax, word [rbp - %d]\n\tmov word [rbx], ax\n", tup->node1->offset + tup->node1->width);
             else if(tup->node1->datatype == 1)
-                fprintf(fp, "\tmov rax, qword [rbp + %d]\n\tmov qword [rbx], rax\n", tup->node1->offset);
+                fprintf(fp, "\tmov rax, qword [rbp - %d]\n\tmov qword [rbx], rax\n", tup->node1->offset + tup->node1->width);
             else if(tup->node1->datatype == 2)
-                fprintf(fp, "\tmov al, byte [rbp + %d]\n\tmov byte [rbx], al\n", tup->node1->offset);
+                fprintf(fp, "\tmov al, byte [rbp - %d]\n\tmov byte [rbx], al\n", tup->node1->offset + tup->node1->width);
         }
         else {
             if(tup->node3->datatype == 0)
@@ -185,6 +176,44 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             fprintf(fp, "\tmov al, byte [rbx]\n\tmov %s, al\n", res);
     }
 
+    if(tup->op == PARAM) {
+        int offset = atoi(tup->arg1);
+        offset += tup->node3->width + 16;
+
+        fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n", offset);
+        if(tup->node3->datatype == 0)
+            fprintf(fp, "\tmov bx, word [rbp - %d]\n\tmov word [rax], bx\n", tup->node3->offset + tup->node3->width);
+        else if(tup->node3->datatype == 1)
+            fprintf(fp, "\tmov rbx, qword [rbp - %d]\n\tmov qword [rax], rbx\n", tup->node3->offset + tup->node3->width);
+        else if(tup->node3->datatype == 2)
+            fprintf(fp, "\tmov bl, byte [rbp - %d]\n\tmov byte [rax], bl\n", tup->node3->offset + tup->node3->width);
+    }
+
+    if(tup->op == PARAM_OP) {
+        int offset = atoi(tup->arg1);
+        offset += tup->node3->width + 8 + 16;
+
+        fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n\tmov rbx, rbp\n\tsub rbx, %d\n\tmov qword [rax], rbx\n", offset, tup->node3->offset + tup->node3->width);
+    }
+
+    if(tup->op == CALL) {
+        fprintf(fp, "\tcall %s\n", tup->result);
+    }
+    
+    if(tup->op == RETURN) {
+        if(!tup->node3)
+            fprintf(fp, "\tmov rsp, rbp\n\tpop rbp\n\tret\n\n");
+        else {
+            fprintf(fp, "\tmov rbx, rbp\n\tsub rbx, %d\n", tup->node3->offset + tup->node3->width);
+            if(tup->node3->datatype == 0)
+                fprintf(fp, "\tmov ax, word [rbx]\n\tsub rbx, 8\n\tmov word [rbx], ax\n\t");
+            else if(tup->node3->datatype == 1)
+                fprintf(fp, "\tmov rax, qword [rbx]\n\tsub rbx, 8\n\tmov qword [rbx], rax\n\t");
+            else if(tup->node3->datatype == 2)
+                fprintf(fp, "\tmov al, byte [rbx]\n\tsub rbx, 8\n\tmov byte [rbx], al\n\t");
+        }
+    }
+
     if(tup->op == ADDITION || tup->op == SUBTRACTION || tup->op == MULTIPLY || tup->op == DIVIDE) {
         char operation[5];
         char* arg1 = read_operand(tup->node1, tup->arg1);
@@ -201,13 +230,13 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             if(tup->op == DIVIDE) {
                 if(tup->node3->datatype == 0) {
                     if(tup->node2)
-                        fprintf(fp, "\txor dx, dx\n\tmov ax, %s\n\tidiv %s\n\tmov word [rbp + %d], ax\n", arg1, arg2, tup->node3->offset);
+                        fprintf(fp, "\txor dx, dx\n\tmov ax, %s\n\tidiv %s\n\tmov word [rbp - %d], ax\n", arg1, arg2, tup->node3->offset + tup->node3->width);
                     else
-                        fprintf(fp, "\txor dx, dx\n\tmov ax, %s\n\tmov cx, %s\n\tidiv cx\n\tmov word [rbp + %d], ax\n", arg1, arg2, tup->node3->offset);
+                        fprintf(fp, "\txor dx, dx\n\tmov ax, %s\n\tmov cx, %s\n\tidiv cx\n\tmov word [rbp - %d], ax\n", arg1, arg2, tup->node3->offset + tup->node3->width);
                 }
             }
             else
-                fprintf(fp, "\tmov ax, %s\n\t%s ax, %s\n\tmov word [rbp + %d], ax\n", arg1, operation, arg2, tup->node3->offset);
+                fprintf(fp, "\tmov ax, %s\n\t%s ax, %s\n\tmov word [rbp - %d], ax\n", arg1, operation, arg2, tup->node3->offset + tup->node3->width);
         }
         else if(tup->node3->datatype == 1) {
             if(tup->op == ADDITION)
@@ -236,10 +265,10 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
                 fprintf(fp, "\tsub rsp, 128\n\tmov rax, %s\n\tmov [rsp], rax\n\tfld qword [rsp]\n\tadd rsp, 64\n\tmov rax, %s\n\tmov [rsp], rax\n\t%s qword [rsp]\n", arg1, arg2, operation);
             }
 
-            fprintf(fp, "\tfstp qword [rbp + %d]\n", tup->node3->offset);
+            fprintf(fp, "\tfstp qword [rbp - %d]\n", tup->node3->offset + tup->node3->width);
         }
         else if(tup->node3->datatype == 3 && tup->op == ADDITION) {
-            fprintf(fp, "\tmov rax, rbp\n\tadd rax, %d\n\txor rbx, rbx\n\tmov bx, word [rbp + %d]\n\tadd rax, rbx\n\tmov qword [rbp + %d], rax\n", tup->node1->offset, tup->node2->offset, tup->node3->offset);
+            fprintf(fp, "\tmov rax, rbp\n\tsub rax, %d\n\txor rbx, rbx\n\tmov bx, word [rbp - %d]\n\tadd rax, rbx\n\tmov qword [rbp - %d], rax\n", tup->node1->offset + tup->node1->width, tup->node2->offset + tup->node2->width, tup->node3->offset + tup->node3->width);
         }
     }
 
@@ -252,7 +281,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
         char* arg1 = read_operand(tup->node1, tup->arg1);
         char* arg2 = read_operand(tup->node2, tup->arg2);
 
-        fprintf(fp, "\tmov al, %s\n\t%s al, %s\n\tmov byte [rbp + %d], al\n", arg1, operation, arg2, tup->node3->offset);
+        fprintf(fp, "\tmov al, %s\n\t%s al, %s\n\tmov byte [rbp - %d], al\n", arg1, operation, arg2, tup->node3->offset + tup->node3->width);
     }
 
     if(tup->op == GREATER || tup->op == GREATER_EQUAL || tup->op == LESS ||
@@ -266,13 +295,13 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
         else if(!tup->node1 && !tup->node2)
             is_float = check_if_float(arg1) || check_if_float(arg2);
 
-        if(!tup->node1 && !is_float) {
+        if(!is_float ) {
             fprintf(fp, "\tmov ax, %s\n\tcmp ax, %s\n", arg1, arg2);
 
         }
-        else if(tup->node1 && !is_float) {
-            fprintf(fp, "\tcmp %s, %s\n", arg1, arg2);
-        }
+        // else if(tup->node1 && !is_float) {
+        //     fprintf(fp, "\tcmp %s, %s\n", arg1, arg2);
+        // }
         else {
             fprintf(fp, "\tfinit\n");
             if(tup->node1 && tup->node2) {
@@ -305,7 +334,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
 
         char* label1 = generate_dynamic_label();
         char* label2 = generate_dynamic_label();
-        fprintf(fp, "\t%s %s\n\tmov byte [rbp + %d], 1\n\tjmp %s\n%s:\n\tmov byte [rbp + %d], 0\n%s:\n", operation, label1, tup->node3->offset, label2, label1, tup->node3->offset, label2);
+        fprintf(fp, "\t%s %s\n\tmov byte [rbp - %d], 1\n\tjmp %s\n%s:\n\tmov byte [rbp - %d], 0\n%s:\n", operation, label1, tup->node3->offset + tup->node3->width, label2, label1, tup->node3->offset + tup->node3->width, label2);
     }
 
     if(tup->op == WRITE) {
@@ -314,7 +343,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             int data_type = tup->node3->datatype;
 
             if(data_type == 3) {
-                fprintf(fp, "\tmov rbx, qword [rbp + %d]\n", tup->node3->offset);
+                fprintf(fp, "\tmov rbx, qword [rbp - %d]\n", tup->node3->offset + tup->node3->width);
                 data_type = tup->node3->array_datatype;
             }
 
@@ -322,7 +351,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             if(tup->node3->datatype == 3)
                 sprintf(arg, "[rbx]");
             else
-                sprintf(arg, "[rbp + %d]", tup->node3->offset);
+                sprintf(arg, "[rbp - %d]", tup->node3->offset + tup->node3->width);
 
             if(data_type == 0)
                 fprintf(fp, "\tmov rax, 0\n\tmov ax, word %s\n\tmovsx rax, ax\n\tmov rdi, fmt_integer\n\tmov rsi, rax\n\tmov rax, 0\n\tcall printf\n", arg);
@@ -338,8 +367,8 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
         else {
             int i=0, length = strlen(tup->result), j=0, k=0;
             length += 1;
-            char str[8];
-
+            char str[9];
+            str[8] = '\0';
             fprintf(fp, "\tsub rsp, %d\n", length);
             
             while(i < (length-1)) {
@@ -366,7 +395,7 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
         if(data_type == 3) {
             flag = 1;
             data_type = tup->node3->array_datatype;
-            fprintf(fp, "\tmov rbx, qword [rbp + %d]\n", tup->node3->offset);
+            fprintf(fp, "\tmov rbx, qword [rbp - %d]\n", tup->node3->offset + tup->node3->width);
         }
 
         if(data_type == 0) {
@@ -375,14 +404,14 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             if(flag)
                 fprintf(fp, "\tmov word [rbx], ax\n");
             else
-                fprintf(fp, "\tmov word [rbp + %d], ax\n", tup->node3->offset);
+                fprintf(fp, "\tmov word [rbp - %d], ax\n", tup->node3->offset + tup->node3->width);
         }
         else if(data_type == 1) {
             fprintf(fp, "\tmov rsi, message_ip_real\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
             if(flag)
                 fprintf(fp, "\tmov rsi, rbx\n");
             else
-                fprintf(fp, "\tmov rsi, rbp\n\tadd rsi, %d\n", tup->node3->offset);
+                fprintf(fp, "\tmov rsi, rbp\n\tsub rsi, %d\n", tup->node3->offset + tup->node3->width);
 
             fprintf(fp, "\tmov rdi, fmt_ip_float\n\tmov al, 0\n\tcall scanf\n");
         }
@@ -390,24 +419,24 @@ int generate_tuple_code(tuple* tup, FILE* fp) {
             fprintf(fp, "\tmov rsi, message_ip_boolean\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
             fprintf(fp, "\tmov rsi, buffer_integer\n\tmov rdi, fmt_ip_integer\n\tmov al, 0\n\tcall scanf\n\tmov eax, [buffer_integer]\n");
             if(flag)
-                fprintf(fp, "\tmov byte [rbx], ax\n");
+                fprintf(fp, "\tmov byte [rbx], al\n");
             else
-                fprintf(fp, "\tmov byte [rbp + %d], al\n", tup->node3->offset);
+                fprintf(fp, "\tmov byte [rbp - %d], al\n", tup->node3->offset + tup->node3->width);
         }
     }
 
     if(tup->op == GOTO) {
-        fprintf(fp, "\tjmp %s\n", tup->arg1);
+        fprintf(fp, "\tjmp %s\n", tup->result);
     }
 
     if(tup->op == IF_TRUE) {
-        fprintf(fp, "\tmov al, byte [rbp + %d]\n\tcmp al, 1\n\tjz %s\n", tup->node1->offset, tup->result);
+        fprintf(fp, "\tmov al, byte [rbp - %d]\n\tcmp al, 1\n\tjz %s\n", tup->node1->offset + tup->node1->width, tup->result);
     }
     if(tup->op == IF_FALSE) {
-        fprintf(fp, "\tmov al, byte [rbp + %d]\n\tcmp al, 0\n\tjz %s\n", tup->node1->offset, tup->result);
+        fprintf(fp, "\tmov al, byte [rbp - %d]\n\tcmp al, 0\n\tjz %s\n", tup->node1->offset + tup->node1->width, tup->result);
     }
 
-    generate_tuple_code(tup->next, fp);
+    generate_tuple_code(tup->next, tree, fp);
 
     return 1;
 }
@@ -416,7 +445,7 @@ char* read_operand(Symbol_Node* node, char* arg) {
     char* arg1 = (char*) malloc(sizeof(char)*25);
 
     if(node) {
-        sprintf(arg1, "%s [rbp + %d]", reg_offsets[node->datatype], node->offset);
+        sprintf(arg1, "%s [rbp - %d]", reg_offsets[node->datatype], node->offset + node->width);
     }
     else {
         if(check_if_float(arg)) {

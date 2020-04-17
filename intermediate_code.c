@@ -184,6 +184,18 @@ int process_node(AST node, tuple_list* list) {
 
         generate_ir_util(temp, list);
 
+        AST op_list = node->child->next->next;
+
+        if(op_list && op_list->label == OUTPUT_PLIST) {
+            AST temp = op_list;
+
+            while(temp) {
+                Tuple new_t = make_tuple(RETURN, "", "", temp->child->leaf_token->lexeme, NULL, NULL, temp->child->symbol_table_node);
+                add_tuple(list, new_t);
+                temp = temp->child->next->next;
+            }
+        }
+
         new_tup = make_tuple(RETURN, "", "", "", NULL, NULL, NULL);
         add_tuple(list, new_tup);
 
@@ -366,7 +378,7 @@ int process_node(AST node, tuple_list* list) {
         Tuple new_tup5 = make_tuple(COPY, temp0->name, "", itr->leaf_token->lexeme, temp0->symbol, NULL, itr->symbol_table_node);
         add_tuple(list, new_tup5);
 
-        Tuple new_tup6 = make_tuple(GOTO, label1, "", "", NULL, NULL, NULL);
+        Tuple new_tup6 = make_tuple(GOTO, "", "", label1, NULL, NULL, NULL);
         add_tuple(list, new_tup6);
 
         // OUTSIDE FOR
@@ -399,7 +411,7 @@ int process_node(AST node, tuple_list* list) {
 
         generate_ir_util(node->child->next, list);
 
-        Tuple new_tup4 = make_tuple(GOTO, label1, "", "", NULL, NULL, NULL);
+        Tuple new_tup4 = make_tuple(GOTO, "", "", label1, NULL, NULL, NULL);
         add_tuple(list, new_tup4);
 
         Tuple new_tup5 = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
@@ -603,7 +615,7 @@ int process_node(AST node, tuple_list* list) {
             Tuple new_tup6 = make_tuple(COPY, temp0->name, "", itr->name, temp0->symbol, NULL, itr->symbol);
             add_tuple(list, new_tup6);
 
-            Tuple new_tup7 = make_tuple(GOTO, label1, "", "", NULL, NULL, NULL);
+            Tuple new_tup7 = make_tuple(GOTO, "", "", label1, NULL, NULL, NULL);
             add_tuple(list, new_tup7);
 
             // OUTSIDE FOR
@@ -766,7 +778,7 @@ int process_node(AST node, tuple_list* list) {
                 Tuple new_tup6 = make_tuple(COPY, temp0->name, "", itr->name, temp0->symbol, NULL, itr->symbol);
                 add_tuple(list, new_tup6);
 
-                Tuple new_tup7 = make_tuple(GOTO, label1, "", "", NULL, NULL, NULL);
+                Tuple new_tup7 = make_tuple(GOTO, "", "", label1, NULL, NULL, NULL);
                 add_tuple(list, new_tup7);
 
                 // OUTSIDE FOR
@@ -790,15 +802,22 @@ int process_node(AST node, tuple_list* list) {
             fun_name = fun_name->next;
         }
 
+        int offset = 0;
+        char str[5];
+
         while(input) {
-            Tuple label_tup = make_tuple(PARAM, "", "", input->child->leaf_token->lexeme, NULL, NULL, input->child->symbol_table_node);
+            sprintf(str, "%d", offset);
+            offset += input->child->symbol_table_node->width;
+            Tuple label_tup = make_tuple(PARAM, str, "", input->child->leaf_token->lexeme, NULL, NULL, input->child->symbol_table_node);
             add_tuple(list, label_tup);
 
             input = input->child->next;
         }
 
         while(op_exists && output) {
-            Tuple label_tup = make_tuple(PARAM_OP, "", "", output->child->leaf_token->lexeme, NULL, NULL, output->child->symbol_table_node);
+            sprintf(str, "%d", offset);
+            offset += output->child->symbol_table_node->width + 8;
+            Tuple label_tup = make_tuple(PARAM_OP, str, "", output->child->leaf_token->lexeme, NULL, NULL, output->child->symbol_table_node);
             add_tuple(list, label_tup);
 
             output = output->child->next;

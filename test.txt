@@ -1,11 +1,23 @@
+<<module square>>
+takes input [x:integer, y:integer, z:real];
+returns [value:integer];
+start
+	print(z);
+	value := 2;
+end
+
 <<<driver program>>>
 start
-	declare i:real;
-	declare j:boolean;
-	declare arr: array [1..4] of integer;
-	declare k:integer;
+	declare v_1_2_3, x:integer;
+	declare y:real;
+	declare result_:integer;
 
-	get_value(arr);
-	print(arr);
-	
+	x := 2;
+	v_1_2_3 := 42;
+	y := 2.5;
+
+	print(x);	
+	[result_]:=use module square with parameters v_1_2_3, x, y;
+
+	print(y);
 end

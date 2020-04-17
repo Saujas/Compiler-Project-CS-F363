@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 
-                root = generate_AST(*parse_tree_ptr, 1);
+                root = generate_AST(*parse_tree_ptr, 0);
                 err = initialize_errors();
                 tree = create_symbol_table_tree(root, err);
                 
