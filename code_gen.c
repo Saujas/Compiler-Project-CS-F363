@@ -2,7 +2,7 @@
 
 int label = 0;
 // Integer - Word size, Real - 64 bit, Boolean - Byte
-char* reg_offsets[4] = {"word", "qword", "byte", ""};
+char* reg_offsets[4] = {"word", "qword", "byte", "qword"};
 
 int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     
@@ -215,6 +215,10 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    if(tup->op == MEM_ALLOC) {
+        fprintf(fp, "\tmov ax, word [rbp - %d]\n\tmovsx rax, ax\n\tsub rsp, rax\n\tmov qword [rbp - %d], rsp\n", tup->node1->offset + tup->node1->width, tup->node3->offset + tup->node3->width);
+    }
+
     if(tup->op == ADDITION || tup->op == SUBTRACTION || tup->op == MULTIPLY || tup->op == DIVIDE) {
         char operation[5];
         char* arg1 = read_operand(tup->node1, tup->arg1);
@@ -271,6 +275,11 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         else if(tup->node3->datatype == 3 && tup->op == ADDITION) {
             fprintf(fp, "\tmov rax, rbp\n\tsub rax, %d\n\txor rbx, rbx\n\tmov bx, word [rbp - %d]\n\tadd rax, rbx\n\tmov qword [rbp - %d], rax\n", tup->node1->offset + tup->node1->width, tup->node2->offset + tup->node2->width, tup->node3->offset + tup->node3->width);
         }
+    }
+
+    if(tup->op == ADD_DYNAMIC) {
+        fprintf(fp, "\tmov rax, qword [rbp - %d]\n\tmov bx, word [rbp - %d]\n\tmovsx rbx, bx\n\tadd rax, rbx\n\tmov qword [rbp - %d], rax\n", 
+        tup->node1->offset + tup->node1->width, tup->node2->offset + tup->node2->width, tup->node3->offset + tup->node3->width);
     }
 
     if(tup->op == BOOLEAN_AND || tup->op == BOOLEAN_OR) {
@@ -368,9 +377,15 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         else {
             int i=0, length = strlen(tup->result), j=0, k=0;
             length += 1;
+            int offset = length;
             char str[9];
             str[8] = '\0';
-            fprintf(fp, "\tsub rsp, %d\n", length);
+
+            if(offset % 16 != 0) {
+                offset = ((int) (offset / 16) + 1) * 16;
+            }
+
+            fprintf(fp, "\tsub rsp, %d\n", offset);
             
             while(i < (length-1)) {
                 if(j==8) {
@@ -385,8 +400,8 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             }
             
             fprintf(fp, "\tmov rax, '%s'\n\tmov qword [rsp], rax\n", str);
-            fprintf(fp, "\tadd rsp, %d\n\tmov byte [rsp], 0\n\tsub rsp, %d\n", j, (length-1));
-            fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n\tadd rsp, %d\n", length);
+            fprintf(fp, "\tadd rsp, %d\n\tmov byte [rsp], 0\n\tsub rsp, %d\n", j, length-1);
+            fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n\tadd rsp, %d\n", offset);
         }
     }
 

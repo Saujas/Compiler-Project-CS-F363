@@ -11,6 +11,7 @@ void link_children(t_node* node);
 void link_parent(t_node* node);
 void convert_to_AST_node(t_node* node);
 void print_ast(AST root, AST parent);
+void print_ast_preorder(AST root, AST parent);
 void print_ast_node(AST node, AST parent);
 AST extract_inherited(t_node* node);
 t_node* get_switch_end_node(t_node* temp);

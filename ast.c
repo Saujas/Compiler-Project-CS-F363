@@ -143,6 +143,34 @@ void print_ast(AST root, AST parent) {
     return;
 }
 
+void print_ast_preorder(AST root, AST parent) {
+    
+    if(root == NULL) {
+        return;
+    }
+    // print_ast(root->child, root);
+
+    print_ast_node(root, parent);
+    print_ast_preorder(root->child, root);
+    
+
+    if(root->child==NULL) {
+        return;
+    }
+    
+    parent = root;
+    root = root->child;
+    root = root->next;
+    // root = root->next;
+    while(root) {
+        print_ast_preorder(root, parent);
+        root = root->next;
+    }
+    printf("\n");
+
+    return;
+}
+
 void print_ast_node(AST node, AST parent) {
     // if(node->tag == 1) {
     //     printf("Rule no: %d - %s", node->rule_num, ast_string_map[node->label]);
