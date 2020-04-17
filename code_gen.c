@@ -60,7 +60,7 @@ int get_ar_size(tuple* tup, Symbol_Table_Tree tree, FILE* fp) {
     Symbol_Table_Tree temp = fun_tree;
 
     while(temp) {
-        if( ((strcmp(tup->result, "main") == 0) && (strcmp("AST_DRIVER", temp->name) == 0)) || 
+        if( ((strcmp(tup->result, "main") == 0) && (strcmp("driver", temp->name) == 0)) || 
         (strcmp(tup->result, temp->name) == 0)) {
             int offset = temp->last_offset;
             printf("%d\n", offset);
@@ -184,7 +184,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n", offset);
         if(tup->node3->datatype == 0)
             fprintf(fp, "\tmov bx, word [rbp - %d]\n\tmov word [rax], bx\n", tup->node3->offset + tup->node3->width);
-        else if(tup->node3->datatype == 1)
+        else if(tup->node3->datatype == 1 || tup->node3->datatype == 3)
             fprintf(fp, "\tmov rbx, qword [rbp - %d]\n\tmov qword [rax], rbx\n", tup->node3->offset + tup->node3->width);
         else if(tup->node3->datatype == 2)
             fprintf(fp, "\tmov bl, byte [rbp - %d]\n\tmov byte [rax], bl\n", tup->node3->offset + tup->node3->width);

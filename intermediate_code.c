@@ -1199,7 +1199,7 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
     temp2->symbol->array_datatype = node->symbol_table_node->array_datatype;
     Tuple new_tup2;
 
-    if(node->symbol_table_node->range[0].tag == 0 && node->symbol_table_node->range[1].tag == 0)
+    if((node->symbol_table_node->range[0].tag == 0 && node->symbol_table_node->range[1].tag == 0) && (strcmp(parent_scope->name, "driver") == 0))
         new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
     else {
         // Temporary t = create_temporary();

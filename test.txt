@@ -1,22 +1,15 @@
+<<module square>>
+takes input [x:integer];
+returns [value:integer];
+start
+	value:= x*x;
+end
+
 <<<driver program>>>
 start
-
-	declare i, a, b:integer;
-	a := 1;
-	b := 3;
-	i := 3;
-	declare arr: array[a..b] of integer;
-	declare arr2: array[i..6] of real;
-
-	arr[1] := 2;
-	arr[2] := 4;
-	arr[3] := 4;
-
-	for(i in 3..6)
-	start
-		arr2[i] := 5.6;
-	end
-
-	print(arr);
-	print(arr2);
+	declare v_1_2_3:integer;
+	get_value(v_1_2_3);
+	declare result_:integer;
+	[result_]:=use module square with parameters v_1_2_3;
+	print(result_);
 end
