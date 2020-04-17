@@ -8,8 +8,8 @@ driverModule DRIVERDEF DRIVER PROGRAM DRIVERENDDEF moduleDef
 module DEF MODULE ID ENDDEF TAKES INPUT SQBO input_plist SQBC SEMICOL ret moduleDef
 ret RETURNS SQBO output_plist SQBC SEMICOL
 ret E
-input_plist ID COLON dataType new1
-new1 COMMA ID COLON dataType new1
+input_plist ID COLON dataType2 new1
+new1 COMMA ID COLON dataType2 new1
 new1 E
 output_plist ID COLON type new2
 new2 COMMA ID COLON type new2
