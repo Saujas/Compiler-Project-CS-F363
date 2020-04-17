@@ -817,7 +817,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                 make_symbol_list(print_slot_list, symbol_node, print_list);
                 parent_module->last_offset += width;
                 parent_module->last_offset += 8;
-                current->output->last_offset2 += width2;
+                current->input->last_offset2 += width2;
             }
             else{
                 //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
