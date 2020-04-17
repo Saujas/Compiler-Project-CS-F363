@@ -219,15 +219,23 @@ Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err, int flag) {
     // printf("\n**\nAST traversed\n**\n");
 
     if(flag) {
-        // sort_errors(err);
-        // if((err->head) != NULL) {
-        //     printf("Semantic errors occurred\n\n");
-        //     print_errors(err);
-        // }
-        // else {
+        sort_errors(err);
+        if((err->head) != NULL) {
+            printf("Semantic errors occurred\n\n");
+            print_errors(err);
+        }
+        if(flag == 1) {
             printf("\n%-20s%-25s%-24s%-10s%-12s%-20s%-17s%-18s%-14s%-12s\n\n", "Variable_name" , "Scope(module name)" , "Scope(line numbers)" , "Width" , "Is_Array" , "Static_or_Dynamic" , "Range_lexemes" , "Type of elememt" , "Offset" , "Nesting level");
             print_all_symbols(*print_list);
-        // }
+        }
+        else if(flag == 2) {
+            printf("\n%-27s%-25s%-25s%-25s%-17s%-18s\n\n", "Scope(module name)" , "Scope(line numbers)" , "Variable_name" , "Static_or_Dynamic" , "Range_lexemes" , "Type of elememt");
+            print_array_info(*print_list);
+        }
+        else if(flag == 3) {
+            printf("\n%-30s%-30s\n\n", "Function name", "Activation record size");
+            print_activation_record_sizes(tree->child);
+        }
     }
 
     return tree;
@@ -1201,5 +1209,60 @@ void print_all_symbols(Symbol_List *list) {
 
         list = list->prev;
         printf("\n");
+    }
+}
+
+//%-27s%-25s%-25s%-25s%-17s%-18s
+void print_array_info(Symbol_List *list) {
+    const char* arr[3];
+    arr[0] = "integer";
+    arr[1] = "real";
+    arr[2] = "boolean";
+
+    while(list && list->symbol) {
+        Symbol_Node* symbol = list->symbol;
+        if(symbol->datatype == 3) {
+            Symbol_Table_Tree temp_tree = get_parent_scope(symbol->node->current_scope);
+            printf("%-27s", temp_tree->name);         
+            char s[10];
+            sprintf(s, "%d-%d", symbol->node->current_scope->start, symbol->node->current_scope->end);
+            printf("%-25s", s);
+            printf("%-25s", symbol->node->leaf_token->lexeme);
+            char t[100];
+            if(symbol->range[0].tag == 0 && symbol->range[1].tag == 0) {
+                printf("%-25s", "Static array");
+                sprintf(t, "[%d,%d]", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.value);
+                printf("%-17s", t);
+            }
+            else if(symbol->range[0].tag == 0 && symbol->range[1].tag == 1) {
+                printf("%-25s", "Dynamic array");
+                sprintf(t, "[%d,%s]", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+                printf("%-17s", t);
+            }
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 0) {
+                printf("%-25s", "Dynamic array");
+                sprintf(t, "[%s,%d]", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.value);
+                printf("%-17s", t);
+            }
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 1) {
+                printf("%-25s", "Dynamic array");
+                sprintf(t, "[%s,%s]", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+                printf("%-17s", t);
+            }
+            printf("%-18s", arr[symbol->array_datatype]);
+            printf("\n");
+        }
+        
+        list = list->prev;
+    }
+
+}
+
+void print_activation_record_sizes(Symbol_Table_Tree tree) {
+    while(tree) {
+        printf("%-30s", tree->name);
+        printf("%-30d", tree->last_offset2);
+        printf("\n");
+        tree = tree->sibling;
     }
 }
