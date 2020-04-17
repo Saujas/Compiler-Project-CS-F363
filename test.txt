@@ -1,9 +1,9 @@
 <<module square>>
-takes input [x:integer, y:integer, z:real];
+takes input [x:integer];
 returns [value:integer];
 start
-	print(z);
-	value := 2;
+	value := 6;
+	print(value);
 end
 
 <<<driver program>>>
@@ -13,11 +13,8 @@ start
 	declare result_:integer;
 
 	x := 2;
-	v_1_2_3 := 42;
-	y := 2.5;
 
-	print(x);	
-	[result_]:=use module square with parameters v_1_2_3, x, y;
+	[result_]:=use module square with parameters x;
+	print(result_);
 
-	print(y);
 end

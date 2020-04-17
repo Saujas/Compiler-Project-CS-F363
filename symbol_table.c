@@ -776,6 +776,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                 param_order++;
                 insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
                 parent_module->last_offset += width;
+                parent_module->last_offset += 8;
                 current->output->last_offset2 += width2;
             }
             else{

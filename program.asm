@@ -24,40 +24,9 @@ square:
 	push rbp
 	mov rbp, rsp
 	sub rsp, 16
-	mov rsi, message_output
-	mov rdi, fmt_string_no_line_break
-	xor rax, rax
-	call printf
-	mov rax, qword [rbp - 12]
-	mov rdi, fmt_float
-	movq xmm0, rax
-	mov eax, 1
-	call printf
-	mov word [rbp - 16], 2
-	mov ax, word [rbp - 16]
-	mov word [rbp - 14], ax
-	mov rsp, rbp
-	pop rbp
-	ret
-
-	mov rsp, rbp
-	pop rbp
-	ret
-
-main:
-	push rbp
-	mov rbp, rsp
-	sub rsp, 32
-	mov word [rbp - 16], 2
-	mov ax, word [rbp - 16]
+	mov word [rbp - 14], 6
+	mov ax, word [rbp - 14]
 	mov word [rbp - 4], ax
-	mov word [rbp - 18], 42
-	mov ax, word [rbp - 18]
-	mov word [rbp - 2], ax
-	mov rax, __float64__(2.5)
-	mov qword [rbp - 26], rax
-	mov rax, qword [rbp - 26]
-	mov qword [rbp - 12], rax
 	mov rsi, message_output
 	mov rdi, fmt_string_no_line_break
 	xor rax, rax
@@ -69,20 +38,29 @@ main:
 	mov rsi, rax
 	mov rax, 0
 	call printf
+	mov rbx, rbp
+	sub rbx, 4
+	mov ax, word [rbx]
+	sub rbx, 8
+	mov rbx, qword [rbx]
+	mov word [rbx], ax
+	mov rsp, rbp
+	pop rbp
+	ret
+
+main:
+	push rbp
+	mov rbp, rsp
+	sub rsp, 16
+	mov word [rbp - 16], 2
+	mov ax, word [rbp - 16]
+	mov word [rbp - 4], ax
 	mov rax, rsp
 	sub rax, 18
-	mov bx, word [rbp - 2]
-	mov word [rax], bx
-	mov rax, rsp
-	sub rax, 20
 	mov bx, word [rbp - 4]
 	mov word [rax], bx
 	mov rax, rsp
 	sub rax, 28
-	mov rbx, qword [rbp - 12]
-	mov qword [rax], rbx
-	mov rax, rsp
-	sub rax, 38
 	mov rbx, rbp
 	sub rbx, 14
 	mov qword [rax], rbx
@@ -91,10 +69,12 @@ main:
 	mov rdi, fmt_string_no_line_break
 	xor rax, rax
 	call printf
-	mov rax, qword [rbp - 12]
-	mov rdi, fmt_float
-	movq xmm0, rax
-	mov eax, 1
+	mov rax, 0
+	mov ax, word [rbp - 14]
+	movsx rax, ax
+	mov rdi, fmt_integer
+	mov rsi, rax
+	mov rax, 0
 	call printf
 
 
