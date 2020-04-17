@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
         printf("2: For invoking both lexer and parser and printing parse tree in-order\n");
         printf("3: For printing AST in-order \n");
         printf("4: For displaying amount of memory used\n");
-        printf("5: For printing symbol table //TO DO\n");
+        printf("5: For printing symbol table \n");
         printf("6: For printing activation record sizes of functions //TO DO\n");
         printf("7: For printing the type expressions and width of array variables //TO DO\n");
         printf("8: For verifying syntactic and semantic correctness and printing total time taken\n");
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
                 type_checker(root, err, tree);
                 sort_errors(err);
                 if((err->head) != NULL) {
-                    printf("Semantic error occurred\n\n");
+                    printf("Semantic errors occurred\n\n");
                     print_errors(err);
                 }
                 else {
