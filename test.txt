@@ -1,15 +1,33 @@
+
 <<module square>>
-takes input [x:integer];
-returns [value:integer];
+takes input [arr: array[2..4] of integer];
 start
-	value:= x*x;
+	print(arr);
+	arr[2]:= 100;
 end
+
 
 <<<driver program>>>
 start
-	declare v_1_2_3:integer;
-	get_value(v_1_2_3);
-	declare result_:integer;
-	[result_]:=use module square with parameters v_1_2_3;
-	print(result_);
+	declare x:integer;
+	declare arr: array[2..4] of integer;
+	
+	arr[2] := 2;
+	arr[3] := 4;
+	arr[4] := 6;
+
+	use module square with parameters arr;
+
+	print(arr);
 end
+
+**notice that this test case does not declare the module before the driver module, still it is syntactically correct as moduleDeclarations is optional. Testing whether a module is declared before its use is a matter of semantic analysis**
+
+** test the correctness of all lexemes and parse tree created
+and print the following message on successful compilation on the console
+      " Input source code is syntactically correct.........."
+**
+
+**make sure to produce only relevant output of your compiler code...
+Also remove all unnecessary printf statements and make the code more professional before submitting**
+

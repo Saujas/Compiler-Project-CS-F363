@@ -179,7 +179,7 @@ int process_node(AST node, tuple_list* list) {
         
         AST temp = node->child->next->next;
         
-        if(temp->next)
+        if(temp->label == OUTPUT_PLIST)
             temp = temp->next;
 
         generate_ir_util(temp, list);
@@ -897,9 +897,10 @@ int process_node(AST node, tuple_list* list) {
         while(input) {
             sprintf(str, "%d", offset);
             offset += input->child->symbol_table_node->width;
+            
             Tuple label_tup = make_tuple(PARAM, str, "", input->child->leaf_token->lexeme, NULL, NULL, input->child->symbol_table_node);
             add_tuple(list, label_tup);
-
+            
             input = input->child->next;
         }
 
