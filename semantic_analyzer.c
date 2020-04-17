@@ -1038,7 +1038,7 @@ void sort_errors_util(Error* temp, int count) {
 void print_errors(ErrorList* errors) {
 
 	Error* temp = errors->head;
-	printf("SEMANTIC ERRORS\n\n");
+	printf("Semantic errors:\n\n");
 	while(temp!=NULL) {
         if(temp->line_num!=-1) {
 		    printf("Line %d: %s\n",temp->line_num,temp->str);

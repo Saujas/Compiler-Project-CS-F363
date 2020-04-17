@@ -41,6 +41,7 @@ typedef struct symbol_node Symbol_Node;
 struct symbol_list {
     Symbol_Node* symbol;
     struct symbol_list* next;
+    struct symbol_list* prev;
 };
 
 typedef struct symbol_list Symbol_List;

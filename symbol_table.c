@@ -213,11 +213,22 @@ int check_if_called(Symbol_Table_Tree current, char* lexeme) {
 Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err, int flag) {
     
     Symbol_Table_Tree tree = make_symbol_table_tree_node(NULL, AST_PROGRAM, "main", 0, 0, 0, -1);
-    traverse_ast(root, tree, err);
-    printf("\n**\nAST traversed\n**\n");
+    Slots_List* print_slot_list = (Slots_List*) malloc(sizeof(Slots_List));
+    Symbol_List** print_list = (Symbol_List**) malloc(sizeof(Symbol_List*));
+    traverse_ast(root, tree, err, print_slot_list, print_list);
+    // printf("\n**\nAST traversed\n**\n");
 
-    if(flag)
-        print_symbol_tables(tree);
+    if(flag) {
+        // sort_errors(err);
+        // if((err->head) != NULL) {
+        //     printf("Semantic errors occurred\n\n");
+        //     print_errors(err);
+        // }
+        // else {
+            printf("\n%-20s%-25s%-24s%-10s%-12s%-20s%-17s%-18s%-14s%-12s\n\n", "Variable_name" , "Scope(module name)" , "Scope(line numbers)" , "Width" , "Is_Array" , "Static_or_Dynamic" , "Range_lexemes" , "Type of elememt" , "Offset" , "Nesting level");
+            print_all_symbols(*print_list);
+        // }
+    }
 
     return tree;
 }
@@ -225,26 +236,26 @@ Symbol_Table_Tree create_symbol_table_tree(AST root, ErrorList* err, int flag) {
 void print_symbol_tables(Symbol_Table_Tree tree) {
     if(tree==NULL)
         return;
-    printf("\nIn scope:\n");
-    printf("Label: %s\n", ast_string_map_copy[tree->label]);
-    printf("Name: %s\n", tree->name);
-    printf("Scope start: %d\n", tree->start);
-    printf("Scope end: %d\n", tree->end);
-    printf("Nested level: %d\n\n", tree->level);
+    // printf("\nIn scope:\n");
+    // printf("Label: %s\n", ast_string_map_copy[tree->label]);
+    // printf("Name: %s\n", tree->name);
+    // printf("Scope start: %d\n", tree->start);
+    // printf("Scope end: %d\n", tree->end);
+    // printf("Nested level: %d\n\n", tree->level);
     // if(tree->parent)
     //     printf("Parent: %s\n\n", tree->parent->name);
     if(tree->is_function && tree->is_defined) {
-        printf("In input_plist:\n");
-        printf("Scope start: %d\n", tree->input->start);
-        printf("Scope end: %d\n", tree->input->end);
-        printf("Nested level: %d\n", tree->input->level);
+        // printf("In input_plist:\n");
+        // printf("Scope start: %d\n", tree->input->start);
+        // printf("Scope end: %d\n", tree->input->end);
+        // printf("Nested level: %d\n", tree->input->level);
         print_slots(tree->input->table);
-        printf("In output_plist:\n");
-        printf("Scope start: %d\n", tree->output->start);
-        printf("Scope end: %d\n", tree->output->end);
-        printf("Nested level: %d\n", tree->output->level);
+        // printf("In output_plist:\n");
+        // printf("Scope start: %d\n", tree->output->start);
+        // printf("Scope end: %d\n", tree->output->end);
+        // printf("Nested level: %d\n", tree->output->level);
         print_slots(tree->output->table);
-        printf("In function:\n");
+        // printf("In function:\n");
     }
     if(tree->table != NULL)
         print_slots(tree->table);
@@ -262,7 +273,7 @@ void print_slots(Symbol_Table* table) {
     int slots = table->number_of_slots;
     int i;
     for(i=0; i<slots; i++) {
-        printf("In slot %d\n", i);
+        // printf("In slot %d\n", i);
         print_symbols(table->slots[i]);
     }
     printf("\n");
@@ -273,20 +284,45 @@ void print_symbols(Slots_List* list) {
         return;
     int count = list->count;
     Symbol_List* temp = list->head;
+    const char* arr[3];
+    arr[0] = "integer";
+    arr[1] = "real";
+    arr[2] = "boolean";
     while(count) {
         Symbol_Node* symbol = temp->symbol;
-        printf("Name of variable: %s ", symbol->node->leaf_token->lexeme);
-        printf("Datatype: %d, Offset: %d, Width: %d\t", symbol->datatype, symbol->offset2, symbol->width2);
+        printf("%s \t", symbol->node->leaf_token->lexeme);
+        printf("%s \t", symbol->node->current_scope->name);
+        printf("%d-%d \t", symbol->node->current_scope->start, symbol->node->current_scope->end);
+        printf("%d \t", symbol->width2);
         if(symbol->datatype == 3) {
-            if(symbol->range[0].tag == 0 && symbol->range[1].tag == 0)
-                printf("Array range: %d..%d", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.value);
-            else if(symbol->range[0].tag == 0 && symbol->range[1].tag == 1)
-                printf("Array range: %d..%s", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
-            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 0)
-                printf("Array range: %s..%d", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.value);
-            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 1)
-                printf("Array range: %s..%s", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+            printf("Yes \t");
+            if(symbol->range[0].tag == 0 && symbol->range[1].tag == 0) {
+                printf("Static \t");
+                printf("[%d,%d] \t", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.value);
+            }
+            else if(symbol->range[0].tag == 0 && symbol->range[1].tag == 1) {
+                printf("Dynamic \t");
+                printf("[%d,%s] \t", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+            }
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 0) {
+                printf("Dynamic \t");
+                printf("[%s,%d] \t", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.value);
+            }
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 1) {
+                printf("Dynamic \t");
+                printf("[%s,%s] \t", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+            }
+            printf("%s \t", arr[symbol->array_datatype]);
         }
+        else {
+            printf("No \t");
+            printf("--- \t");
+            printf("--- \t");
+            printf("%s \t", arr[symbol->datatype]);
+        }
+        printf("%d \t", symbol->offset2);
+        printf("%d \t", symbol->node->current_scope->level);
+
         count--;
         temp = temp->next;
         printf("\n");
@@ -324,7 +360,7 @@ Symbol_Table_Tree get_parent_scope(Symbol_Table_Tree current) {
     return parent_module;
 }
 
-void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
+void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List* print_slot_list, Symbol_List** print_list) {
     if(!node)
         return;
 
@@ -340,7 +376,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
     int data_width2[4] = {2, 4, 1, 1};
 
     // Module call's current scope doesn't have to be changed
-    if(!(node->tag == 0 && node->rule_num == 59)) {
+    if(!((node->tag == 0 && node->rule_num == 59)||(node->tag == 0 && node->rule_num == 11) || (node->tag == 0 && node->rule_num == 14)||(node->tag == 0 && node->rule_num == 12) || (node->tag == 0 && node->rule_num == 15))) {
         node->current_scope = current;
     }
     // printf("%d\n", node->rule_num);
@@ -484,7 +520,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             return;
         }
         else {
-            new = make_symbol_table_tree_node(current, AST_DRIVER, "AST_DRIVER", 0, start, end, 1);
+            new = make_symbol_table_tree_node(current, AST_DRIVER, "driver", 0, start, end, 1);
             new->is_defined = 1;
             new->is_declared = 1;
         }
@@ -738,7 +774,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             if(flag) {
                 symbol_node->param_order = param_order;
                 param_order++;
+                symbol_node->node->current_scope = current->input;
                 insert_symbol(current->input->table, temp->child->leaf_token->lexeme, symbol_node);
+                make_symbol_list(print_slot_list, symbol_node, print_list);
                 parent_module->last_offset += width;
                 current->input->last_offset2 += width2;
             }
@@ -767,17 +805,19 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
             int offset = parent_module->last_offset;
             int width = data_width[datatype];
-            int offset2 = current->output->last_offset2;
+            int offset2 = current->input->last_offset2;
             int width2 = data_width2[datatype];
 
             if(search_current_scope(temp->child->leaf_token->lexeme, current->output)==NULL) {
                 symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 1, NULL, -1);
                 symbol_node->param_order = param_order;
                 param_order++;
+                symbol_node->node->current_scope = current->output;
                 insert_symbol(current->output->table, temp->child->leaf_token->lexeme, symbol_node);
+                make_symbol_list(print_slot_list, symbol_node, print_list);
                 parent_module->last_offset += width;
                 parent_module->last_offset += 8;
-                current->output->last_offset2 += width2;
+                current->input->last_offset2 += width2;
             }
             else{
                 //printf("Line: %d - Variable %s already declared\n", temp->child->leaf_token->line_no, temp->child->leaf_token->lexeme);
@@ -820,6 +860,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             if(search_current_scope(temp->child->child->leaf_token->lexeme, current)==NULL) {
                 symbol_node = make_symbol_node(temp->child->child, datatype, 0, width, width2, offset, offset2, 1, NULL, -1);
                 insert_symbol(current->table, temp->child->child->leaf_token->lexeme, symbol_node);
+                make_symbol_list(print_slot_list, symbol_node, print_list);
                 parent_module->last_offset += width;
                 parent_module->last_offset2 += width2;
             }
@@ -836,8 +877,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
             while(temp) {
                 if(search_current_scope(temp->child->leaf_token->lexeme, current)==NULL) {
                     offset = parent_module->last_offset;
+                    offset2 = parent_module->last_offset2;
                     symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 1, NULL, -1);
                     insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+                    make_symbol_list(print_slot_list, symbol_node, print_list);
                     parent_module->last_offset += width;
                     parent_module->last_offset2 += width2;
                 }
@@ -968,13 +1011,14 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                         width = data_width[array_datatype] * (val2 - val1 + 1);
                         offset = parent_module->last_offset;
                         offset2 = parent_module->last_offset2;
-                        width2 = data_width2[array_datatype] * (val2 - val1 + 1);
+                        width2 = data_width2[array_datatype] * (val2 - val1 + 1) + 1;
                     }
                 }
 
                 if(search_current_scope(temp->child->child->leaf_token->lexeme, current)==NULL) {
                     symbol_node = make_symbol_node(temp->child->child, datatype, 0, width, width2, offset, offset2, 1, range, array_datatype);
                     insert_symbol(current->table, temp->child->child->leaf_token->lexeme, symbol_node);
+                    make_symbol_list(print_slot_list, symbol_node, print_list);
                     parent_module->last_offset += width;
                     parent_module->last_offset2 += width2;
                 }
@@ -994,6 +1038,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
                         offset2 = parent_module->last_offset2;
                         symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 1, range, array_datatype);
                         insert_symbol(current->table, temp->child->leaf_token->lexeme, symbol_node);
+                        make_symbol_list(print_slot_list, symbol_node, print_list);
                         parent_module->last_offset += width;
                         parent_module->last_offset2 += width2;
                     }
@@ -1081,8 +1126,80 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err) {
 
     AST temp = node->child;
     while(temp) {
-        traverse_ast(temp, new, err);
+        traverse_ast(temp, new, err, print_slot_list, print_list);
         temp = temp->next;
     }    
 
+}
+
+
+void make_symbol_list(Slots_List* list, Symbol_Node* node, Symbol_List** temp) {
+    Symbol_List* new = (Symbol_List*) malloc(sizeof(Symbol_List));
+    new->symbol = node;
+    new->next = NULL;
+    if(list->head) {
+        new->next = list->head;
+        new->next->prev = new;
+        list->head = new;
+        list->count += 1;
+    }
+    else {
+        list->head = new;
+        list->count = 1;
+        *temp = new;
+    }
+}
+//-20s %-25s %-24s %-10s %-12s %-20s %-17s %-18s %-14s %-12
+void print_all_symbols(Symbol_List *list) {
+    const char* arr[3];
+    arr[0] = "integer";
+    arr[1] = "real";
+    arr[2] = "boolean";
+    while(list && list->symbol) {
+        Symbol_Node* symbol = list->symbol;
+        printf("%-20s", symbol->node->leaf_token->lexeme);
+        Symbol_Table_Tree temp_tree = get_parent_scope(symbol->node->current_scope);
+        printf("%-25s", temp_tree->name);
+        char s[10];
+        sprintf(s, "%d-%d", symbol->node->current_scope->start, symbol->node->current_scope->end);
+        printf("%-24s", s);
+        printf("%-10d", symbol->width2);
+        if(symbol->datatype == 3) {
+            printf("%-12s", "Yes");
+            char t[100];
+            if(symbol->range[0].tag == 0 && symbol->range[1].tag == 0) {
+                printf("%-20s", "Static");
+                sprintf(t, "[%d,%d]", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.value);
+                printf("%-17s", t);
+            }
+            else if(symbol->range[0].tag == 0 && symbol->range[1].tag == 1) {
+                printf("%-20s", "Dynamic");
+                sprintf(t, "[%d,%s]", symbol->range[0].range_pointer.value, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+                printf("%-17s", t);
+            }
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 0) {
+                printf("%-20s", "Dynamic");
+                sprintf(t, "[%s,%d]", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.value);
+                printf("%-17s", t);
+            }
+            else if(symbol->range[0].tag == 1 && symbol->range[1].tag == 1) {
+                printf("%-20s", "Dynamic");
+                sprintf(t, "[%s,%s]", symbol->range[0].range_pointer.id->node->leaf_token->lexeme, symbol->range[1].range_pointer.id->node->leaf_token->lexeme);
+                printf("%-17s", t);
+            }
+            printf("%-18s", arr[symbol->array_datatype]);
+        }
+        else {
+            printf("%-12s", "No");
+            printf("%-20s", "---");
+            printf("%-17s", "---");
+            printf("%-18s", arr[symbol->datatype]);
+        }
+        printf("%-14d", symbol->offset2);
+        
+        printf("%-12d", symbol->node->current_scope->level);
+
+        list = list->prev;
+        printf("\n");
+    }
 }
