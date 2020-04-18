@@ -17,17 +17,20 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     // fprintf(fp, "section .data\n hello: db 'Hello World!', 10\n helloLen: equ $-hello\n section .text\n global _start\n");
     // fprintf(fp, "_start:\n mov eax, 4\n mov ebx, 1\n mov ecx, hello\n mov edx, helloLen\n int 80h\n mov eax, 1\n mov ebx, 0\n int 80h\n");
     
-    printf("No. of tuples: %d\n", list->count);
+    // printf("No. of tuples: %d\n", list->count);
 
     fprintf(fp, "extern printf, scanf\n\nsection .data\n");
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
+    fprintf(fp, "\tfmt_integer_no_line_break: db '%s', 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
+    fprintf(fp, "\tfmt_float_no_line_break: db '%s', 0\n", "%f");
     fprintf(fp, "\tfmt_string: db '%s', 10, 0\n", "%s");
     fprintf(fp, "\tfmt_string_no_line_break: db '%s', 0\n", "%s");
     fprintf(fp, "\tfmt_ip_integer: db '%s', 0\n", "%d");
     fprintf(fp, "\tfmt_ip_float: db '%s', 0\n", "%lf");
     fprintf(fp, "\tmessage_true: db 'true', 0\n");
     fprintf(fp, "\tmessage_false: db 'false', 0\n");
+    fprintf(fp, "\tmessage_lb: db 10, 0\n");
     fprintf(fp, "\tmessage_ip_integer: db 'Input: Enter an integer value: ', 0\n");
     fprintf(fp, "\tmessage_ip_real: db 'Input: Enter a real value: ', 0\n");
     fprintf(fp, "\tmessage_ip_boolean: db 'Input: Enter a boolean value: ', 0\n");
@@ -45,8 +48,8 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     }
 
     // exit program
-    fprintf(fp, "\n\n; exiting program\n");
-    fprintf(fp, "\tmov rax, 1\n\tmov rbx, 0\n\tint 80h\n");
+    // fprintf(fp, "\n\n; exiting program\n");
+    // fprintf(fp, "\tmov rax, 1\n\tmov rbx, 0\n\tint 80h\n");
 
     fclose(fp);
 
@@ -63,7 +66,7 @@ int get_ar_size(tuple* tup, Symbol_Table_Tree tree, FILE* fp) {
         if( ((strcmp(tup->result, "main") == 0) && (strcmp("driver", temp->name) == 0)) || 
         (strcmp(tup->result, temp->name) == 0)) {
             int offset = temp->last_offset;
-            printf("%d\n", offset);
+            // printf("%d\n", offset);
             if(offset % 16 == 0)
                 return offset;
 
@@ -111,7 +114,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
-    print_args(tup);
+    // print_args(tup);
 
     if(tup->op == COPY) {
         char *res = read_operand(tup->node3, tup->result);
@@ -355,8 +358,8 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
     }
 
     if(tup->op == WRITE) {
-        fprintf(fp, "\tmov rsi, message_output\n\tmov rdi, fmt_string_no_line_break\n\txor rax, rax\n\tcall printf\n");
         if(tup->node3) {
+            fprintf(fp, "\tmov rsi, message_output\n\tmov rdi, fmt_string_no_line_break\n\txor rax, rax\n\tcall printf\n");
             int data_type = tup->node3->datatype;
 
             if(data_type == 3) {
@@ -382,6 +385,9 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             }
         }
         else {
+            if(strcmp(tup->result, "true") == 0 || strcmp(tup->result, "false") == 0)
+                fprintf(fp, "\tmov rsi, message_output\n\tmov rdi, fmt_string_no_line_break\n\txor rax, rax\n\tcall printf\n");
+            
             int i=0, length = strlen(tup->result), j=0, k=0;
             length += 1;
             int offset = length;
@@ -410,6 +416,74 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             fprintf(fp, "\tadd rsp, %d\n\tmov byte [rsp], 0\n\tsub rsp, %d\n", j, length-1);
             fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n\tadd rsp, %d\n", offset);
         }
+    }
+
+    if(tup->op == WRITE_2) {
+        
+        if(tup->node3) {
+            int data_type = tup->node3->datatype;
+
+            if(data_type == 3) {
+                fprintf(fp, "\tmov rbx, qword [rbp - %d]\n", tup->node3->offset + tup->node3->width);
+                data_type = tup->node3->array_datatype;
+            }
+
+            char arg[20];
+            if(tup->node3->datatype == 3)
+                sprintf(arg, "[rbx]");
+            else
+                sprintf(arg, "[rbp - %d]", tup->node3->offset + tup->node3->width);
+
+            if(data_type == 0)
+                fprintf(fp, "\tmov rax, 0\n\tmov ax, word %s\n\tmovsx rax, ax\n\tmov rdi, fmt_integer_no_line_break\n\tmov rsi, rax\n\tmov rax, 0\n\tcall printf\n", arg);
+            else if(data_type == 1)
+                fprintf(fp, "\tmov rax, qword %s\n\tmov rdi, fmt_float_no_line_break\n\tmovq xmm0, rax\n\tmov eax, 1\n\tcall printf\n", arg);
+            else if(data_type == 2) {
+                char* label1 = generate_dynamic_label();
+                char* label2 = generate_dynamic_label();
+                fprintf(fp, "\tcmp byte %s, 1\n\tjz %s\n\tmov rax, message_false\n\tjmp %s\n%s:\n\tmov rax, message_true\n%s:\n", arg, label1, label2, label1, label2); 
+                fprintf(fp, "\tmov rdi, fmt_string_no_line_break\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n");
+            }
+        }
+        else {
+            int i=0, length = strlen(tup->result), j=0, k=0;
+            length += 1;
+            int offset = length;
+            char str[9];
+            int id;
+            for(id = 0; id<9; id++)
+                str[id] = '\0';
+
+            if(offset % 16 != 0) {
+                offset = ((int) (offset / 16) + 1) * 16;
+            }
+
+            fprintf(fp, "\tsub rsp, %d\n", offset);
+            
+            while(i < (length-1)) {
+                if(j==8) {
+                    j = 0;
+                    k++;
+                    fprintf(fp, "\tmov rax, '%s'\n\tmov qword [rsp], rax\n\tadd rsp, 8\n", str);
+                }
+
+                str[j] = (tup->result)[i];
+                j++;
+                i++;
+            }
+            
+            fprintf(fp, "\tmov rax, '%s'\n\tmov qword [rsp], rax\n", str);
+            fprintf(fp, "\tadd rsp, %d\n\tmov byte [rsp], 0\n\tsub rsp, %d\n", j, length-1);
+            fprintf(fp, "\tmov rax, rsp\n\tmov rdi, fmt_string_no_line_break\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n\tadd rsp, %d\n", offset);
+        }
+    }
+
+    if(tup->op == LINE_BREAK) {
+        fprintf(fp, "\tmov rax, message_lb\n\tmov rdi, fmt_string_no_line_break\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n");
+    }
+
+    if(tup->op == EXIT) {
+        fprintf(fp, "\n;exiting program\n\tmov rax, 1\n\tmov rbx, 0\n\tint 80h\n");
     }
 
     if(tup->op == READ) {

@@ -1,5 +1,5 @@
-stage1exe: driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o code_gen.o makefile
-	gcc -o stage1exe driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o code_gen.o
+compiler: driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o code_gen.o makefile
+	gcc -o compiler driver.o parser.o lexer.o lookup_table.o stack.o tree.o ast.o symbol_table.o type_extractor.o semantic_analyzer.o intermediate_code.o code_gen.o
 
 parser.o: parser.h parser_def.h lexer.h lexer_def.h lookup_table.h stack.h parser.c
 	gcc -c -g parser.c
@@ -38,10 +38,10 @@ driver.o: lexer.h lookup_table.h lexer_def.h ast.h symbol_table.h intermediate_c
 	gcc -c -g driver.c
 
 clean:
-	rm *.o && rm stage1exe
+	rm *.o && rm compiler && rm exe
 
 run:
-	./stage1exe $(input_file) $(output_file)
+	./compiler $(input_file) $(output_file)
 
 everything:
-	nasm -f elf64 program.asm -o program.o && gcc -no-pie -o program program.o -lc
+	nasm -f elf64 code.asm -o code.o && gcc -no-pie -o exe code.o -lc

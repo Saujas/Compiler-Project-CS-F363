@@ -4,7 +4,8 @@
 char* operator_string_map[OPERATOR_SIZE] = {
     "COPY", "ADD", "SUB", "MUL", "DIV", "MEM_READ", "MEM_WRITE", "GT",
     "GE", "LT", "LE", "EQ", "NE", "AND", "OR", "LABEL", "IF_TRUE", "IF_FALSE", "GOTO",
-    "READ", "WRITE", "exit", "return", "param_op", "param", "call", "function", "mem_alloc", "add_dynamic"
+    "READ", "WRITE", "exit", "return", "param_op", "param", "call", "function", "mem_alloc", "add_dynamic", "write_2",
+    "line_break"
 };
 
 int temp_var;
@@ -620,11 +621,45 @@ int process_node(AST node, tuple_list* list) {
             char* ul;
             Symbol_Node* sym_node = node->symbol_table_node;
             
-            Tuple new_t = make_tuple(WRITE, "", "", "Enter elements of array", NULL, NULL, NULL);
+            Tuple new_t = make_tuple(WRITE_2, "", "", "Enter ", NULL, NULL, NULL);
             add_tuple(list, new_t);
+
+            Symbol_Node* temp = sym_node->range[0].tag == 0 ? NULL : sym_node->range[0].range_pointer.id;
+            char str[15];
+            if(sym_node->range[0].tag == 0)
+                sprintf(str, "%d", sym_node->range[0].range_pointer.value);
+            else if(sym_node->range[0].tag == 1)
+                strcpy(str, temp->node->leaf_token->lexeme);
+            
+            Symbol_Node* temp1 = sym_node->range[1].tag == 0 ? NULL : sym_node->range[1].range_pointer.id;
+            char str1[15];
+            if(sym_node->range[1].tag == 0)
+                sprintf(str1, "%d", sym_node->range[1].range_pointer.value);
+            else if(sym_node->range[1].tag == 1)
+                strcpy(str1, temp1->node->leaf_token->lexeme);
 
             Temporary itr = create_temporary();
             add_temp_symboltable(itr->symbol, parent_scope, 2);
+            Tuple temp_tup2 = make_tuple(SUBTRACTION, str1, str, itr->name, temp1, temp, itr->symbol);
+            add_tuple(list, temp_tup2);
+            temp_tup2 = make_tuple(ADDITION, itr->name, "1", itr->name, itr->symbol, NULL, itr->symbol);
+            add_tuple(list, temp_tup2);
+            
+            Tuple print_tuple = make_tuple(WRITE_2, "", "", itr->name, NULL, NULL, itr->symbol);
+            add_tuple(list, print_tuple);
+            char str2[45];
+            char* data_type[3] = {"integer", "real", "boolean"};
+            sprintf(str2, " elements of type %s for range ", data_type[sym_node->array_datatype]);
+            print_tuple = make_tuple(WRITE_2, "", "", str2, NULL, NULL, NULL);
+            add_tuple(list, print_tuple);
+            print_tuple = make_tuple(WRITE_2, "", "", str, NULL, NULL, temp);
+            add_tuple(list, print_tuple);
+            print_tuple = make_tuple(WRITE_2, "", "", " to ", NULL, NULL, NULL);
+            add_tuple(list, print_tuple);
+            print_tuple = make_tuple(WRITE_2, "", "", str1, NULL, NULL, temp1);
+            add_tuple(list, print_tuple);
+            print_tuple = make_tuple(LINE_BREAK, "", "", "", NULL, NULL, NULL);
+            add_tuple(list, print_tuple);
 
             if(sym_node->range[0].tag == 1) {
                 ll_sym = sym_node->range[0].range_pointer.id;
@@ -710,7 +745,9 @@ int process_node(AST node, tuple_list* list) {
             // OUTSIDE FOR
             label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
             add_tuple(list, label_tup);
-            
+            print_tuple = make_tuple(WRITE, "", "", "End of array input", NULL, NULL, NULL);
+            add_tuple(list, print_tuple);
+
             return 1;
         }
     }
@@ -1182,17 +1219,59 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
 
     char* str_width = (char*) malloc(sizeof(char) * 2);
     sprintf(str_width, "%d", width);
+
+    Symbol_Node* arg1 = NULL;
+    if(index->leaf_token->token == ID) {
+        arg1 = index->symbol_table_node;
+    }
+
+    // perform run time bound check
+    Temporary bool_t = create_temporary();
+    add_temp_symboltable(bool_t->symbol, parent_scope, 1);
+
+    char str0[40], str1[40];
+    Symbol_Node* sym = node->symbol_table_node;
+    Symbol_Node* t0 = sym->range[0].tag ? sym->range[0].range_pointer.id : NULL;
+    if(t0)
+        strcpy(str0, t0->node->leaf_token->lexeme);
+    else
+        sprintf(str0, "%d", sym->range[0].range_pointer.value);
+
+    Symbol_Node* t1 = sym->range[1].tag ? sym->range[1].range_pointer.id : NULL;
+    if(t1)
+        strcpy(str1, t1->node->leaf_token->lexeme);
+    else
+        sprintf(str1, "%d", sym->range[1].range_pointer.value);
+
+    char* label1 = create_label();
+    char* label2 = create_label();
+    Tuple tup = make_tuple(LESS, index->leaf_token->lexeme, str0, bool_t->name, arg1, t0, bool_t->symbol);
+    add_tuple(list, tup);
+    tup = make_tuple(IF_FALSE, bool_t->name, "", label1, bool_t->symbol, NULL, NULL);
+    add_tuple(list, tup);
+    tup = make_tuple(WRITE, "", "", "RUN TIME ERROR: Array index out of bounds", NULL, NULL, NULL);
+    add_tuple(list, tup);
+    tup = make_tuple(EXIT, "", "", "", NULL, NULL, NULL);
+    add_tuple(list, tup);
+    tup = make_tuple(LABEL, "", "", label1, NULL, NULL, NULL);
+    add_tuple(list, tup);
+
+    tup = make_tuple(GREATER, index->leaf_token->lexeme, str1, bool_t->name, arg1, t1, bool_t->symbol);
+    add_tuple(list, tup);
+    tup = make_tuple(IF_FALSE, bool_t->name, "", label2, bool_t->symbol, NULL, NULL);
+    add_tuple(list, tup);
+    tup = make_tuple(WRITE, "", "", "RUN TIME ERROR: Array index out of bounds", NULL, NULL, NULL);
+    add_tuple(list, tup);
+    tup = make_tuple(EXIT, "", "", "", NULL, NULL, NULL);
+    add_tuple(list, tup);
+    tup = make_tuple(LABEL, "", "", label2, NULL, NULL, NULL);
+    add_tuple(list, tup);
     
     Temporary temp0 = create_temporary();
     add_temp_symboltable(temp0->symbol, parent_scope, 2);
 
     Temporary temp1 = create_temporary();
     add_temp_symboltable(temp1->symbol, parent_scope, 2);
-
-    Symbol_Node* arg1 = NULL;
-    if(index->leaf_token->token == ID) {
-        arg1 = index->symbol_table_node;
-    }
     
     // subtract current index from lower index
     Tuple new_tup0;
@@ -1221,14 +1300,6 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
     if((node->symbol_table_node->range[0].tag == 0 && node->symbol_table_node->range[1].tag == 0) && (strcmp(parent_scope->name, "driver") == 0))
         new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
     else {
-        // Temporary t = create_temporary();
-        // add_temp_symboltable(t->symbol, parent_scope, 8);
-        // t->symbol->datatype = 3;
-        // t->symbol->array_datatype = node->symbol_table_node->array_datatype;
-        // Tuple new_tup = make_tuple(COPY, node->leaf_token->lexeme, "", t->name, node->symbol_table_node, NULL, t->symbol);
-        // add_tuple(list, new_tup);
-        
-        // new_tup2 = make_tuple(ADDITION, t->name, temp1->name, temp2->name, t->symbol, temp1->symbol, temp2->symbol);
         new_tup2 = make_tuple(ADD_DYNAMIC, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
     }
     

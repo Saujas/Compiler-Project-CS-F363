@@ -76,10 +76,10 @@ int insert_node(t_node** parent, t_node* child) {
 
 // Print entire parse tree into file with given name
 int print_parse_tree(t_node* root, char* fname) {
-    FILE* fp = fopen(fname, "w");
+    // FILE* fp = fopen(fname, "w");
 
-    inorder_traversal(root, -1, fp);
-    fclose(fp);
+    inorder_traversal(root, -1, NULL);
+    // fclose(fp);
 }
 
 // Traverse tree inorder - Left child, then parent, then sibling(s)

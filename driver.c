@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     */
     if(argc != 3) {
         printf("Incorrect number of parameters\n");
-        printf("Sample call: ./stage1exe   test.txt   parsetreeOutFile.txt\n");
+        printf("Sample call: ./compiler  testcase.txt  code.asm\n");
         exit(0);
     }
 
@@ -78,12 +78,12 @@ int main(int argc, char* argv[]) {
 
             case 2:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 1);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 1);
                 break;
 
             case 3:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     break;
                 }
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
 
             case 4: 
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     break;
                 }
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
 
             case 5:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     break;
                 }
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
             
             case 6:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     break;
                 }
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
                 
             case 7:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     break;
                 }
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
             case 8:
                 printf("\n");
                 start_time = clock();
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     end_time = clock();
                     total_CPU_time = (double)(end_time - start_time);
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
 
             case 9:
                 printf("\n");
-                parse_tree_ptr = parser(argv[1], argv[2], &parsed, 0);
+                parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
                     break;
                 }
@@ -190,11 +190,12 @@ int main(int argc, char* argv[]) {
 
                 if((err->head) != NULL) {
                     printf("Semantic error occurred\n\n");
+                    print_errors(err);
                 }
                 else {
                     printf("No semantic errors found\n\n");
                     list = generate_ir(root);
-                    generate_code(list, tree, "program.asm");
+                    generate_code(list, tree, argv[2]);
                 }
                 break;
 
