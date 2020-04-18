@@ -798,6 +798,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
             }
             temp = temp->child->next->next;
         }
+        return;
     }
 
     // OUTPUT PLIST

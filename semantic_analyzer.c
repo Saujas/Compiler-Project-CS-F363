@@ -583,6 +583,14 @@ int type_check_node(AST node, ErrorList* err) {
         if(node->child->tag == 0 && op_count == 0) {
             op_succ = 1;
         }
+        else if(node->child->tag == 0 && op_count) {
+            flag = 1;
+            //printf("Line: %d - Input parameters do not match\n", fun_id->leaf_token->line_no);
+            char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+            strcpy(str,"Number of output parameters does not match with that of formal parameters");
+            add_sem_error(err,str,fun_id->leaf_token->line_no);
+            return flag;
+        }
         else if(node->child->tag == 1) {
             AST act_op = node->child;
             list_output = (AST*)malloc(sizeof(AST)*op_count);

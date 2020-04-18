@@ -20,177 +20,143 @@ section .bss
 section .text
 global main
 
-square:
+arraySum:
 	push rbp
 	mov rbp, rsp
-	sub rsp, 64
-	mov rsi, message_output
-	mov rdi, fmt_string_no_line_break
-	xor rax, rax
-	call printf
-	sub rsp, 48
-	mov rax, 'Printing'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, ' array e'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'lements '
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'one-by-o'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'nee-by-o'
-	mov qword [rsp], rax
-	add rsp, 2
-	mov byte [rsp], 0
-	sub rsp, 34
-	mov rax, rsp
-	mov rdi, fmt_string
-	mov rsi, rax
-	xor rax, rax
-	call printf
-	add rsp, 48
-	mov ax, word [rbp - 10]
-	mov word [rbp - 14], ax
+	sub rsp, 96
+	mov rax, __float64__(0.0)
+	mov qword [rbp - 37], rax
+	mov rax, qword [rbp - 37]
+	mov qword [rbp - 18], rax
+	mov word [rbp - 28], 1
 __L0__:
-	mov ax, word [rbp - 14]
-	cmp ax, word [rbp - 12]
+	mov ax, word [rbp - 28]
+	cmp ax, 15
 	jg __LL9__
-	mov byte [rbp - 15], 1
+	mov byte [rbp - 38], 1
 	jmp __LL10__
 __LL9__:
-	mov byte [rbp - 15], 0
+	mov byte [rbp - 38], 0
 __LL10__:
-	mov al, byte [rbp - 15]
+	mov al, byte [rbp - 38]
 	cmp al, 1
 	jz __L1__
-	mov al, byte [rbp - 15]
+	mov al, byte [rbp - 38]
 	cmp al, 0
 	jz __L2__
 __L1__:
-	mov ax, word [rbp - 14]
-	sub ax, word [rbp - 10]
-	mov word [rbp - 17], ax
-	mov ax, word [rbp - 17]
-	imul ax, 2
-	mov word [rbp - 19], ax
-	mov rax, qword [rbp - 8]
-	mov bx, word [rbp - 19]
-	movsx rbx, bx
-	add rax, rbx
-	mov qword [rbp - 27], rax
-	mov rsi, message_output
-	mov rdi, fmt_string_no_line_break
-	xor rax, rax
-	call printf
-	mov rbx, qword [rbp - 27]
-	mov rax, 0
-	mov ax, word [rbx]
-	movsx rax, ax
-	mov rdi, fmt_integer
-	mov rsi, rax
-	mov rax, 0
-	call printf
-	mov ax, word [rbp - 14]
-	add ax, 1
-	mov word [rbp - 29], ax
-	mov ax, word [rbp - 29]
-	mov word [rbp - 14], ax
-	jmp __L0__
-__L2__:
-	mov ax, 2
-	sub ax, word [rbp - 10]
-	mov word [rbp - 31], ax
-	mov ax, word [rbp - 31]
-	imul ax, 2
-	mov word [rbp - 33], ax
-	mov rax, qword [rbp - 8]
-	mov bx, word [rbp - 33]
-	movsx rbx, bx
-	add rax, rbx
-	mov qword [rbp - 41], rax
-	mov word [rbp - 43], 100
-	mov rbx, qword [rbp - 41]
-	mov ax, word [rbp - 43]
-	mov word [rbx], ax
-	mov rsi, message_output
-	mov rdi, fmt_string_no_line_break
-	xor rax, rax
-	call printf
-	sub rsp, 48
-	mov rax, 'Printing'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, ' array e'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'lements '
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'one-by-o'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'nee-by-o'
-	mov qword [rsp], rax
-	add rsp, 2
-	mov byte [rsp], 0
-	sub rsp, 34
-	mov rax, rsp
-	mov rdi, fmt_string
-	mov rsi, rax
-	xor rax, rax
-	call printf
-	add rsp, 48
-	mov ax, word [rbp - 10]
-	mov word [rbp - 45], ax
-__L3__:
-	mov ax, word [rbp - 45]
-	cmp ax, word [rbp - 12]
+	mov ax, word [rbp - 28]
+	cmp ax, word [rbp - 10]
 	jg __LL11__
-	mov byte [rbp - 46], 1
+	mov byte [rbp - 39], 1
 	jmp __LL12__
 __LL11__:
-	mov byte [rbp - 46], 0
+	mov byte [rbp - 39], 0
 __LL12__:
-	mov al, byte [rbp - 46]
+	mov al, byte [rbp - 39]
+	mov byte [rbp - 29], al
+	mov ax, byte [rbp - 29]
+	cmp ax, 1
+	jnz __LL13__
+	mov byte [rbp - 40], 1
+	jmp __LL14__
+__LL13__:
+	mov byte [rbp - 40], 0
+__LL14__:
+	mov al, byte [rbp - 40]
 	cmp al, 1
 	jz __L4__
-	mov al, byte [rbp - 46]
+	mov al, byte [rbp - 40]
 	cmp al, 0
 	jz __L5__
 __L4__:
-	mov ax, word [rbp - 45]
-	sub ax, word [rbp - 10]
-	mov word [rbp - 48], ax
-	mov ax, word [rbp - 48]
-	imul ax, 2
-	mov word [rbp - 50], ax
+	mov ax, word [rbp - 28]
+	sub ax, 1
+	mov word [rbp - 42], ax
+	mov ax, word [rbp - 42]
+	imul ax, 8
+	mov word [rbp - 44], ax
 	mov rax, qword [rbp - 8]
-	mov bx, word [rbp - 50]
+	mov bx, word [rbp - 44]
 	movsx rbx, bx
 	add rax, rbx
-	mov qword [rbp - 58], rax
+	mov qword [rbp - 52], rax
 	mov rsi, message_output
 	mov rdi, fmt_string_no_line_break
 	xor rax, rax
 	call printf
-	mov rbx, qword [rbp - 58]
+	mov rbx, qword [rbp - 52]
+	mov rax, qword [rbx]
+	mov rdi, fmt_float
+	movq xmm0, rax
+	mov eax, 1
+	call printf
+	mov ax, word [rbp - 28]
+	sub ax, 1
+	mov word [rbp - 54], ax
+	mov ax, word [rbp - 54]
+	imul ax, 8
+	mov word [rbp - 56], ax
+	mov rax, qword [rbp - 8]
+	mov bx, word [rbp - 56]
+	movsx rbx, bx
+	add rax, rbx
+	mov qword [rbp - 64], rax
+	mov rbx, qword [rbp - 64]
+	mov rax, qword [rbx]
+	mov qword [rbp - 72], rax
+	finit
+	fld qword [rbp - 18]
+	fld qword [rbp - 72]
+	fadd
+	fstp qword [rbp - 80]
+	mov rax, qword [rbp - 80]
+	mov qword [rbp - 18], rax
+	jmp __L3__
+__L5__:
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	mov rax, qword [rbp - 18]
+	mov rdi, fmt_float
+	movq xmm0, rax
+	mov eax, 1
+	call printf
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
 	mov rax, 0
-	mov ax, word [rbx]
+	mov ax, word [rbp - 28]
 	movsx rax, ax
 	mov rdi, fmt_integer
 	mov rsi, rax
 	mov rax, 0
 	call printf
-	mov ax, word [rbp - 45]
+__L3__:
+	mov ax, word [rbp - 28]
 	add ax, 1
-	mov word [rbp - 60], ax
-	mov ax, word [rbp - 60]
-	mov word [rbp - 45], ax
-	jmp __L3__
-__L5__:
+	mov word [rbp - 82], ax
+	mov ax, word [rbp - 82]
+	mov word [rbp - 28], ax
+	jmp __L0__
+__L2__:
+	mov rsi, message_output
+	mov rdi, fmt_string_no_line_break
+	xor rax, rax
+	call printf
+	mov rax, qword [rbp - 18]
+	mov rdi, fmt_float
+	movq xmm0, rax
+	mov eax, 1
+	call printf
+	mov rbx, rbp
+	sub rbx, 18
+	mov rax, qword [rbx]
+	sub rbx, 8
+	mov rbx, qword [rbx]
+	mov qword [rbx], rax
 	mov rsp, rbp
 	pop rbp
 	ret
@@ -198,175 +164,110 @@ __L5__:
 main:
 	push rbp
 	mov rbp, rsp
-	sub rsp, 96
-	mov word [rbp - 16], 2
-	mov ax, word [rbp - 16]
-	mov word [rbp - 4], ax
-	mov word [rbp - 18], 4
-	mov ax, word [rbp - 18]
-	mov word [rbp - 6], ax
-	mov ax, word [rbp - 4]
-	mov word [rbp - 22], ax
-	mov ax, word [rbp - 6]
-	mov word [rbp - 24], ax
-	mov ax, word [rbp - 6]
-	sub ax, word [rbp - 4]
-	mov word [rbp - 20], ax
-	mov ax, word [rbp - 20]
-	add ax, 1
-	mov word [rbp - 20], ax
-	mov ax, word [rbp - 20]
-	imul ax, 2
-	mov word [rbp - 20], ax
-	xor dx, dx
-	mov ax, word [rbp - 20]
-	mov cx, 16
-	idiv cx
-	mov word [rbp - 20], ax
-	mov ax, word [rbp - 20]
-	add ax, 1
-	mov word [rbp - 20], ax
-	mov ax, word [rbp - 20]
-	imul ax, 16
-	mov word [rbp - 20], ax
-	mov ax, word [rbp - 20]
-	movsx rax, ax
-	sub rsp, rax
-	mov qword [rbp - 14], rsp
-	mov ax, 2
-	sub ax, word [rbp - 22]
-	mov word [rbp - 26], ax
-	mov ax, word [rbp - 26]
-	imul ax, 2
-	mov word [rbp - 28], ax
-	mov rax, qword [rbp - 14]
-	mov bx, word [rbp - 28]
-	movsx rbx, bx
-	add rax, rbx
-	mov qword [rbp - 36], rax
-	mov word [rbp - 38], 2
-	mov rbx, qword [rbp - 36]
-	mov ax, word [rbp - 38]
-	mov word [rbx], ax
-	mov ax, 3
-	sub ax, word [rbp - 22]
-	mov word [rbp - 40], ax
-	mov ax, word [rbp - 40]
-	imul ax, 2
-	mov word [rbp - 42], ax
-	mov rax, qword [rbp - 14]
-	mov bx, word [rbp - 42]
-	movsx rbx, bx
-	add rax, rbx
-	mov qword [rbp - 50], rax
-	mov word [rbp - 52], 4
-	mov rbx, qword [rbp - 50]
-	mov ax, word [rbp - 52]
-	mov word [rbx], ax
-	mov ax, 4
-	sub ax, word [rbp - 22]
-	mov word [rbp - 54], ax
-	mov ax, word [rbp - 54]
-	imul ax, 2
-	mov word [rbp - 56], ax
-	mov rax, qword [rbp - 14]
-	mov bx, word [rbp - 56]
-	movsx rbx, bx
-	add rax, rbx
-	mov qword [rbp - 64], rax
-	mov word [rbp - 66], 6
-	mov rbx, qword [rbp - 64]
-	mov ax, word [rbp - 66]
-	mov word [rbx], ax
+	sub rsp, 144
+	mov rsi, message_ip_integer
+	mov rdi, fmt_string
+	xor rax, rax
+	call printf
+	mov rsi, buffer_integer
+	mov rdi, fmt_ip_integer
+	mov al, 0
+	call scanf
+	mov eax, [buffer_integer]
+	mov word [rbp - 122], ax
 	mov rax, rsp
 	sub rax, 24
-	mov rbx, qword [rbp - 14]
+	mov rbx, rbp
+	sub rbx, 120
 	mov qword [rax], rbx
 	mov rax, rsp
-	sub rax, 26
-	mov bx, word [rbp - 22]
+	sub rax, 138
+	mov bx, word [rbp - 122]
+	mov word [rax], bx
+	call readArr
+	mov rax, rsp
+	sub rax, 24
+	mov rbx, rbp
+	sub rbx, 120
+	mov qword [rax], rbx
+	mov rax, rsp
+	sub rax, 138
+	mov bx, word [rbp - 122]
 	mov word [rax], bx
 	mov rax, rsp
-	sub rax, 28
-	mov bx, word [rbp - 24]
-	mov word [rax], bx
-	call square
+	sub rax, 154
+	mov rbx, rbp
+	sub rbx, 130
+	mov qword [rax], rbx
+	call arraySum
 	mov rsi, message_output
 	mov rdi, fmt_string_no_line_break
 	xor rax, rax
 	call printf
-	sub rsp, 48
-	mov rax, 'Printing'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, ' array e'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'lements '
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'one-by-o'
-	mov qword [rsp], rax
-	add rsp, 8
-	mov rax, 'nee-by-o'
-	mov qword [rsp], rax
-	add rsp, 2
-	mov byte [rsp], 0
-	sub rsp, 34
-	mov rax, rsp
-	mov rdi, fmt_string
-	mov rsi, rax
-	xor rax, rax
+	mov rax, qword [rbp - 130]
+	mov rdi, fmt_float
+	movq xmm0, rax
+	mov eax, 1
 	call printf
-	add rsp, 48
+readArr:
+	push rbp
+	mov rbp, rsp
+	sub rsp, 48
+	mov word [rbp - 22], 1
 	mov ax, word [rbp - 22]
-	mov word [rbp - 68], ax
+	mov word [rbp - 20], ax
 __L6__:
-	mov ax, word [rbp - 68]
-	cmp ax, word [rbp - 24]
-	jg __LL13__
-	mov byte [rbp - 69], 1
-	jmp __LL14__
-__LL13__:
-	mov byte [rbp - 69], 0
-__LL14__:
-	mov al, byte [rbp - 69]
+	mov ax, word [rbp - 20]
+	cmp ax, word [rbp - 10]
+	jg __LL15__
+	mov byte [rbp - 23], 1
+	jmp __LL16__
+__LL15__:
+	mov byte [rbp - 23], 0
+__LL16__:
+	mov al, byte [rbp - 23]
 	cmp al, 1
 	jz __L7__
-	mov al, byte [rbp - 69]
+	mov al, byte [rbp - 23]
 	cmp al, 0
 	jz __L8__
 __L7__:
-	mov ax, word [rbp - 68]
-	sub ax, word [rbp - 22]
-	mov word [rbp - 71], ax
-	mov ax, word [rbp - 71]
-	imul ax, 2
-	mov word [rbp - 73], ax
-	mov rax, qword [rbp - 14]
-	mov bx, word [rbp - 73]
-	movsx rbx, bx
-	add rax, rbx
-	mov qword [rbp - 81], rax
-	mov rsi, message_output
-	mov rdi, fmt_string_no_line_break
+	mov rsi, message_ip_real
+	mov rdi, fmt_string
 	xor rax, rax
 	call printf
-	mov rbx, qword [rbp - 81]
-	mov rax, 0
-	mov ax, word [rbx]
-	movsx rax, ax
-	mov rdi, fmt_integer
-	mov rsi, rax
-	mov rax, 0
-	call printf
-	mov ax, word [rbp - 68]
+	mov rsi, rbp
+	sub rsi, 18
+	mov rdi, fmt_ip_float
+	mov al, 0
+	call scanf
+	mov ax, word [rbp - 20]
+	sub ax, 1
+	mov word [rbp - 25], ax
+	mov ax, word [rbp - 25]
+	imul ax, 8
+	mov word [rbp - 27], ax
+	mov rax, qword [rbp - 8]
+	mov bx, word [rbp - 27]
+	movsx rbx, bx
+	add rax, rbx
+	mov qword [rbp - 35], rax
+	mov rax, qword [rbp - 18]
+	mov qword [rbp - 43], rax
+	mov rbx, qword [rbp - 35]
+	mov rax, qword [rbp - 43]
+	mov qword [rbx], rax
+	mov ax, word [rbp - 20]
 	add ax, 1
-	mov word [rbp - 83], ax
-	mov ax, word [rbp - 83]
-	mov word [rbp - 68], ax
+	mov word [rbp - 45], ax
+	mov ax, word [rbp - 45]
+	mov word [rbp - 20], ax
 	jmp __L6__
 __L8__:
+	mov rsp, rbp
+	pop rbp
+	ret
+
 
 
 ; exiting program
