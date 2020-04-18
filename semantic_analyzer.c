@@ -735,12 +735,12 @@ int verify_types(AST nt, Symbol_Node*** head, int total, int count, int curr, AS
                     }
                     else {
                         int c = 0;
-                        if(ip->symbol_table_node->range[0].tag == 0 && ip->symbol_table_node->range[0].range_pointer.value != temp->range[0].range_pointer.value) {
+                        if(ip->symbol_table_node->range[0].tag == 0 && temp->range[0].tag == 0 && ip->symbol_table_node->range[0].range_pointer.value != temp->range[0].range_pointer.value) {
                             list[*error_count] = ip;
                             *error_count += 1;
                             c += 1;
                         }
-                        if(ip->symbol_table_node->range[1].tag == 0 && ip->symbol_table_node->range[1].range_pointer.value != temp->range[1].range_pointer.value) {
+                        if(ip->symbol_table_node->range[1].tag == 0 && temp->range[1].tag == 0 && ip->symbol_table_node->range[1].range_pointer.value != temp->range[1].range_pointer.value) {
                             if(!c) {
                                 list[*error_count] = ip;
                                 *error_count += 1;
