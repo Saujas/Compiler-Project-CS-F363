@@ -722,9 +722,6 @@ int process_node(AST node, tuple_list* list) {
             iterator->leaf_token->token = ID;
             iterator->symbol_table_node = itr->symbol;
 
-            // printf("%s\n", iterator->leaf_token->lexeme);
-            
-
             Temporary temp_arr = evaluate_array(node, iterator, list, parent_scope);
             // printf("HI\n");
             Tuple new_tup4 = make_tuple(READ, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
@@ -886,14 +883,9 @@ int process_node(AST node, tuple_list* list) {
                 iterator->symbol_table_node = itr->symbol;
 
                 // printf("%s\n", iterator->leaf_token->lexeme);
-                
-
                 Temporary temp_arr = evaluate_array(node->child, iterator, list, parent_scope);
-                // printf("HI\n");
                 Tuple new_tup4 = make_tuple(WRITE, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
                 add_tuple(list, new_tup4);
-
-                
 
                 Temporary temp0 = create_temporary();
                 add_temp_symboltable(temp0->symbol, parent_scope, 2);
@@ -910,6 +902,8 @@ int process_node(AST node, tuple_list* list) {
                 // OUTSIDE FOR
                 label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
                 add_tuple(list, label_tup);
+                Tuple tup = make_tuple(WRITE, "", "", "Array elements printed", NULL, NULL, NULL);
+                add_tuple(list, tup);
                 
                 return 1;
             }
@@ -946,11 +940,27 @@ int process_node(AST node, tuple_list* list) {
                     add_tuple(list, label_tup);
                     offset += 2;
                 }
+                else if(input->child->symbol_table_node->range[0].tag == 0) {
+                    sprintf(str, "%d", offset);
+                    char s[5];
+                    sprintf(s, "%d", input->child->symbol_table_node->range[0].range_pointer.value);
+                    Tuple label_tup = make_tuple(PARAM, str, "", s, NULL, NULL, NULL);
+                    add_tuple(list, label_tup);
+                    offset += 2;
+                }
 
                 if(input->child->symbol_table_node->range[1].tag == 1) {
                     sprintf(str, "%d", offset);
                     Tuple label_tup = make_tuple(PARAM, str, "", input->child->symbol_table_node->range[1].range_pointer.id->node->leaf_token->lexeme, 
                     NULL, NULL, input->child->symbol_table_node->range[1].range_pointer.id);
+                    add_tuple(list, label_tup);
+                    offset += 2;
+                }
+                else if(input->child->symbol_table_node->range[1].tag == 0) {
+                    sprintf(str, "%d", offset);
+                    char s[5];
+                    sprintf(s, "%d", input->child->symbol_table_node->range[1].range_pointer.value);
+                    Tuple label_tup = make_tuple(PARAM, str, "", s, NULL, NULL, NULL);
                     add_tuple(list, label_tup);
                     offset += 2;
                 }

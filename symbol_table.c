@@ -711,7 +711,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                 AST range1 = temp->child->next->child->child;
                 AST range2 = range1->next;
                 Range range[2];
-                int added = 0;
+                // int added = 0;
 
                 if(range1->leaf_token->token == NUM) {
                     range[0].tag = 0;
@@ -726,10 +726,9 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                     }
                 }
                 else {
-                    // printf("Hi\n");
                     int offset = parent_module->last_offset + 8;
                     int width = 2;
-                    added += 2;
+                    // added += 2;
 
                     temp1 = make_symbol_node(range1, 0, 0, 2, 2, offset, -1, 1, NULL, -1);
                     range[0].tag = 1;
@@ -757,9 +756,10 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                     }
                 }
                 else {
-                    int offset = parent_module->last_offset + added + 8;
+                    // int offset = parent_module->last_offset + added + 8;
+                    int offset = parent_module->last_offset + 2 + 8;
                     int width = 2;
-                    added += 2;
+                    // added += 2;
                     
                     temp2 = make_symbol_node(range2, 0, 0, 2, 2, offset, -1, 1, NULL, -1);
                     range[1].tag = 1;
@@ -774,7 +774,8 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                 
                 if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
                     symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 1, range, array_datatype);
-                    width = width + added;
+                    // width = width + added;
+                    width = width + 4;
                     flag = 1;
                 }
                 else{

@@ -183,19 +183,25 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
     if(tup->op == PARAM) {
         int offset = atoi(tup->arg1);
 
-        if(tup->node3->datatype != 3)
+        // array values passed directly
+        // no symbol node
+        if(!tup->node3) {
+            fprintf(fp, "\tmov bx, %s\n\tmov word [rax], bx\n", tup->result);
+        }
+
+        if(tup->node3 && tup->node3->datatype != 3)
             fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n", offset + tup->node3->width + 16);
-        if(tup->node3->datatype == 0)
+        if(tup->node3 && tup->node3->datatype == 0)
             fprintf(fp, "\tmov bx, word [rbp - %d]\n\tmov word [rax], bx\n", tup->node3->offset + tup->node3->width);
-        else if(tup->node3->datatype == 1)
+        else if(tup->node3 && tup->node3->datatype == 1)
             fprintf(fp, "\tmov rbx, qword [rbp - %d]\n\tmov qword [rax], rbx\n", tup->node3->offset + tup->node3->width);
-        else if(tup->node3->datatype == 2)
+        else if(tup->node3 && tup->node3->datatype == 2)
             fprintf(fp, "\tmov bl, byte [rbp - %d]\n\tmov byte [rax], bl\n", tup->node3->offset + tup->node3->width);
 
-        if(tup->node3->datatype == 3 && tup->node3->range[0].tag ==0 && tup->node3->range[1].tag == 0) {
+        if(tup->node3 && tup->node3->datatype == 3 && tup->node3->range[0].tag ==0 && tup->node3->range[1].tag == 0) {
             fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n\tmov rbx, rbp\n\tsub rbx, %d\n\tmov qword [rax], rbx\n", offset + 8 + 16, tup->node3->offset + tup->node3->width);
         }
-        else if(tup->node3->datatype == 3) {
+        else if(tup->node3 && tup->node3->datatype == 3) {
             fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n\tmov rbx, qword [rbp - %d]\n\tmov qword [rax], rbx\n", offset + 8 + 16, tup->node3->offset + tup->node3->width);
         }   
     }
