@@ -186,6 +186,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         // array values passed directly
         // no symbol node
         if(!tup->node3) {
+            fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n", offset + 2 + 16);
             fprintf(fp, "\tmov bx, %s\n\tmov word [rax], bx\n", tup->result);
         }
 

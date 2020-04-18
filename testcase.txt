@@ -1,5 +1,5 @@
 <<module m1>> 
-takes input[arr:array [2..4] of integer];
+takes input[arr:array [a..b] of integer];
 start
 
 	print(arr);
@@ -8,10 +8,8 @@ end
 <<<driver program>>>
 start
 	declare a, b:integer;
-	get_value(a);
-	get_value(b);
 	
-	declare arr:array [a..4] of integer;
+	declare arr:array [2..4] of integer;
 	get_value(arr);
 
 	use module m1 with parameters arr;

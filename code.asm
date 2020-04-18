@@ -51,10 +51,11 @@ m1:
 	xor rax, rax
 	call printf
 	add rsp, 48
-	mov word [rbp - 14], 2
+	mov ax, word [rbp - 10]
+	mov word [rbp - 14], ax
 __L0__:
 	mov ax, word [rbp - 14]
-	cmp ax, 4
+	cmp ax, word [rbp - 12]
 	jg __LL10__
 	mov byte [rbp - 15], 1
 	jmp __LL11__
@@ -69,7 +70,7 @@ __LL11__:
 	jz __L2__
 __L1__:
 	mov ax, word [rbp - 14]
-	cmp ax, 2
+	cmp ax, word [rbp - 10]
 	jge __LL12__
 	mov byte [rbp - 16], 1
 	jmp __LL13__
@@ -113,7 +114,7 @@ __LL13__:
 	int 80h
 __L3__:
 	mov ax, word [rbp - 14]
-	cmp ax, 4
+	cmp ax, word [rbp - 12]
 	jle __LL14__
 	mov byte [rbp - 16], 1
 	jmp __LL15__
@@ -157,7 +158,7 @@ __LL15__:
 	int 80h
 __L4__:
 	mov ax, word [rbp - 14]
-	sub ax, 2
+	sub ax, word [rbp - 10]
 	mov word [rbp - 18], ax
 	mov ax, word [rbp - 18]
 	imul ax, 2
@@ -211,55 +212,7 @@ __L2__:
 main:
 	push rbp
 	mov rbp, rsp
-	sub rsp, 48
-	mov rsi, message_ip_integer
-	mov rdi, fmt_string
-	xor rax, rax
-	call printf
-	mov rsi, buffer_integer
-	mov rdi, fmt_ip_integer
-	mov al, 0
-	call scanf
-	mov eax, [buffer_integer]
-	mov word [rbp - 2], ax
-	mov rsi, message_ip_integer
-	mov rdi, fmt_string
-	xor rax, rax
-	call printf
-	mov rsi, buffer_integer
-	mov rdi, fmt_ip_integer
-	mov al, 0
-	call scanf
-	mov eax, [buffer_integer]
-	mov word [rbp - 4], ax
-	mov ax, word [rbp - 2]
-	mov word [rbp - 16], ax
-	mov word [rbp - 18], 4
-	mov word [rbp - 14], 4
-	mov ax, word [rbp - 14]
-	sub ax, word [rbp - 2]
-	mov word [rbp - 14], ax
-	mov ax, word [rbp - 14]
-	add ax, 1
-	mov word [rbp - 14], ax
-	mov ax, word [rbp - 14]
-	imul ax, 2
-	mov word [rbp - 14], ax
-	xor dx, dx
-	mov ax, word [rbp - 14]
-	mov cx, 16
-	idiv cx
-	mov word [rbp - 14], ax
-	mov ax, word [rbp - 14]
-	add ax, 1
-	mov word [rbp - 14], ax
-	mov ax, word [rbp - 14]
-	imul ax, 16
-	mov word [rbp - 14], ax
-	mov ax, word [rbp - 14]
-	movsx rax, ax
-	sub rsp, rax
-	mov qword [rbp - 12], rsp
+	sub rsp, 32
 	sub rsp, 16
 	mov rax, 'Enter '
 	mov qword [rsp], rax
@@ -273,13 +226,13 @@ main:
 	call printf
 	add rsp, 16
 	mov ax, 4
-	sub ax, word [rbp - 16]
-	mov word [rbp - 20], ax
-	mov ax, word [rbp - 20]
+	sub ax, 2
+	mov word [rbp - 12], ax
+	mov ax, word [rbp - 12]
 	add ax, 1
-	mov word [rbp - 20], ax
+	mov word [rbp - 12], ax
 	mov rax, 0
-	mov ax, word [rbp - 20]
+	mov ax, word [rbp - 12]
 	movsx rax, ax
 	mov rdi, fmt_integer_no_line_break
 	mov rsi, rax
@@ -309,13 +262,18 @@ main:
 	xor rax, rax
 	call printf
 	add rsp, 48
-	mov rax, 0
-	mov ax, word [rbp - 16]
-	movsx rax, ax
-	mov rdi, fmt_integer_no_line_break
+	sub rsp, 16
+	mov rax, '2'
+	mov qword [rsp], rax
+	add rsp, 1
+	mov byte [rsp], 0
+	sub rsp, 1
+	mov rax, rsp
+	mov rdi, fmt_string_no_line_break
 	mov rsi, rax
-	mov rax, 0
+	xor rax, rax
 	call printf
+	add rsp, 16
 	sub rsp, 16
 	mov rax, ' to '
 	mov qword [rsp], rax
@@ -345,33 +303,32 @@ main:
 	mov rsi, rax
 	xor rax, rax
 	call printf
-	mov ax, word [rbp - 16]
-	mov word [rbp - 20], ax
+	mov word [rbp - 12], 2
 __L5__:
-	mov ax, word [rbp - 20]
+	mov ax, word [rbp - 12]
 	cmp ax, 4
 	jg __LL16__
-	mov byte [rbp - 21], 1
+	mov byte [rbp - 13], 1
 	jmp __LL17__
 __LL16__:
-	mov byte [rbp - 21], 0
+	mov byte [rbp - 13], 0
 __LL17__:
-	mov al, byte [rbp - 21]
+	mov al, byte [rbp - 13]
 	cmp al, 1
 	jz __L6__
-	mov al, byte [rbp - 21]
+	mov al, byte [rbp - 13]
 	cmp al, 0
 	jz __L7__
 __L6__:
-	mov ax, word [rbp - 20]
-	cmp ax, word [rbp - 16]
+	mov ax, word [rbp - 12]
+	cmp ax, 2
 	jge __LL18__
-	mov byte [rbp - 22], 1
+	mov byte [rbp - 14], 1
 	jmp __LL19__
 __LL18__:
-	mov byte [rbp - 22], 0
+	mov byte [rbp - 14], 0
 __LL19__:
-	mov al, byte [rbp - 22]
+	mov al, byte [rbp - 14]
 	cmp al, 0
 	jz __L8__
 	sub rsp, 48
@@ -407,15 +364,15 @@ __LL19__:
 	mov rbx, 0
 	int 80h
 __L8__:
-	mov ax, word [rbp - 20]
+	mov ax, word [rbp - 12]
 	cmp ax, 4
 	jle __LL20__
-	mov byte [rbp - 22], 1
+	mov byte [rbp - 14], 1
 	jmp __LL21__
 __LL20__:
-	mov byte [rbp - 22], 0
+	mov byte [rbp - 14], 0
 __LL21__:
-	mov al, byte [rbp - 22]
+	mov al, byte [rbp - 14]
 	cmp al, 0
 	jz __L9__
 	sub rsp, 48
@@ -451,18 +408,19 @@ __LL21__:
 	mov rbx, 0
 	int 80h
 __L9__:
-	mov ax, word [rbp - 20]
-	sub ax, word [rbp - 16]
-	mov word [rbp - 24], ax
-	mov ax, word [rbp - 24]
+	mov ax, word [rbp - 12]
+	sub ax, 2
+	mov word [rbp - 16], ax
+	mov ax, word [rbp - 16]
 	imul ax, 2
-	mov word [rbp - 26], ax
-	mov rax, qword [rbp - 12]
-	mov bx, word [rbp - 26]
-	movsx rbx, bx
+	mov word [rbp - 18], ax
+	mov rax, rbp
+	sub rax, 10
+	xor rbx, rbx
+	mov bx, word [rbp - 18]
 	add rax, rbx
-	mov qword [rbp - 34], rax
-	mov rbx, qword [rbp - 34]
+	mov qword [rbp - 26], rax
+	mov rbx, qword [rbp - 26]
 	mov rsi, message_ip_integer
 	mov rdi, fmt_string
 	xor rax, rax
@@ -473,11 +431,11 @@ __L9__:
 	call scanf
 	mov eax, [buffer_integer]
 	mov word [rbx], ax
-	mov ax, word [rbp - 20]
+	mov ax, word [rbp - 12]
 	add ax, 1
-	mov word [rbp - 36], ax
-	mov ax, word [rbp - 36]
-	mov word [rbp - 20], ax
+	mov word [rbp - 28], ax
+	mov ax, word [rbp - 28]
+	mov word [rbp - 12], ax
 	jmp __L5__
 __L7__:
 	sub rsp, 32
@@ -500,12 +458,15 @@ __L7__:
 	add rsp, 32
 	mov rax, rsp
 	sub rax, 24
-	mov rbx, qword [rbp - 12]
+	mov rbx, rbp
+	sub rbx, 10
 	mov qword [rax], rbx
 	mov rax, rsp
 	sub rax, 26
-	mov bx, word [rbp - 16]
+	mov bx, 2
 	mov word [rax], bx
+	mov rax, rsp
+	sub rax, 28
 	mov bx, 4
 	mov word [rax], bx
 	call m1
