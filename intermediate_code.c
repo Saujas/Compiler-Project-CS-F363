@@ -897,9 +897,27 @@ int process_node(AST node, tuple_list* list) {
         while(input) {
             sprintf(str, "%d", offset);
             offset += input->child->symbol_table_node->width;
-            
+
             Tuple label_tup = make_tuple(PARAM, str, "", input->child->leaf_token->lexeme, NULL, NULL, input->child->symbol_table_node);
             add_tuple(list, label_tup);
+
+            if(input->child->symbol_table_node->datatype == 3) {
+                if(input->child->symbol_table_node->range[0].tag == 1) {
+                    sprintf(str, "%d", offset);
+                    Tuple label_tup = make_tuple(PARAM, str, "", input->child->symbol_table_node->range[0].range_pointer.id->node->leaf_token->lexeme, 
+                    NULL, NULL, input->child->symbol_table_node->range[0].range_pointer.id);
+                    add_tuple(list, label_tup);
+                    offset += 2;
+                }
+
+                if(input->child->symbol_table_node->range[1].tag == 1) {
+                    sprintf(str, "%d", offset);
+                    Tuple label_tup = make_tuple(PARAM, str, "", input->child->symbol_table_node->range[1].range_pointer.id->node->leaf_token->lexeme, 
+                    NULL, NULL, input->child->symbol_table_node->range[1].range_pointer.id);
+                    add_tuple(list, label_tup);
+                    offset += 2;
+                }
+            }
             
             input = input->child->next;
         }

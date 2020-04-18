@@ -1,16 +1,19 @@
 
 <<module square>>
-takes input [arr: array[2..4] of integer];
+takes input [arr: array[a..b] of integer];
 start
 	print(arr);
 	arr[2]:= 100;
+	print(arr);
 end
 
 
 <<<driver program>>>
 start
-	declare x:integer;
-	declare arr: array[2..4] of integer;
+	declare x, a, b:integer;
+	a := 2;
+	b := 4;
+	declare arr: array[a..b] of integer;
 	
 	arr[2] := 2;
 	arr[3] := 4;
@@ -20,14 +23,3 @@ start
 
 	print(arr);
 end
-
-**notice that this test case does not declare the module before the driver module, still it is syntactically correct as moduleDeclarations is optional. Testing whether a module is declared before its use is a matter of semantic analysis**
-
-** test the correctness of all lexemes and parse tree created
-and print the following message on successful compilation on the console
-      " Input source code is syntactically correct.........."
-**
-
-**make sure to produce only relevant output of your compiler code...
-Also remove all unnecessary printf statements and make the code more professional before submitting**
-

@@ -191,7 +191,10 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
 
         if(tup->node3->datatype == 3 && tup->node3->range[0].tag ==0 && tup->node3->range[1].tag == 0) {
             fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n\tmov rbx, rbp\n\tsub rbx, %d\n\tmov qword [rax], rbx\n", offset + 8 + 16, tup->node3->offset + tup->node3->width);
-        }        
+        }
+        else if(tup->node3->datatype == 3) {
+            fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n\tmov rbx, qword [rbp - %d]\n\tmov qword [rax], rbx\n", offset + 8 + 16, tup->node3->offset + tup->node3->width);
+        }   
     }
 
     if(tup->op == PARAM_OP) {
