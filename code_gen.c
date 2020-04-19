@@ -23,13 +23,13 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
     fprintf(fp, "\tfmt_integer_no_line_break: db '%s ', 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
-    fprintf(fp, "\tfmt_float_no_line_break: db '%s', 0\n", "%f");
+    fprintf(fp, "\tfmt_float_no_line_break: db '%s ', 0\n", "%f");
     fprintf(fp, "\tfmt_string: db '%s', 10, 0\n", "%s");
     fprintf(fp, "\tfmt_string_no_line_break: db '%s', 0\n", "%s");
     fprintf(fp, "\tfmt_ip_integer: db '%s', 0\n", "%d");
     fprintf(fp, "\tfmt_ip_float: db '%s', 0\n", "%lf");
-    fprintf(fp, "\tmessage_true: db 'true', 0\n");
-    fprintf(fp, "\tmessage_false: db 'false', 0\n");
+    fprintf(fp, "\tmessage_true: db 'true ', 0\n");
+    fprintf(fp, "\tmessage_false: db 'false ', 0\n");
     fprintf(fp, "\tmessage_lb: db 10, 0\n");
     fprintf(fp, "\tmessage_ip_integer: db 'Input: Enter an integer value: ', 0\n");
     fprintf(fp, "\tmessage_ip_real: db 'Input: Enter a real value: ', 0\n");
@@ -387,7 +387,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             else if(data_type == 2) {
                 char* label1 = generate_dynamic_label();
                 char* label2 = generate_dynamic_label();
-                fprintf(fp, "\tcmp byte %s, 1\n\tjz %s\n\tmov rax, message_false\n\tjmp %s\n%s:\n\tmov rax, message_true\n%s:\n", arg, label1, label2, label1, label2); 
+                fprintf(fp, "\tcmp byte %s, 0\n\tjz %s\n\tmov rax, message_true\n\tjmp %s\n%s:\n\tmov rax, message_false\n%s:\n", arg, label1, label2, label1, label2); 
                 fprintf(fp, "\tmov rdi, fmt_string\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n");
             }
         }
@@ -448,7 +448,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             else if(data_type == 2) {
                 char* label1 = generate_dynamic_label();
                 char* label2 = generate_dynamic_label();
-                fprintf(fp, "\tcmp byte %s, 1\n\tjz %s\n\tmov rax, message_false\n\tjmp %s\n%s:\n\tmov rax, message_true\n%s:\n", arg, label1, label2, label1, label2); 
+                fprintf(fp, "\tcmp byte %s, 0\n\tjz %s\n\tmov rax, message_true\n\tjmp %s\n%s:\n\tmov rax, message_false\n%s:\n", arg, label1, label2, label1, label2); 
                 fprintf(fp, "\tmov rdi, fmt_string_no_line_break\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n");
             }
         }
