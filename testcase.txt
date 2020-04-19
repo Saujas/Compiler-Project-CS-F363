@@ -1,11 +1,21 @@
 <<<driver program>>>
 start
-	declare a, b:boolean;
+	declare a, b:integer;
+	declare B:array [2..4] of integer;
 	
-	declare arr:array [2..4] of boolean;
-	get_value(arr);
-	print(arr);
+	get_value(a);
+	get_value(b);
+	declare A:array [a..b] of integer;
 
-	a := true;
-	print(a);
+	get_value(A);
+
+	B := A;
+
+	print(B);
+
+	while(1 < 2)
+	start
+		print(B);
+	end
+
 end

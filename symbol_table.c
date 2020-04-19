@@ -643,7 +643,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                 width2 = data_width2[datatype];
                 
                 if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
-                    symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 1, NULL, -1);
+                    symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 2, NULL, -1);
                     flag = 1;
                 }
                 else {
@@ -688,7 +688,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                     int width = 2;
                     // added += 2;
 
-                    temp1 = make_symbol_node(range1, 0, 0, 2, 2, offset, -1, 1, NULL, -1);
+                    temp1 = make_symbol_node(range1, 0, 0, 2, 2, offset, -1, 2, NULL, -1);
                     range[0].tag = 1;
                     range[0].range_pointer.id = temp1;
                     flag = 1;
@@ -717,7 +717,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                     int width = 2;
                     // added += 2;
                     
-                    temp2 = make_symbol_node(range2, 0, 0, 2, 2, offset, -1, 1, NULL, -1);
+                    temp2 = make_symbol_node(range2, 0, 0, 2, 2, offset, -1, 2, NULL, -1);
                     range[1].tag = 1;
                     range[1].range_pointer.id = temp2;
                     flag = 1;
@@ -729,7 +729,7 @@ void traverse_ast(AST node, Symbol_Table_Tree current,ErrorList* err, Slots_List
                 offset2 = current->input->last_offset2;
                 
                 if(search_current_scope(temp->child->leaf_token->lexeme, current->input)==NULL) {
-                    symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 1, range, array_datatype);
+                    symbol_node = make_symbol_node(temp->child, datatype, 0, width, width2, offset, offset2, 2, range, array_datatype);
                     // width = width + added;
                     width = width + 4;
                     flag = 1;

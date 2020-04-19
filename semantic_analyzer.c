@@ -414,9 +414,9 @@ int type_check_node(AST node, ErrorList* err) {
             check_identifier(node->child, id_used);
 
             if((*id_used) == NULL) {
-                char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
-                strcpy(str,"No identifier used in while construct");
-                add_sem_error(err,str,(start->leaf_token->line_no) - 1);
+                // char* str = (char*)malloc(sizeof(str)*ERROR_STRING_SIZE);
+                // strcpy(str,"No identifier used in while construct");
+                // add_sem_error(err,str,(start->leaf_token->line_no) - 1);
                 flag = 1;
             }
             
@@ -495,9 +495,7 @@ int type_check_node(AST node, ErrorList* err) {
             return flag;
         }
         
-
         Symbol_Table_Tree ip_list = fun_tree->input, op_list = fun_tree->output;
-
 
         Symbol_Node*** ip_head, ***op_head;
         ip_head = (Symbol_Node***) malloc(sizeof(Symbol_Node**));

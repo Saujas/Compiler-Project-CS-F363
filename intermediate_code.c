@@ -358,7 +358,7 @@ int process_node(AST node, tuple_list* list) {
             Tuple new_tup0 = make_tuple(COPY, name1, "", i1->name, l1, NULL, i1->symbol);
             add_tuple(list, new_tup0);
 
-            Tuple new_tup1 = make_tuple(COPY, name2, "", i2->name, l2, NULL, i2->symbol);
+            Tuple new_tup1 = make_tuple(COPY, name3, "", i2->name, l2, NULL, i2->symbol);
             add_tuple(list, new_tup1);
 
             char* label1 = create_label();
@@ -1309,7 +1309,7 @@ Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tre
     temp2->symbol->array_datatype = node->symbol_table_node->array_datatype;
     Tuple new_tup2;
 
-    if((node->symbol_table_node->range[0].tag == 0 && node->symbol_table_node->range[1].tag == 0) && (strcmp(parent_scope->name, "driver") == 0))
+    if((node->symbol_table_node->range[0].tag == 0 && node->symbol_table_node->range[1].tag == 0) && (node->symbol_table_node->usage != 2))
         new_tup2 = make_tuple(ADDITION, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
     else {
         new_tup2 = make_tuple(ADD_DYNAMIC, node->leaf_token->lexeme, temp1->name, temp2->name, node->symbol_table_node, temp1->symbol, temp2->symbol);
