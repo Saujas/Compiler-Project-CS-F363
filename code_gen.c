@@ -21,7 +21,7 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
 
     fprintf(fp, "extern printf, scanf\n\nsection .data\n");
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
-    fprintf(fp, "\tfmt_integer_no_line_break: db '%s', 0\n", "%d");
+    fprintf(fp, "\tfmt_integer_no_line_break: db '%s ', 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
     fprintf(fp, "\tfmt_float_no_line_break: db '%s', 0\n", "%f");
     fprintf(fp, "\tfmt_string: db '%s', 10, 0\n", "%s");
@@ -495,6 +495,9 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
 
     if(tup->op == READ) {
         int data_type = tup->node3->datatype, flag = 0;
+        int flag2 = 1;
+        if(strcmp(tup->arg1, "-") == 0)
+            flag2 = 0;
 
         if(data_type == 3) {
             flag = 1;
@@ -503,7 +506,8 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
 
         if(data_type == 0) {
-            fprintf(fp, "\tmov rsi, message_ip_integer\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
+            if(flag2)
+                fprintf(fp, "\tmov rsi, message_ip_integer\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
             fprintf(fp, "\tmov rsi, buffer_integer\n\tmov rdi, fmt_ip_integer\n\tmov al, 0\n\tcall scanf\n\tmov eax, [buffer_integer]\n");
             if(flag)
                 fprintf(fp, "\tmov word [rbx], ax\n");
@@ -511,7 +515,8 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
                 fprintf(fp, "\tmov word [rbp - %d], ax\n", tup->node3->offset + tup->node3->width);
         }
         else if(data_type == 1) {
-            fprintf(fp, "\tmov rsi, message_ip_real\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
+            if(flag2)
+                fprintf(fp, "\tmov rsi, message_ip_real\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
             if(flag)
                 fprintf(fp, "\tmov rsi, rbx\n");
             else
@@ -520,7 +525,8 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             fprintf(fp, "\tmov rdi, fmt_ip_float\n\tmov al, 0\n\tcall scanf\n");
         }
         else if(data_type == 2) {
-            fprintf(fp, "\tmov rsi, message_ip_boolean\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
+            if(flag2)
+                fprintf(fp, "\tmov rsi, message_ip_boolean\n\tmov rdi, fmt_string\n\txor rax, rax\n\tcall printf\n");
             fprintf(fp, "\tmov rsi, buffer_integer\n\tmov rdi, fmt_ip_integer\n\tmov al, 0\n\tcall scanf\n\tmov eax, [buffer_integer]\n");
             if(flag)
                 fprintf(fp, "\tmov byte [rbx], al\n");

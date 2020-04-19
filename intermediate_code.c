@@ -724,7 +724,7 @@ int process_node(AST node, tuple_list* list) {
 
             Temporary temp_arr = evaluate_array(node, iterator, list, parent_scope);
             // printf("HI\n");
-            Tuple new_tup4 = make_tuple(READ, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
+            Tuple new_tup4 = make_tuple(READ, "-", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
             add_tuple(list, new_tup4);
 
             Temporary temp0 = create_temporary();
@@ -742,8 +742,8 @@ int process_node(AST node, tuple_list* list) {
             // OUTSIDE FOR
             label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
             add_tuple(list, label_tup);
-            print_tuple = make_tuple(WRITE, "", "", "End of array input", NULL, NULL, NULL);
-            add_tuple(list, print_tuple);
+            // print_tuple = make_tuple(WRITE, "", "", "End of array input", NULL, NULL, NULL);
+            // add_tuple(list, print_tuple);
 
             return 1;
         }
@@ -813,7 +813,7 @@ int process_node(AST node, tuple_list* list) {
                 // int arr[3] = {2, 4, 1};
                 // width = arr[datatype];
 
-                Tuple new_t = make_tuple(WRITE, "", "", "Printing array elements one-by-one", NULL, NULL, NULL);
+                Tuple new_t = make_tuple(WRITE_2, "", "", "Output: ", NULL, NULL, NULL);
                 add_tuple(list, new_t);
 
                 Temporary itr = create_temporary();
@@ -884,7 +884,7 @@ int process_node(AST node, tuple_list* list) {
 
                 // printf("%s\n", iterator->leaf_token->lexeme);
                 Temporary temp_arr = evaluate_array(node->child, iterator, list, parent_scope);
-                Tuple new_tup4 = make_tuple(WRITE, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
+                Tuple new_tup4 = make_tuple(WRITE_2, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
                 add_tuple(list, new_tup4);
 
                 Temporary temp0 = create_temporary();
@@ -902,7 +902,7 @@ int process_node(AST node, tuple_list* list) {
                 // OUTSIDE FOR
                 label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
                 add_tuple(list, label_tup);
-                Tuple tup = make_tuple(WRITE, "", "", "Array elements printed", NULL, NULL, NULL);
+                Tuple tup = make_tuple(WRITE, "", "", "", NULL, NULL, NULL);
                 add_tuple(list, tup);
                 
                 return 1;
