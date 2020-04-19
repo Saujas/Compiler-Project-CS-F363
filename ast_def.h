@@ -1,3 +1,8 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #ifndef _AST_
 #define _AST_
 
@@ -9,6 +14,9 @@
 typedef struct symbol_table_tree_node* Symbol_Table_Tree;
 typedef struct symbol_node Symbol_Node;
 
+// Structure for a node of the abstract syntax tree
+// Contains a pointer to a lexeme for all leaf nodes
+// Also has a pointer for symbol table node created later for variables
 typedef struct ast_node {
     Label label;
     int tag;
@@ -16,7 +24,6 @@ typedef struct ast_node {
     
     struct ast_node* parent;
     struct ast_node* next;
-    // struct ast_node* concatenated;
     struct ast_node* child;
 
     Node* leaf_token;

@@ -1,3 +1,8 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #ifndef _SYMBOLTABLEDEF_
 #define _SYMBOLTABLEDEF_
 
@@ -9,8 +14,10 @@
 typedef struct ast_node* AST;
 typedef struct symbol_node Symbol_Node;
 
-#define SYMBOL_TABLE_SLOTS 5
+// No. of slots in symbol table (prime number for better hashing)
+#define SYMBOL_TABLE_SLOTS 29
 
+// Union for array index (either id or integer for dynamic ad static array)
 union array_range {
     Symbol_Node* id;
     int value;
@@ -21,10 +28,11 @@ typedef struct {
     int tag;
 } Range;
 
-
+// Structure of a symbol for each variable,
+// containing information such as width, offset, datatype
 struct symbol_node {
     AST node;
-    int datatype;
+    int datatype; //0-INT, 1-REAL, 2-BOOLEAN, 3-ARRAY
     int assigned;
     int width;
     int width2;
@@ -38,6 +46,7 @@ struct symbol_node {
 
 typedef struct symbol_node Symbol_Node;
 
+// List of symbols
 struct symbol_list {
     Symbol_Node* symbol;
     struct symbol_list* next;
@@ -53,6 +62,8 @@ struct slots_list {
 
 typedef struct slots_list Slots_List;
 
+// Each list inserted in a slot based on 
+// hash value of the variable
 struct symbol_table {
     Slots_List** slots;
     int number_of_slots;
@@ -60,6 +71,9 @@ struct symbol_table {
 
 typedef struct symbol_table Symbol_Table;
 
+// Symbol table node for each different scope,
+// pointing to a different symbol table
+// Also stores Start and End line number and nesting level
 struct symbol_table_tree_node {
     Symbol_Table* table;
 

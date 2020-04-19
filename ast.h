@@ -1,8 +1,15 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #include<stdio.h>
 #include<stdlib.h>
 #include "ast_def.h"
 #include "tree.h"
 
+/* Function definitions for all functions used in AST creation. Detailed descriptions in ast.c
+*/
 AST generate_AST(t_node* root, int flag);
 void create_AST_Util(t_node* node);
 AST create_leaf_node(t_node* parse_tree_node, int label, int rule_num);

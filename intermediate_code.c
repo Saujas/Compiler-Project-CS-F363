@@ -1,6 +1,12 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #include "intermediate_code.h"
 #include "symbol_table.h"
 
+// Array of strings for operators used in intermediate code
 char* operator_string_map[OPERATOR_SIZE] = {
     "COPY", "ADD", "SUB", "MUL", "DIV", "MEM_READ", "MEM_WRITE", "GT",
     "GE", "LT", "LE", "EQ", "NE", "AND", "OR", "LABEL", "IF_TRUE", "IF_FALSE", "GOTO",
@@ -11,6 +17,7 @@ char* operator_string_map[OPERATOR_SIZE] = {
 int temp_var;
 int label;
 
+// Make a tuple corresponding to an operator
 Tuple make_tuple(oper op, char* arg1, char* arg2, char* result, Symbol_Node* node1, Symbol_Node* node2, Symbol_Node* node3) {
     Tuple t = (Tuple) malloc(sizeof(tuple));
     
@@ -33,6 +40,7 @@ Tuple make_tuple(oper op, char* arg1, char* arg2, char* result, Symbol_Node* nod
     return t;
 }
 
+// Add tuple to global tuple list
 void add_tuple(tuple_list* list, Tuple t) {
     if(list->head == NULL) {
         list->head = t;
@@ -47,6 +55,7 @@ void add_tuple(tuple_list* list, Tuple t) {
     return;
 }
 
+// Add temporary variable to symbol table
 void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_node, int width) {
 
     if(width == 1) {
@@ -64,6 +73,7 @@ void add_temp_symboltable(Symbol_Node* symbol, Symbol_Table_Tree parent_node, in
     parent_node->last_offset += width;
 }
 
+// Create label for control switch
 char* create_label() {
     char* l = (char*) malloc(sizeof(char)*10);
     sprintf(l, "__L%d__", label);
@@ -72,6 +82,7 @@ char* create_label() {
     return l;
 }
 
+// Create a temporary variable 
 Temporary create_temporary() {
 
     Temporary node_t = (Temporary) malloc(sizeof(temporary));
@@ -98,6 +109,7 @@ Temporary create_temporary() {
     return node_t;
 }
 
+// Print list of all tuples generated in order
 void print_tuple_list(tuple_list* list) {
     Tuple temp = list->head;
 
@@ -109,6 +121,7 @@ void print_tuple_list(tuple_list* list) {
     return;
 }
 
+// Print tuple information
 void print_tuple(Tuple t) {
     if(t->op == LABEL) {
         printf("%s:\n", t->result);
@@ -118,6 +131,7 @@ void print_tuple(Tuple t) {
     return;
 }
 
+// Main function for intermediate code generation
 tuple_list* generate_ir(AST root) {
     
     temp_var = 0;
@@ -130,11 +144,12 @@ tuple_list* generate_ir(AST root) {
     list->tail = NULL;
 
     generate_ir_util(root, list);
-    print_tuple_list(list);
+    // print_tuple_list(list);
 
     return list;
 }
 
+// Traverses AST in pre order to generate intermediate code tuples
 void generate_ir_util(AST node, tuple_list* list) {
     
     if(!node) {
@@ -156,6 +171,7 @@ void generate_ir_util(AST node, tuple_list* list) {
     return;
 }
 
+// Processes each AST node and its subtree to make required tuples
 int process_node(AST node, tuple_list* list) {
 
     oper op;
@@ -306,9 +322,6 @@ int process_node(AST node, tuple_list* list) {
             
             Temporary node_t = evaluate_expression(node->child->next, list, parent_scope);
 
-            // Symbol_Node* result = (Symbol_Node*) malloc(sizeof(Symbol_Node));
-
-            // add_temp_symboltable(node, result, new_temp);
             Tuple new_tup = make_tuple(op, node_t->name, "", node->child->leaf_token->lexeme, node_t->symbol, NULL, node3);
             add_tuple(list, new_tup);
         }
@@ -427,6 +440,7 @@ int process_node(AST node, tuple_list* list) {
         return 1;
     }
 
+    // FOR statement
     if(node->rule_num == 101 && node->tag == 1) {
         AST itr = node->child, ll = itr->next->child, ul = itr->next->child->next;
         Symbol_Table_Tree parent_scope = get_parent_scope(itr->current_scope);
@@ -435,14 +449,13 @@ int process_node(AST node, tuple_list* list) {
         char* label1 = create_label();
         char* label2 = create_label();
         char* label3 = create_label();
-        // printf("labels:%s %s %s\n", label1, label2, label3);
         Tuple new_tup = make_tuple(COPY, ll->leaf_token->lexeme, "", itr->leaf_token->lexeme, NULL, NULL, itr->symbol_table_node);
         add_tuple(list, new_tup);
 
         label_tup = make_tuple(LABEL, "", "", label1, NULL, NULL, NULL);
         add_tuple(list, label_tup);
-        // IF
-
+        
+        // IF condition for termination of loop
         Temporary new_temp = create_temporary();
         add_temp_symboltable(new_temp->symbol, parent_scope, 1);
         Tuple new_tup1 = make_tuple(LESS_EQUAL, itr->leaf_token->lexeme, ul->leaf_token->lexeme, new_temp->name, itr->symbol_table_node, ul->symbol_table_node, new_temp->symbol);
@@ -455,8 +468,8 @@ int process_node(AST node, tuple_list* list) {
 
         label_tup = make_tuple(LABEL, "", "", label2, NULL, NULL, NULL);
         add_tuple(list, label_tup);
-        // INSIDE FOR
-
+        
+        // INSIDE FOR        
         generate_ir_util(itr->next->next, list);
 
         Temporary temp0 = create_temporary();
@@ -478,6 +491,7 @@ int process_node(AST node, tuple_list* list) {
         return 1;
     }
 
+    // WHILE statement
     if(node->rule_num == 102 && node->tag == 1) {
         Symbol_Table_Tree parent_scope = get_parent_scope(node->current_scope);
 
@@ -510,6 +524,7 @@ int process_node(AST node, tuple_list* list) {
         return 1;
     }
 
+    // Switch statement
     if(node->rule_num == 103 && node->tag == 1) {
         AST id = node->child;
         Symbol_Table_Tree parent_scope = get_parent_scope(id->current_scope);
@@ -595,6 +610,7 @@ int process_node(AST node, tuple_list* list) {
         }
     }
 
+    // IO read statement
     if(node->rule_num == 40 && node->tag == 0) {
         if(node->symbol_table_node->datatype != 3) {
             AST id = node;
@@ -716,14 +732,12 @@ int process_node(AST node, tuple_list* list) {
             
             AST iterator = (AST) malloc(sizeof(AST_Node));
             iterator->leaf_token = (Node*) malloc(sizeof(Node));
-            // iterator->leaf_token->lexeme = (char*) malloc(sizeof(char)*(strlen(itr->name)));
             
             strcpy(iterator->leaf_token->lexeme, itr->name);
             iterator->leaf_token->token = ID;
             iterator->symbol_table_node = itr->symbol;
 
             Temporary temp_arr = evaluate_array(node, iterator, list, parent_scope);
-            // printf("HI\n");
             Tuple new_tup4 = make_tuple(READ, "-", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
             add_tuple(list, new_tup4);
 
@@ -742,13 +756,12 @@ int process_node(AST node, tuple_list* list) {
             // OUTSIDE FOR
             label_tup = make_tuple(LABEL, "", "", label3, NULL, NULL, NULL);
             add_tuple(list, label_tup);
-            // print_tuple = make_tuple(WRITE, "", "", "End of array input", NULL, NULL, NULL);
-            // add_tuple(list, print_tuple);
 
             return 1;
         }
     }
 
+    // IO write statement
     if(node->label == IO_WRITE) {
         if(node->rule_num == 46 || node->rule_num == 47 || node->rule_num == 43 || node->rule_num == 44 || ((node->rule_num == 42)&&(node->child->symbol_table_node->datatype != 3))) {
             Symbol_Table_Tree parent_scope = get_parent_scope(node->current_scope);
@@ -768,12 +781,6 @@ int process_node(AST node, tuple_list* list) {
             else
                 width = 1;
             
-            // Temporary t = create_temporary();
-            // add_temp_symboltable(t->symbol, parent_scope, width);
-            
-
-            // Tuple new_tup = make_tuple(COPY, temp->leaf_token->lexeme, "", t->name, sym, NULL, t->symbol);
-            // add_tuple(list, new_tup);
 
             Tuple new_tup1 = make_tuple(WRITE, "", "", temp->leaf_token->lexeme, NULL, NULL, sym);
             add_tuple(list, new_tup1);
@@ -808,10 +815,6 @@ int process_node(AST node, tuple_list* list) {
                 char* ll;
                 char* ul;
                 Symbol_Node* sym_node = node->child->symbol_table_node;
-                // int datatype = sym_node->array_datatype;
-                // int width;
-                // int arr[3] = {2, 4, 1};
-                // width = arr[datatype];
 
                 Tuple new_t = make_tuple(WRITE_2, "", "", "Output: ", NULL, NULL, NULL);
                 add_tuple(list, new_t);
@@ -839,7 +842,6 @@ int process_node(AST node, tuple_list* list) {
                     flag2 = 0;
                 }
 
-                // printf("labels:%s %s %s\n", label1, label2, label3);
 
                 if(flag1) {                    
                     Tuple new_tup = make_tuple(COPY, ll_sym->node->leaf_token->lexeme, "", itr->name, ll_sym, NULL, itr->symbol);
@@ -876,13 +878,11 @@ int process_node(AST node, tuple_list* list) {
                 
                 AST iterator = (AST) malloc(sizeof(AST_Node));
                 iterator->leaf_token = (Node*) malloc(sizeof(Node));
-                // iterator->leaf_token->lexeme = (char*) malloc(sizeof(char)*(strlen(itr->name)));
                 
                 strcpy(iterator->leaf_token->lexeme, itr->name);
                 iterator->leaf_token->token = ID;
                 iterator->symbol_table_node = itr->symbol;
 
-                // printf("%s\n", iterator->leaf_token->lexeme);
                 Temporary temp_arr = evaluate_array(node->child, iterator, list, parent_scope);
                 Tuple new_tup4 = make_tuple(WRITE_2, "", "", temp_arr->name, NULL, NULL, temp_arr->symbol);
                 add_tuple(list, new_tup4);
@@ -910,6 +910,7 @@ int process_node(AST node, tuple_list* list) {
         }
     }
 
+    // Function call statement
     if(node->rule_num == 59 && node->tag == 1) {
         int op_exists = node->child->tag;
         
@@ -990,6 +991,7 @@ int process_node(AST node, tuple_list* list) {
     return 0;
 }
 
+// Generate tuples for statements of an expression
 Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree parent_scope) {
 
     if(node == NULL) {
@@ -1021,7 +1023,6 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
             int width = node->child->symbol_table_node->width;
             add_temp_symboltable(node_t->symbol, parent_scope, width);
             
-            // COPY: arg1 = node->name, arg2 = empty, result = temp
             Tuple new_tuple = make_tuple(COPY, node->child->leaf_token->lexeme, "", node_t->name, node->child->symbol_table_node, NULL, node_t->symbol);
             add_tuple(list, new_tuple);
             
@@ -1066,9 +1067,6 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
 
     if(node->label == EXPRESSION) {
 
-        // hardcoding case where a = - (5)
-        // to optimize code
-
         if(node->child->next->tag == 0) {
             Temporary node_t = create_temporary();
 
@@ -1092,7 +1090,6 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
             return node_t;
         }
 
-        // more optimization possible
         Temporary temp1 = evaluate_expression(node->child->next, list, parent_scope);
         
         if(node->child->leaf_token->token == PLUS)
@@ -1205,6 +1202,7 @@ Temporary evaluate_expression(AST node, tuple_list* list, Symbol_Table_Tree pare
     return test_node;
 }
 
+// Get bounds of array
 char* get_limit(AST node, int id) {
     char* name = (char*) malloc(sizeof(char)*5);
 
@@ -1220,6 +1218,7 @@ char* get_limit(AST node, int id) {
     return name;
 }
 
+// Evaluate expression with array type
 Temporary evaluate_array(AST node, AST index, tuple_list* list, Symbol_Table_Tree parent_scope) {
     
     int width = 0;

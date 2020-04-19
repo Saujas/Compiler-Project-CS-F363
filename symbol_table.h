@@ -1,3 +1,8 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +13,8 @@
 #include "ast_def.h"
 #include "semantic_analyzer_def.h"
 
+/* Function definitions for all functions used in symbol table. Detailed descriptions in symbol_table.c
+*/
 int check_if_defined(Symbol_Table_Tree current, char* lexeme);
 int check_if_declared(Symbol_Table_Tree current, char* lexeme);
 void insert_symbol(Symbol_Table* symbol_table, char* key, Symbol_Node* node);

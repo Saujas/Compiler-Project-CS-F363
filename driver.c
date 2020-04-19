@@ -33,12 +33,7 @@ int main(int argc, char* argv[]) {
     /*Printing status of work
     */
     printf("\nStatus of work: \n");
-    printf("\t (a) FIRST and FOLLOW set computation has been automated\n");
-    printf("\t (b) Both lexical and syntax analysis modules implemented\n");
-    printf("\t (c) Modules compile and run successfully\n");
-    printf("\t (d) Modules run with all the test cases\n");
-    printf("\t (e) Parse tree can be constructed and viewed on the file\n");
-    printf("\t (f) Lexical and syntactic errors can be viewed on the console\n");
+    printf("LEVEL 4: AST / Symbol table / Type checking / Semantic Rules / Intermediate code / Code generation modules work\n\n");
 
     clock_t start_time, end_time;
     double total_CPU_time, total_CPU_time_in_seconds;
@@ -76,12 +71,12 @@ int main(int argc, char* argv[]) {
                 tokens = lexical_analyzer(argv[1], &token_stream, &table, 1);
                 break;
 
-            case 2:
+            case 2: // Invoke only parser and check for lexical and syntax errors
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 1);
                 break;
 
-            case 3:
+            case 3: // Print AST in-order
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
@@ -90,7 +85,7 @@ int main(int argc, char* argv[]) {
                 root = generate_AST(*parse_tree_ptr, 1);
                 break;
 
-            case 4: 
+            case 4: // Calculate total allocated memory to parse tree and AST
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
@@ -101,7 +96,7 @@ int main(int argc, char* argv[]) {
                 
                 break;
 
-            case 5:
+            case 5: // Print symbol table
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
@@ -113,7 +108,7 @@ int main(int argc, char* argv[]) {
                 tree = create_symbol_table_tree(root, err, 1);
                 break;
             
-            case 6:
+            case 6: // Print activation record sizes
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
@@ -125,7 +120,7 @@ int main(int argc, char* argv[]) {
                 tree = create_symbol_table_tree(root, err, 3);
                 break;
                 
-            case 7:
+            case 7: // Print array variables' information
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
@@ -137,7 +132,7 @@ int main(int argc, char* argv[]) {
                 tree = create_symbol_table_tree(root, err, 2);
                 break;
 
-            case 8:
+            case 8: // Print syntax and semantic errors, if any, and print total time taken
                 printf("\n");
                 start_time = clock();
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
@@ -162,7 +157,8 @@ int main(int argc, char* argv[]) {
                     print_errors(err);
                 }
                 else {
-                    printf("No semantic errors found\n\n");
+                    printf("No semantic errors occurred\n\n");
+                    printf("Code compiles successfully\n\n");
                 }
 
                 end_time = clock();
@@ -174,7 +170,7 @@ int main(int argc, char* argv[]) {
                 printf("*****\n\n");
                 break;
 
-            case 9:
+            case 9: //Print syntax and semantic errors, if any, and generate asm code
                 printf("\n");
                 parse_tree_ptr = parser(argv[1], "", &parsed, 0);
                 if(!parsed) {
@@ -193,7 +189,8 @@ int main(int argc, char* argv[]) {
                     print_errors(err);
                 }
                 else {
-                    printf("No semantic errors found\n\n");
+                    printf("No semantic errors occurred\n\n");
+                    printf("Code compiles successfully\n\n");
                     list = generate_ir(root);
                     generate_code(list, tree, argv[2]);
                 }

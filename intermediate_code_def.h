@@ -1,3 +1,8 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #ifndef _INTERMEDIATE_CODE_
 #define _INTERMEDIATE_CODE_
 
@@ -13,6 +18,7 @@
 
 #define OPERATOR_SIZE 31
 
+// List of enums for each operator used for intermediate code
 typedef enum {
     COPY, ADDITION, SUBTRACTION, MULTIPLY, DIVIDE, MEM_READ, MEM_WRITE, GREATER, GREATER_EQUAL,
     LESS, LESS_EQUAL, EQUAL, NOT_EQUAL, BOOLEAN_AND, BOOLEAN_OR, LABEL, IF_TRUE, IF_FALSE, GOTO,
@@ -20,6 +26,7 @@ typedef enum {
     LINE_BREAK
 } oper;
 
+// Structure of a tuple used per operator in intermediate code
 typedef struct tup {
     
     oper op;
@@ -32,6 +39,7 @@ typedef struct tup {
     Symbol_Node* node1, *node2, *node3;
 } tuple;
 
+// List of tuples
 typedef struct {
     struct tup* head;
     struct tup* tail;
@@ -41,6 +49,7 @@ typedef struct {
 
 typedef struct tup* Tuple;
 
+// Structure for temporaries used in intermediate code
 typedef struct {
     Symbol_Node* symbol;
     char* name;
