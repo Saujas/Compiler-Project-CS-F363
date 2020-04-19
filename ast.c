@@ -1,5 +1,11 @@
+// Group 13
+// Sahil Dubey - 2017A7PS0096P 
+// Rohit Milind Rajhans - 2017A7PS0105P
+// Saujas Adarkar - 2017A7PS0109P
+
 #include "ast.h"
 
+// Array of strings of non-leaf AST nodes
 char* ast_string_map[AST_LABEL_NUMBER] = {
     "AST_PROGRAM", "MODULE_DECLARATIONS", "MODULE_DECLARATION", "OTHER_MODULES", "AST_DRIVER", "AST_MODULE", "INPUT_PLIST", "NEW1",
     "OUTPUT_PLIST", "NEW2", "DATA_TYPE", "DATA_TYPE2", "RANGE", "RANGE2", "STATEMENTS", "VAR", "ASSIGNMENT_STMT", 
@@ -7,6 +13,7 @@ char* ast_string_map[AST_LABEL_NUMBER] = {
     "DECLARE_STMT", "AST_FOR", "AST_WHILE", "CONDITIONAL_STMT", "CASE_STMT_T", "CASE_STMT_F", "NUMERIC_CASES", "NUMERIC_CASE", "IO_READ", "IO_WRITE", "AST_DEFAULT"
 };
 
+// Array of strings of non terminals used in the grammar
 char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDeclarations", "moduleDeclaration", "otherModules", "driverModule", "module", "ret", "input_plist",
     "new1", "output_plist", "new2", "dataType", "dataType2", "type", "range", "range2", "moduleDef", "statements", "new3",
     "statement", "ioStmt", "var", "var2", "whichID", "simpleStmt", "assignmentStmt", "whichStmt", "lvalueIDstmt", "lvalueArrStmt", 
@@ -15,6 +22,7 @@ char * ast_non_terminals_string_map[NON_TERMINAL_SIZE] = {"program", "moduleDecl
     "declareStmt", "iterativeStmt", "conditionalStatement", "caseStmt", "numericCases", 
     "numericCase", "new11", "Default", "NT_value"};
 
+// Array of strings of terminals used in the grammar
 char * t_string_map_copy1[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", "ARRAY", "START",
             "END", "DECLARE", "MODULE", "DRIVER", "PROGRAM", "GET_VALUE", "PRINT",
             "USE", "WITH", "PARAMETERS", "TRUE", "FALSE", "TAKES", "INPUT", "RETURNS",
@@ -24,6 +32,7 @@ char * t_string_map_copy1[TOKEN_NUMBERS] = {"INTEGER", "REAL", "BOOLEAN", "OF", 
             "SQBO", "SQBC", "BO", "BC", "COMMENTMARK", "NUM", "RNUM", "ID", "ERROR", "E", "$"
 };
 
+// Main function which generates entire AST
 AST generate_AST(t_node* root, int flag) {
     if(root == NULL) {
         return NULL;
@@ -43,6 +52,8 @@ AST generate_AST(t_node* root, int flag) {
     return ast;
 }
 
+// Recursive function which traverses parse tree
+// in post order to generate AST
 void create_AST_Util(t_node* node) {
     if(node == NULL) {
         return;
@@ -63,6 +74,7 @@ void create_AST_Util(t_node* node) {
 
 }
 
+// Makes a new AST leaf node corresponding to AST semantic rules
 AST create_leaf_node(t_node* parse_tree_node, int label, int rule_num) {
     int l = label;
     int tag = 0;
@@ -75,6 +87,7 @@ AST create_leaf_node(t_node* parse_tree_node, int label, int rule_num) {
     return create_NT_node(l, tag, rule_num, parent, child, next, node);
 }
 
+// Makes a new AST non leaf node corresponding to AST semantic rules
 AST create_NT_node(Label label, int tag, int rule_num, AST parent, AST child, AST next, Node* node) {
     AST new_node = (AST) malloc(sizeof(AST_Node));
 
@@ -90,6 +103,7 @@ AST create_NT_node(Label label, int tag, int rule_num, AST parent, AST child, AS
     return new_node;
 }
 
+// Forms links between siblings of a node
 void link_children(t_node* node) {
 
     t_node* temp = node;
@@ -103,6 +117,7 @@ void link_children(t_node* node) {
     return;
 }
 
+// Links an AST node's children to itself 
 void link_parent(t_node* node) {
 
     AST temp = node->tree_node;
@@ -115,6 +130,7 @@ void link_parent(t_node* node) {
     return;
 }
 
+// Traverses AST to print it in-order
 void print_ast(AST root, AST parent) {
     
     if(root == NULL) {
@@ -123,7 +139,6 @@ void print_ast(AST root, AST parent) {
     print_ast(root->child, root);
 
     print_ast_node(root, parent);
-    // print_ast(root->child);
     
 
     if(root->child==NULL) {
@@ -133,22 +148,20 @@ void print_ast(AST root, AST parent) {
     parent = root;
     root = root->child;
     root = root->next;
-    // root = root->next;
     while(root) {
         print_ast(root, parent);
         root = root->next;
     }
-    // printf("\n");
 
     return;
 }
 
+// Traverses AST to print it in pre-order
 void print_ast_preorder(AST root, AST parent) {
     
     if(root == NULL) {
         return;
     }
-    // print_ast(root->child, root);
 
     print_ast_node(root, parent);
     print_ast_preorder(root->child, root);
@@ -161,39 +174,16 @@ void print_ast_preorder(AST root, AST parent) {
     parent = root;
     root = root->child;
     root = root->next;
-    // root = root->next;
     while(root) {
         print_ast_preorder(root, parent);
         root = root->next;
     }
-    printf("\n");
 
     return;
 }
 
+// Printing a node of AST
 void print_ast_node(AST node, AST parent) {
-    // if(node->tag == 1) {
-    //     printf("Rule no: %d - %s", node->rule_num, ast_string_map[node->label]);
-    //     if(node->parent) {
-    //         printf("\t%s", ast_string_map[node->parent->label]);
-    //     }
-    //     else {
-    //         printf("\tNO PARENT");
-    //     }
-    // }
-    // else {
-    //     printf("Rule no: %d - %s", node->rule_num, node->leaf_token->lexeme);
-    //     if(node->parent) {
-    //         printf("\t%s", ast_string_map[node->parent->label]);
-    //     }
-    //     else {
-    //         printf("\tNO PARENT");
-    //     }
-    //     // if(node->label == IO_READ || node->label == IO_WRITE) {
-    //     //     printf("    %s", ast_string_map[node->label]);
-    //     // }
-    // }
-    // printf("\n");
     if(node->tag == 0) { //Print a leaf node with its value
         printf("Lexeme: %-20s  Line No: %-3d  Token: %-20s  ", node->leaf_token->lexeme, node->leaf_token->line_no, t_string_map_copy1[node->leaf_token->token]);
         if(node->leaf_token->tag == 1)
@@ -221,15 +211,9 @@ void print_ast_node(AST node, AST parent) {
     }
 }
 
+// Creates and links AST nodes from parse tree as per AST semantic rules
 void convert_to_AST_node(t_node* node) {
     int rule_num = node->rule_num;
-    // printf("HELLO %d: %s\n", rule_num, ast_non_terminals_string_map[node->node.internal]);
-    // printf("HI\n");
-    // if(node->tag==1)
-    //     printf("%s\n", ast_non_terminals_string_map[node->node.internal]);
-    // else
-    //     printf("%s\n", node->node.leaf.lexeme);
-
     Label label;
     int tag;
     AST parent = NULL;
@@ -250,7 +234,7 @@ void convert_to_AST_node(t_node* node) {
         case 61:
         case 64:
         case 112:
-            node->tree_node = NULL;
+            node->tree_node = NULL; // AST rules deriving NULL
             break;
 
         case 33:
@@ -270,7 +254,7 @@ void convert_to_AST_node(t_node* node) {
         case 104: //new change
         case 106:
         case 110:
-            node->tree_node = node->child->tree_node;
+            node->tree_node = node->child->tree_node; // AST rules storing only first child of parse tree node
             break;
 
         case 30:
@@ -280,16 +264,16 @@ void convert_to_AST_node(t_node* node) {
         case 70:
         case 78:
         case 109:
-            node->tree_node = node->child->sibling->tree_node;
+            node->tree_node = node->child->sibling->tree_node; // AST rules storing only second child of parse tree node
             break;
 
         case 9:
-            node->tree_node = node->child->sibling->sibling->tree_node;
+            node->tree_node = node->child->sibling->sibling->tree_node; // AST rules storing only third child of parse tree node
             break;
 
         case 41:
             node->tree_node = node->child->sibling->sibling->tree_node;
-            node->tree_node->label = IO_WRITE;
+            node->tree_node->label = IO_WRITE; // AST node for IO_WRITE rule
             break;
 
         case 17:
@@ -324,13 +308,11 @@ void convert_to_AST_node(t_node* node) {
         case 91:
         case 92:
         case 93:
-        case 105: //new change
+        case 105: //Creating AST leaf node
             node->tree_node = create_leaf_node(node->child, -1, rule_num);
-            // node->child->tree_node = node->tree_node;
-            // node->child->tree_node->parent = node->tree_node->parent;
             break;
 
-        case 1:
+        case 1: // Root AST node
             label = AST_PROGRAM;
             tag = 1;
             temp = node->child;
@@ -383,7 +365,7 @@ void convert_to_AST_node(t_node* node) {
         case 5:
         case 32:
         case 65:
-        case 107:
+        case 107: // Rules which use same non terminal as a list
             if (rule_num == 2)
                 label = MODULE_DECLARATIONS;
             else if(rule_num == 5)
@@ -405,10 +387,9 @@ void convert_to_AST_node(t_node* node) {
 
         case 4:
             node->tree_node = create_leaf_node(node->child->sibling->sibling, MODULE_DECLARATION, rule_num);
-            // node->child->tree_node->parent = node->tree_node->parent;
             break;
 
-        case 7:
+        case 7: // AST node for driver module definition
             label = AST_DRIVER;
             tag = 1;
             temp = node->child->sibling->sibling->sibling->sibling;
@@ -430,11 +411,9 @@ void convert_to_AST_node(t_node* node) {
 
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
-            // printf("%s\n", ast_string_map[node->tree_node->label]);
-            // printf("%s\n", ast_string_map[node->child->tree_node->label]);
             break;
 
-        case 8:
+        case 8: // AST node for non driver module definition
             label = AST_MODULE;
             
             tag = 1;
@@ -492,7 +471,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child->sibling->sibling);
             break;
 
-        case 11:
+        case 11: // AST node for input and output list of a function
         case 14:
             if(rule_num == 11)
                 label = INPUT_PLIST;
@@ -528,7 +507,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 20:
+        case 20: // AST node for datatype rule
         case 24:
             if (rule_num == 20)
                 label = DATA_TYPE;
@@ -544,7 +523,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 28:
+        case 28: // AST node for range rule
             label = RANGE;
             tag = 1;
 
@@ -568,7 +547,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
         
-        case 40:
+        case 40: // AST node for IO_READ rule
             node->tree_node = create_leaf_node(node->child->sibling->sibling, -1, rule_num);
             node->tree_node->label = IO_READ;
             break;
@@ -604,7 +583,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 59: 
+        case 59: // AST node for function call rule
             label = MODULE_REUSE_STMT;
             tag = 1;
 
@@ -638,7 +617,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 100:
+        case 100: // AST node for declare statement
             label = DECLARE_STMT;
             tag = 1;
 
@@ -649,7 +628,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 101:
+        case 101: // AST node for FOR statement
             label = AST_FOR;
             tag = 1;
             temp = node->child->sibling->sibling;
@@ -681,7 +660,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 102:
+        case 102: // AST node for while statement
             label = AST_WHILE;
             tag = 1;
 
@@ -711,7 +690,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 103:
+        case 103: // AST node for switch statement
             label = CONDITIONAL_STMT;
             tag = 1;
             temp = node->child->sibling->sibling;
@@ -733,30 +712,8 @@ void convert_to_AST_node(t_node* node) {
             node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
             link_parent(node->child);
             break;
-
-        // case 104:
-        // case 105:
-        //     if(rule_num==104)
-        //         label = CASE_STMT_T;
-        //     else if(rule_num==105)
-        //         label = CASE_STMT_F;
-
-        //     tag = 1;
-        //     temp = node->child->sibling->sibling;
-
-        //     if(temp->tree_node == NULL) {
-        //         child = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
-        //     }
-        //     else {
-        //         child = temp->tree_node;
-        //         child->next = node->child->sibling->sibling->sibling->sibling->sibling->sibling->sibling->sibling->tree_node;
-        //     }
-
-        //     node->tree_node = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
-        //     link_parent(node->child);
-        //     break;
-
-        case 108: //Modified
+       
+        case 108: // AST node for case of a switch
             label = NUMERIC_CASE;
             tag = 1;
 
@@ -777,32 +734,17 @@ void convert_to_AST_node(t_node* node) {
         case 74:
         case 77:
         case 95:
-        case 99:
+        case 99: // AST node which stores inherited information
             node->tree_node = extract_inherited(node);
             break;
 
         case 73:
         case 76:
         case 94:
-            
-            // if (rule_num == 73)
-            //     label = NEW6;
-            // else if (rule_num == 76)
-            //     label = NEW7;
-            // else if (rule_num == 94)
-            //     label = NEW8;
-            
-            // tag = 1;
-            // child = node->child->tree_node;
-            // child->next = node->tree_node_inh;
-            // child->next->next = node->child->sibling->tree_node;
-
-            // node->child->sibling->sibling->tree_node_inh = create_NT_node(label, tag, rule_num, parent, child, sibling, NULL);
-            // link_parent(node->child);
             node->tree_node = node->child->sibling->sibling->tree_node;
             break;
 
-        case 98:
+        case 98: // AST node for relational expression
             label = RELATIONAL_EXPR;
             tag = 1;
             child = node->child->tree_node;
@@ -813,7 +755,7 @@ void convert_to_AST_node(t_node* node) {
             link_parent(node->child);
             break;
 
-        case 111:
+        case 111: // AST node for default statement
             child = create_leaf_node(node->child, -1, rule_num);
             node->child->tree_node = child;
 
@@ -826,6 +768,7 @@ void convert_to_AST_node(t_node* node) {
     }
 }
 
+// Function which extracts inherited information from an expression node
 AST extract_inherited(t_node* node) {
     int rule_num = node->parent->rule_num;
     AST inherited = NULL;
@@ -865,6 +808,7 @@ AST extract_inherited(t_node* node) {
     return inherited;
 }
 
+// Function to find start and end nodes of a switch statement for storing scope
 t_node* get_switch_end_node(t_node* temp) {
     t_node* ans;
     if(temp->child->tag == 0) {
@@ -880,7 +824,7 @@ t_node* get_switch_end_node(t_node* temp) {
     return ans;
 }
 
-
+// To count total number and size of parse tree nodes
 void count_parse_tree_nodes(t_node* root, int* count, int *size) {
     if(root == NULL)
         return;
@@ -894,6 +838,7 @@ void count_parse_tree_nodes(t_node* root, int* count, int *size) {
     return;
 }
 
+// To count total number and size of AST nodes
 void count_ast_nodes(AST root, int* count, int *size) {
     if(root == NULL)
         return;
@@ -907,6 +852,7 @@ void count_ast_nodes(AST root, int* count, int *size) {
     return;
 }
 
+// To calculate and display total amount of allocated memory to parse tree and AST
 void calculate_allocated_memory(t_node* root, AST tree) {
 
     int parse_tree_count = 0;
@@ -916,8 +862,8 @@ void calculate_allocated_memory(t_node* root, AST tree) {
     count_parse_tree_nodes(root, &parse_tree_count, &parse_tree_size);
     count_ast_nodes(tree, &ast_count, &ast_size);
 
-    printf("\nParse tree number of nodes = %d\t Allocated memory = %d\n", parse_tree_count, parse_tree_size);
-    printf("\nAST number of nodes = %d\t Allocated memory = %d\n", ast_count, ast_size);
+    printf("\nParse tree number of nodes = %d\t Allocated memory = %d bytes\n", parse_tree_count, parse_tree_size);
+    printf("\nAST number of nodes = %d\t Allocated memory = %d bytes\n", ast_count, ast_size);
 
     int compression = ((parse_tree_size-ast_size)*100)/parse_tree_size;
     printf("\nCompression percentage = %d%%\n\n", compression);
