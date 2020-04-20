@@ -1212,9 +1212,13 @@ void print_array_info(Symbol_List *list) {
 
 // Print activation record sizes of all functions
 void print_activation_record_sizes(Symbol_Table_Tree tree) {
+    int x;
     while(tree) {
+        x = tree->last_offset2;
+        if(tree->input)
+            x += tree->input->last_offset2;
         printf("%-30s", tree->name);
-        printf("%-30d", tree->last_offset2);
+        printf("%-30d", x);
         printf("\n");
         tree = tree->sibling;
     }
