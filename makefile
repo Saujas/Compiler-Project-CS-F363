@@ -43,5 +43,5 @@ clean:
 run:
 	./compiler $(input_file) $(output_file)
 
-everything:
+executable:
 	nasm -f elf64 code.asm -o code.o && gcc -no-pie -o exe code.o -lc

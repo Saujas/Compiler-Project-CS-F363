@@ -9,6 +9,7 @@ int label = 0;
 // Integer - Word size, Real - 64 bit, Boolean - Byte
 char* reg_offsets[4] = {"word", "qword", "byte", "qword"};
 
+// Function that accepts the tuple list and produces the asm code
 int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     
     FILE* fp = fopen(filename, "w");
@@ -24,7 +25,9 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     
     // printf("No. of tuples: %d\n", list->count);
 
+    // adding printf and scanf, external functions
     fprintf(fp, "extern printf, scanf\n\nsection .data\n");
+    // some printing formats for printf and scanf
     fprintf(fp, "\tfmt_integer: db '%s', 10, 0\n", "%d");
     fprintf(fp, "\tfmt_integer_no_line_break: db '%s ', 0\n", "%d");
     fprintf(fp, "\tfmt_float: db '%s', 10, 0\n", "%f");
@@ -61,6 +64,8 @@ int generate_code(tuple_list* list, Symbol_Table_Tree tree, char* filename) {
     return 1;
 }
 
+// function that return activation record size, to be reserved on stack
+// size is only reserved as nearest multiple of 16 so that stack is properly aligned
 int get_ar_size(tuple* tup, Symbol_Table_Tree tree, FILE* fp) {
 
     Symbol_Table_Tree fun_tree = tree->child;
@@ -84,6 +89,7 @@ int get_ar_size(tuple* tup, Symbol_Table_Tree tree, FILE* fp) {
     return 0;
 }
 
+// function that generates dynamic labels to be used in asm code
 char* generate_dynamic_label() {
     char* str = (char *) malloc(sizeof(char) * 10);
 
@@ -93,6 +99,7 @@ char* generate_dynamic_label() {
     return str;
 }
 
+// function to help in debugging
 void print_args(struct tup* tup) {
     
     if(tup->node1)
@@ -105,6 +112,7 @@ void print_args(struct tup* tup) {
     return;
 }
 
+// function accepts a tuple, and generates its corresponding asm code
 int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
     
     if(tup == NULL)
@@ -113,6 +121,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
     if(tup->op == LABEL || tup->op == FUN_LABEL) {
         fprintf(fp, "%s:\n", tup->result);
 
+        // reserve memory on stack in case of a function label
         if(tup->op == FUN_LABEL) {
             int offset = get_ar_size(tup, tree, fp);
             fprintf(fp, "\tpush rbp\n\tmov rbp, rsp\n\tsub rsp, %d\n", offset);
@@ -121,6 +130,8 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
 
     // print_args(tup);
 
+    // copy operand 1 to operand 3
+    // operand 2 empty
     if(tup->op == COPY) {
         char *res = read_operand(tup->node3, tup->result);
 
@@ -146,6 +157,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    // write to memory location
     if(tup->op == MEM_WRITE) {
         char *res = read_operand(tup->node3, tup->result);
         fprintf(fp, "\tmov rbx, %s\n", res);
@@ -172,6 +184,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    // read from memory location
     if(tup->op == MEM_READ) {
         char* arg = read_operand(tup->node1, tup->arg1);
         char* res = read_operand(tup->node3, tup->result);
@@ -185,6 +198,9 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
             fprintf(fp, "\tmov al, byte [rbx]\n\tmov %s, al\n", res);
     }
 
+
+    // input parameters for function call
+    // stores them in callee's activation record
     if(tup->op == PARAM) {
         int offset = atoi(tup->arg1);
 
@@ -212,6 +228,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }   
     }
 
+    // store addres of actual output parameters in callee's activation record
     if(tup->op == PARAM_OP) {
         int offset = atoi(tup->arg1);
         offset += tup->node3->width + 8 + 16;
@@ -219,10 +236,14 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         fprintf(fp, "\tmov rax, rsp\n\tsub rax, %d\n\tmov rbx, rbp\n\tsub rbx, %d\n\tmov qword [rax], rbx\n", offset, tup->node3->offset + tup->node3->width);
     }
 
+    // call's function
     if(tup->op == CALL) {
         fprintf(fp, "\tcall %s\n", tup->result);
     }
     
+    // return from function
+    // in case argument is passed to return
+    // it is to store the calculated output back to the actual output memory location passed during function call
     if(tup->op == RETURN) {
         if(!tup->node3)
             fprintf(fp, "\tmov rsp, rbp\n\tpop rbp\n\tret\n\n");
@@ -237,10 +258,13 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+
+    // allocate memory for dynamic array
     if(tup->op == MEM_ALLOC) {
         fprintf(fp, "\tmov ax, word [rbp - %d]\n\tmovsx rax, ax\n\tsub rsp, rax\n\tmov qword [rbp - %d], rsp\n", tup->node1->offset + tup->node1->width, tup->node3->offset + tup->node3->width);
     }
 
+    // perform arithmetic operations for integer and real values
     if(tup->op == ADDITION || tup->op == SUBTRACTION || tup->op == MULTIPLY || tup->op == DIVIDE) {
         char operation[5];
         char* arg1 = read_operand(tup->node1, tup->arg1);
@@ -299,11 +323,13 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    // calculate memory location of arr[i] where arr is a dynamic array
     if(tup->op == ADD_DYNAMIC) {
         fprintf(fp, "\tmov rax, qword [rbp - %d]\n\tmov bx, word [rbp - %d]\n\tmovsx rbx, bx\n\tadd rax, rbx\n\tmov qword [rbp - %d], rax\n", 
         tup->node1->offset + tup->node1->width, tup->node2->offset + tup->node2->width, tup->node3->offset + tup->node3->width);
     }
 
+    // performs boolean operation
     if(tup->op == BOOLEAN_AND || tup->op == BOOLEAN_OR) {
         char operation[4];
         if(tup->op == BOOLEAN_AND)
@@ -316,6 +342,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         fprintf(fp, "\tmov al, %s\n\t%s al, %s\n\tmov byte [rbp - %d], al\n", arg1, operation, arg2, tup->node3->offset + tup->node3->width);
     }
 
+    // performs relational operations on integer and floating point values
     if(tup->op == GREATER || tup->op == GREATER_EQUAL || tup->op == LESS ||
     tup->op == LESS_EQUAL || tup->op == EQUAL || tup->op == NOT_EQUAL) {
         char* arg1 = read_operand(tup->node1, tup->arg1);
@@ -369,6 +396,7 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         fprintf(fp, "\t%s %s\n\tmov byte [rbp - %d], 1\n\tjmp %s\n%s:\n\tmov byte [rbp - %d], 0\n%s:\n", operation, label1, tup->node3->offset + tup->node3->width, label2, label1, tup->node3->offset + tup->node3->width, label2);
     }
 
+    // Print to screen
     if(tup->op == WRITE) {
         if(tup->node3) {
             fprintf(fp, "\tmov rsi, message_output\n\tmov rdi, fmt_string_no_line_break\n\txor rax, rax\n\tcall printf\n");
@@ -430,6 +458,10 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    // Introduced to print according to required format
+    // otherwise redundant
+    // does not print new line
+    // required for array printing
     if(tup->op == WRITE_2) {
         
         if(tup->node3) {
@@ -490,14 +522,18 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    // prints a line break
+    // redundant, just required to fit format
     if(tup->op == LINE_BREAK) {
         fprintf(fp, "\tmov rax, message_lb\n\tmov rdi, fmt_string_no_line_break\n\tmov rsi, rax\n\txor rax, rax\n\tcall printf\n");
     }
 
+    // exits from program, to handle run time errors and program exit
     if(tup->op == EXIT) {
         fprintf(fp, "\n;exiting program\n\tmov rax, 1\n\tmov rbx, 0\n\tint 80h\n");
     }
 
+    // scan user input
     if(tup->op == READ) {
         int data_type = tup->node3->datatype, flag = 0;
         int flag2 = 1;
@@ -540,22 +576,30 @@ int generate_tuple_code(tuple* tup, Symbol_Table_Tree tree ,FILE* fp) {
         }
     }
 
+    // jump to label
     if(tup->op == GOTO) {
         fprintf(fp, "\tjmp %s\n", tup->result);
     }
 
+    // jump if true
     if(tup->op == IF_TRUE) {
         fprintf(fp, "\tmov al, byte [rbp - %d]\n\tcmp al, 1\n\tjz %s\n", tup->node1->offset + tup->node1->width, tup->result);
     }
+
+    // jump if false
     if(tup->op == IF_FALSE) {
         fprintf(fp, "\tmov al, byte [rbp - %d]\n\tcmp al, 0\n\tjz %s\n", tup->node1->offset + tup->node1->width, tup->result);
     }
 
+    // generate code for next tuple
     generate_tuple_code(tup->next, tree, fp);
 
     return 1;
 }
 
+// returns the operand
+// string if constant
+// offset in case of variable
 char* read_operand(Symbol_Node* node, char* arg) {
     char* arg1 = (char*) malloc(sizeof(char)*25);
 
@@ -576,6 +620,7 @@ char* read_operand(Symbol_Node* node, char* arg) {
     return arg1;
 }
 
+// checks if the passed string is a float
 int check_if_float(char* str) {
     int i, n = strlen(str);
     for(i=0; i<n; i++) {

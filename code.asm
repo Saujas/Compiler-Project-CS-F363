@@ -171,7 +171,7 @@ __L4__:
 	jmp __L0__
 __L2__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -327,7 +327,7 @@ __L9__:
 	jmp __L5__
 __L7__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -963,7 +963,7 @@ __L24__:
 	jmp __L20__
 __L22__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -1377,7 +1377,7 @@ __L36__:
 	jmp __L32__
 __L34__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -1853,7 +1853,7 @@ __L47__:
 	jmp __L43__
 __L45__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -2247,7 +2247,7 @@ __L59__:
 	jmp __L55__
 __L57__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -2658,7 +2658,7 @@ __L71__:
 	jmp __L67__
 __L69__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
@@ -2828,7 +2828,7 @@ __L76__:
 	jmp __L72__
 __L74__:
 	sub rsp, 16
-	mov rax, '+^+¦U'
+	mov rax, '[Õ©·U'
 	mov qword [rsp], rax
 	add rsp, 0
 	mov byte [rsp], 0
