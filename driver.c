@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
     */
     printf("\nStatus of work: \n");
     printf("LEVEL 4: AST / Symbol table / Type checking / Semantic Rules / Intermediate code / Code generation modules work\n\n");
+    printf("Note: To view the properly formatted AST and parse tree outputs, it is advised to see it in full screen\n\n");
 
     clock_t start_time, end_time;
     double total_CPU_time, total_CPU_time_in_seconds;

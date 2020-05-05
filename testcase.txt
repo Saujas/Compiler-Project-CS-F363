@@ -1,21 +1,12 @@
 <<<driver program>>>
 start
-	declare a, b:integer;
-	declare B:array [2..4] of integer;
-	
-	get_value(a);
-	get_value(b);
-	declare A:array [a..b] of integer;
 
-	get_value(A);
+    declare a, b, sum:integer;
+    get_value(a);
+    get_value(b);
 
-	B := A;
-
-	print(B);
-
-	while(1 < 2)
-	start
-		print(B);
-	end
+    sum := a+b;
+    print(sum);
 
 end
+
